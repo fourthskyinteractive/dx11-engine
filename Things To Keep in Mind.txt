@@ -1,0 +1,13 @@
+Deferred Contexts - 	When Creating the D3DDevice, you create the immediate context that 
+			will run on the main thread.  You use D3D11CreateDeferredContext() to
+			create additional deferred contexts that will be run on separate threads.
+			There will be one deferred context per separate thread and only one 
+			immediate context on the main thread.
+
+MultiSampling -		If you want to change the multisampling settings at runtime, you have
+			to destroy and recreate the swap chain.
+
+Back Buffer -		To obtain a pointer to the backbuffer object, you must call IDXGISwapChain::GetBuffer().
+			The first parameter being the back buffer index that you want to get, most cases 0,
+			the second parameter being the interface type, usually ID3D11Texture2D, and the third
+			parameter being the return pointer to the back buffer.
