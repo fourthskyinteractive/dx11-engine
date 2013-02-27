@@ -1,8 +1,6 @@
 #include "Game.h"
 
-#include "../Input/Input.h"
 #include "../Utility/Math/MathHelper.h"
-#include "../EventSystem/EventSystem.h"
 #include "../Renderer/D3D11Renderer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
 
@@ -43,9 +41,8 @@ bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenW
 	XMStoreFloat4x4(&proj, I);
 
 	timer.Init();
-	Input::Init();
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1680, 1050, false); 
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1680, 1050, true); 
 
 	if(bResult)
 	{
@@ -56,9 +53,9 @@ bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenW
 		isRunning = false;
 	}
 
-	BuildGeometryBuffers();
-	BuildFX();
-	BuildVertexLayout();
+	//BuildGeometryBuffers();
+	//BuildFX();
+	//BuildVertexLayout();
 
 	return true;
 }
@@ -84,7 +81,6 @@ void Game::Render()
 void Game::Update()
 {
 	CalculateFrameStats();
-	Input::Update();
 
 	XMVECTOR pos = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR target = XMVectorZero();
@@ -94,14 +90,11 @@ void Game::Update()
 	XMStoreFloat4x4(&view, V);
 
 	timer.TimeStep();
-
-	EventSystem::ProcessEvents();
 }
 
 void Game::Exit()
 {
 	D3D11Renderer::Shutdown();
-	EventSystem::ShutdownEventSystem();
 
 	ReleaseCOM(boxVB);
 	ReleaseCOM(boxIB);

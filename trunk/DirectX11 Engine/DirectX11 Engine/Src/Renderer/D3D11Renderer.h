@@ -27,5 +27,7 @@ public:
 	static ID3D11RenderTargetView* renderTargetView;
 	static ID3D11Texture2D* depthStencilBuffer;
 	static ID3D11DepthStencilView* depthStencilView;
+
+	static D3D_FEATURE_LEVEL supportedFeatureLevel;
 };
 #endif

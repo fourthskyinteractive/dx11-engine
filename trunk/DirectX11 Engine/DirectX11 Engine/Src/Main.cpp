@@ -19,9 +19,6 @@
 // #include "Renderer\D3D9Renderer.h"
  #include "Game\Game.h"
  #include "Game\Definitions.h"
- #include "Input\Input.h"
-//#include "EventSystem\Event.h"
-// #include "EventSystem\EventSystem.h"
 
 using std::cout;
 using std::ifstream;
@@ -107,10 +104,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 
 			if (ri.header.dwType == RIM_TYPEKEYBOARD)
 			{
-				Input::RawKeyInput(ri.data.keyboard);
+				//Input::RawKeyInput(ri.data.keyboard);
 			}
 			else if (ri.header.dwType == RIM_TYPEMOUSE) 
-				Input::RawMouseInput(ri.data.mouse);		
+				//Input::RawMouseInput(ri.data.mouse);		
 
 			return 0;
 		}
@@ -128,10 +125,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 				windowRect.bottom	-= 10;
 				windowRect.top		+= 10;
 				ClipCursor(&windowRect);
-
-				//Event evt(EVENT_ASSET_RELOAD, 0);
-				//EventSystem::SendEvent(EVENT_ASSET_RELOAD, &evt);
-
 			}
 			else // losing focus
 			{

@@ -69,10 +69,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\EventSystem\EventSystem.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
-    <ClCompile Include="Src\Input\Input.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
@@ -80,12 +78,8 @@
     <ClCompile Include="Src\Utility\Misc\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\EventSystem\Event.h" />
-    <ClInclude Include="Src\EventSystem\EventListener.h" />
-    <ClInclude Include="Src\EventSystem\EventSystem.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
-    <ClInclude Include="Src\Input\Input.h" />
     <ClInclude Include="Src\Renderer\D3D11Renderer.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h" />

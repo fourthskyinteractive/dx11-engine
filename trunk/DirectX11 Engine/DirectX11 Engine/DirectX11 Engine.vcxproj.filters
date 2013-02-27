@@ -16,9 +16,6 @@
     <Filter Include="Misc">
       <UniqueIdentifier>{48bb0ee7-7d5c-4755-b8c7-b1adf7208e7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Misc\Input">
-      <UniqueIdentifier>{5d07ccaf-84d3-45f3-a058-d21d449a90ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Misc\Timer">
       <UniqueIdentifier>{be030de2-0d26-482c-85a1-18583647f6b6}</UniqueIdentifier>
     </Filter>
@@ -28,9 +25,6 @@
     <Filter Include="Renderer">
       <UniqueIdentifier>{3d153a05-6c55-426c-a624-41e09ed9300c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Event System">
-      <UniqueIdentifier>{d8a46462-af59-4f2c-8817-3984838db398}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Misc\Math Helpers">
       <UniqueIdentifier>{d1abbac3-7552-4b97-b7d1-2312b30ef64d}</UniqueIdentifier>
     </Filter>
@@ -39,9 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\EventSystem\EventSystem.cpp">
-      <Filter>Event System</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -50,9 +41,6 @@
     </ClCompile>
     <ClCompile Include="Src\Game\Game.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Input\Input.cpp">
-      <Filter>Misc\Input</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utility\Misc\DebugOutput.cpp">
       <Filter>Misc\Debug Output</Filter>
@@ -68,23 +56,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\EventSystem\Event.h">
-      <Filter>Event System</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\EventSystem\EventListener.h">
-      <Filter>Event System</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\EventSystem\EventSystem.h">
-      <Filter>Event System</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Game\Definitions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\Game.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Input\Input.h">
-      <Filter>Misc\Input</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h">
       <Filter>Misc\Debug Output</Filter>

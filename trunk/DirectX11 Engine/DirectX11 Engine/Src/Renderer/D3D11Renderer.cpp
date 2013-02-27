@@ -12,6 +12,8 @@ ID3D11RenderTargetView* D3D11Renderer::renderTargetView = NULL;
 ID3D11Texture2D*		D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView* D3D11Renderer::depthStencilView = NULL;
 
+D3D_FEATURE_LEVEL		D3D11Renderer::supportedFeatureLevel;
+
 bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _horizontalRes, int _verticalRes, bool _msaa)
 {
 	hwnd = _hwnd;
@@ -21,17 +23,26 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	D3D_FEATURE_LEVEL featureLevel;
+	D3D_FEATURE_LEVEL featureLevels[6] = 
+	{
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1,
+		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_2,
+		D3D_FEATURE_LEVEL_9_1
+	};
 
 	HRESULT hr = D3D11CreateDevice(
-		0,								//default adaptor
+		NULL,							//default adaptor
 		D3D_DRIVER_TYPE_HARDWARE,		//D3D_DRIVER_TYPE_HARDWARE if computer supports directX11
-		0,								//no software device
+		NULL,							//no software device
 		createDeviceFlags,				
-		0, 0,							//default feature level array
+		featureLevels,								//default feature level array
+		6,							
 		D3D11_SDK_VERSION,
 		&d3dDevice, 
-		&featureLevel, 
+		&supportedFeatureLevel, 
 		&d3dImmediateContext);
 
 	if(FAILED(hr))
@@ -39,7 +50,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		MessageBox(0, "D3D11CreateDevice Failed.", 0, 0);
 		return false;
 	}
-	if(featureLevel != D3D_FEATURE_LEVEL_11_0)
+
+	if(supportedFeatureLevel != D3D_FEATURE_LEVEL_11_0)
 	{
 		MessageBox(0, "Direct3D Feature Level 11 unsupported.", 0, 0);
 		return false;
@@ -93,7 +105,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	if(hr == DXGI_ERROR_INVALID_CALL)
 	{
-		int poop = 0;
+		MessageBox(0, "Direct3D Feature Level 11 unsupported.", 0, 0);
+		return false;
 	}
 	
 	ReleaseCOM(dxgiDevice);
@@ -146,8 +159,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 20.0f;
 	vp.TopLeftY = 20.0f;
-	vp.Width = (float)_horizontalRes / 10.0f;
-	vp.Height = (float)_verticalRes / 10.0f;
+	vp.Width = (float)_horizontalRes;
+	vp.Height = (float)_verticalRes;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 
