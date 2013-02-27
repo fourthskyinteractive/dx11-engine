@@ -17,7 +17,8 @@ public:
 	XMFLOAT3 GetPosition() const;
 
 	void SetPosition(float _x, float _y, float _z);
-	void SetPosition(const XMFLOAT3& v);
+	void SetPosition(const XMFLOAT3& _v);
+	void SetPosition(const XMVECTOR& _v);
 
 	//Get the camera basic vectors
 	XMVECTOR GetRightXM() const;
@@ -31,7 +32,7 @@ public:
 	float GetNearZ() const;
 	float GetFarZ() const;
 	float GetAspect() const;
-	float GetFovY() const;
+	float GetFovY() const;	
 	float GetFovX() const;
 
 	//Get the near and far plane dimensions inview space coordinates
@@ -57,9 +58,9 @@ public:
 	void Walk(float _d);
 
 	//Rotate the camera an _angle
-	void Pitch(float _angle);
-	void Yaw(float _angle);
-	void Roll(float _angle);
+	void Pitch(float _angleDegrees);
+	void Yaw(float _angleDegrees);
+	void Roll(float _angleDegrees);
 
 	//After modifying the camera position/orientation, call
 	//UpdateViewMatrix() to rebuild the view matrix once per frame
@@ -82,7 +83,7 @@ private:
 	float farWindowHeight;
 
 	//View/Projection Matrices
-	XMMATRIX view;
-	XMMATRIX projection;
+	XMFLOAT4X4 view;
+	XMFLOAT4X4 projection;
 };
 #endif
