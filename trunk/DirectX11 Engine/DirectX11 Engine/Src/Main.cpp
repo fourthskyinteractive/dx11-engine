@@ -44,7 +44,7 @@ float gameGamma = 0;
 int brightness = 0;
 
 LPCSTR applicationName = "Engine";
-HINSTANCE hinstance;
+HINSTANCE hInstance;
 HWND hwnd;
 
 
@@ -163,8 +163,8 @@ void InitializeApplication()
 {
 	srand((unsigned int)time(0));
 	//Load from .ini all configuration data
-	int baseScreenWidth = 1024;
-	int baseScreenHeight = 768;
+	int baseScreenWidth = 800;
+	int baseScreenHeight = 600;
 
 	char line[256];
 
@@ -191,13 +191,13 @@ void InitializeApplication()
 		//Resolution - Width
 		videoSettings = 0;
 		file >> videoSettings;
-		videoSettings = 1024;
+		videoSettings = 800;
 		file.ignore(INT_MAX, '\t');
 
 		//Resolution - Height
 		videoSettings = 0;
 		file >> videoSettings;
-		videoSettings = 768;
+		videoSettings = 600;
 		file.ignore(INT_MAX, '\t');
 
 		//Fov
@@ -337,14 +337,14 @@ void InitializeWindow()
 
 	dwWindowStyleFlags |= WS_CAPTION | WS_SYSMENU;
 
-	hinstance = GetModuleHandle(NULL);
+	hInstance = GetModuleHandle(NULL);
 
-	wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wc.style         = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc   = WndProc;
 	wc.cbClsExtra    = 0;
 	wc.cbWndExtra    = 0;
-	wc.hInstance     = hinstance;
-	wc.hIcon		 = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hInstance     = hInstance;
+	wc.hIcon		 = LoadIcon(hInstance, IDI_WINLOGO);
 	wc.hIconSm       = wc.hIcon;
 	wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -354,12 +354,12 @@ void InitializeWindow()
 
 	RegisterClassEx(&wc);
 
-	screenHeight = 600;
 	screenWidth = 800;
+	screenHeight = 600;
 
 	if(fullscreen)
 	{
-		dwWindowStyleFlags |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;// | WS_POPUP;
+		dwWindowStyleFlags |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize       = sizeof(dmScreenSettings);
@@ -377,7 +377,7 @@ void InitializeWindow()
 	}
 	else
 	{
-		dwWindowStyleFlags |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;// | WS_POPUP;
+		dwWindowStyleFlags |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth)  / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
@@ -395,7 +395,7 @@ void InitializeWindow()
 	}
 
 	hwnd = CreateWindowEx(WS_EX_APPWINDOW, applicationName, applicationName, dwWindowStyleFlags,
-		posX, posY, windowWidth, windowHeight, NULL, NULL, hinstance, NULL);
+		posX, posY, windowWidth, windowHeight, NULL, NULL, hInstance, NULL);
 
 	ShowWindow(hwnd, SW_SHOW);
 	SetForegroundWindow(hwnd);

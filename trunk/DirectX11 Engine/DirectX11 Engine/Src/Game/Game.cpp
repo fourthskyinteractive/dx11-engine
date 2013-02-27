@@ -4,7 +4,7 @@
 #include "../Renderer/D3D11Renderer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
 
-#include <D3DX11async.h>
+//#include <D3DX11async.h>
 #include <fstream>
 using std::ifstream;
 using std::ios_base;
@@ -36,13 +36,14 @@ XMFLOAT4X4						Game::proj;
 bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenWidth, int _nScreenHeight)
 {
 	XMMATRIX I = XMMatrixIdentity();
+
 	XMStoreFloat4x4(&world, I);
 	XMStoreFloat4x4(&view, I);
 	XMStoreFloat4x4(&proj, I);
 
 	timer.Init();
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1680, 1050, true); 
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
 
 	if(bResult)
 	{
@@ -68,14 +69,9 @@ void Game::Run()
 
 void Game::Render()
 {
-	static bool once = true;
-	if(once)
-	{
-		D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f)));
+	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f)));
 		
-		D3D11Renderer::Present(0, 0);
-		once = false;
-	}
+	D3D11Renderer::Present(0, 0);
 }
 
 void Game::Update()

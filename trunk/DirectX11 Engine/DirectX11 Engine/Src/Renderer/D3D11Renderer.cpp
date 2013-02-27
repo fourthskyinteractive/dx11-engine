@@ -38,7 +38,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		D3D_DRIVER_TYPE_HARDWARE,		//D3D_DRIVER_TYPE_HARDWARE if computer supports directX11
 		NULL,							//no software device
 		createDeviceFlags,				
-		featureLevels,								//default feature level array
+		featureLevels,					//default feature level array
 		6,							
 		D3D11_SDK_VERSION,
 		&d3dDevice, 
@@ -140,6 +140,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	depthStencilDesc.BindFlags		= D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags		= 0;
+
 
 	d3dDevice->CreateTexture2D(
 		&depthStencilDesc,			//Description of texture to create
