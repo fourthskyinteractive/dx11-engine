@@ -88,6 +88,7 @@
     <ClInclude Include="Src\Utility\Misc\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Src\FX\BasicShader.hlsl" />
     <FxCompile Include="Src\FX\color.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

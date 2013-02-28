@@ -58,58 +58,58 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	{
 	case WM_CREATE: 
 		{
-			RAWINPUTDEVICE Rid[2];
-			Rid[0].usUsagePage = 0x01; 
-			Rid[0].usUsage = 0x02; 
-			Rid[0].dwFlags = RIDEV_NOLEGACY;
-			Rid[0].hwndTarget = 0;
-			Rid[1].usUsagePage = 0x01; 
-			Rid[1].usUsage = 0x06; 
-			Rid[1].dwFlags = RIDEV_NOLEGACY;
-			Rid[1].hwndTarget = 0;
-
-			if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE)
-			{
-				LPTSTR errorText = NULL;
-				DWORD errorCode = GetLastError();
-				FormatMessage(
-					FORMAT_MESSAGE_FROM_SYSTEM
-					|FORMAT_MESSAGE_ALLOCATE_BUFFER
-					|FORMAT_MESSAGE_IGNORE_INSERTS,  
-					NULL,
-					errorCode,
-					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-					(LPTSTR)&errorText, 
-					0,
-					NULL);
-
-				MessageBox(HWND_DESKTOP, errorText,
-					"Raw Input Error", MB_OK | MB_ICONERROR);
-
-				return -1;
-			}
-
-			SetCursor( hCursor );
-
-			return(0);
+// 			RAWINPUTDEVICE Rid[2];
+// 			Rid[0].usUsagePage = 0x01; 
+// 			Rid[0].usUsage = 0x02; 
+// 			Rid[0].dwFlags = RIDEV_NOLEGACY;
+// 			Rid[0].hwndTarget = 0;
+// 			Rid[1].usUsagePage = 0x01; 
+// 			Rid[1].usUsage = 0x06; 
+// 			Rid[1].dwFlags = RIDEV_NOLEGACY;
+// 			Rid[1].hwndTarget = 0;
+// 
+// 			if (RegisterRawInputDevices(Rid, 2, sizeof(Rid[0])) == FALSE)
+// 			{
+// 				LPTSTR errorText = NULL;
+// 				DWORD errorCode = GetLastError();
+// 				FormatMessage(
+// 					FORMAT_MESSAGE_FROM_SYSTEM
+// 					|FORMAT_MESSAGE_ALLOCATE_BUFFER
+// 					|FORMAT_MESSAGE_IGNORE_INSERTS,  
+// 					NULL,
+// 					errorCode,
+// 					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+// 					(LPTSTR)&errorText, 
+// 					0,
+// 					NULL);
+// 
+// 				MessageBox(HWND_DESKTOP, errorText,
+// 					"Raw Input Error", MB_OK | MB_ICONERROR);
+// 
+// 				return -1;
+// 			}
+// 
+// 			SetCursor( hCursor );
+// 
+// 			return(0);
 		}
 		break;
 
 	case WM_INPUT:
 		{
-			RAWINPUT ri;
-			UINT dwSize = sizeof(RAWINPUT);
-
-			GetRawInputData((HRAWINPUT)lparam, RID_INPUT, &ri, &dwSize, sizeof(RAWINPUTHEADER));
-
-			if (ri.header.dwType == RIM_TYPEKEYBOARD)
-			{
-				//Input::RawKeyInput(ri.data.keyboard);
-			}
-			else if (ri.header.dwType == RIM_TYPEMOUSE) 
-				//Input::RawMouseInput(ri.data.mouse);		
-
-			return 0;
+// 			RAWINPUT ri;
+// 			UINT dwSize = sizeof(RAWINPUT);
+// 
+// 			GetRawInputData((HRAWINPUT)lparam, RID_INPUT, &ri, &dwSize, sizeof(RAWINPUTHEADER));
+// 
+// 			if (ri.header.dwType == RIM_TYPEKEYBOARD)
+// 			{
+// 				//Input::RawKeyInput(ri.data.keyboard);
+// 			}
+// 			else if (ri.header.dwType == RIM_TYPEMOUSE) 
+// 				//Input::RawMouseInput(ri.data.mouse);		
+// 
+// 			return 0;
 		}
 		break;
 
@@ -118,13 +118,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			//	gaining focus
 			if (LOWORD(wparam) != WA_INACTIVE)
 			{
-				RECT windowRect;
-				GetWindowRect(hwnd,&windowRect);
-				windowRect.left		+= 10;
-				windowRect.right	-= 10;
-				windowRect.bottom	-= 10;
-				windowRect.top		+= 10;
-				ClipCursor(&windowRect);
+// 				RECT windowRect;
+// 				GetWindowRect(hwnd,&windowRect);
+// 				windowRect.left		+= 10;
+// 				windowRect.right	-= 10;
+// 				windowRect.bottom	-= 10;
+// 				windowRect.top		+= 10;
+// 				ClipCursor(&windowRect);
 			}
 			else // losing focus
 			{
@@ -313,18 +313,18 @@ void InitializeApplication()
 	ScreenInformation::verticalRatio = ScreenInformation::verticalDifference/2;
 	ScreenInformation::aspectRatio = ((float)screenWidth) / ((float)screenHeight);
 
-	//Get rid of sticky keys
-	STICKYKEYS StartupStickyKeys = {sizeof(STICKYKEYS), 0};
-	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &StartupStickyKeys, 0);
-
-	STICKYKEYS skOff = StartupStickyKeys;
-	if( (skOff.dwFlags & SKF_STICKYKEYSON) == 0 )
-	{
-		skOff.dwFlags &= ~SKF_HOTKEYACTIVE;
-		skOff.dwFlags &= ~SKF_CONFIRMHOTKEY;
-
-		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &skOff, 0);
-	}
+// 	//Get rid of sticky keys
+// 	STICKYKEYS StartupStickyKeys = {sizeof(STICKYKEYS), 0};
+// 	SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(STICKYKEYS), &StartupStickyKeys, 0);
+// 
+// 	STICKYKEYS skOff = StartupStickyKeys;
+// 	if( (skOff.dwFlags & SKF_STICKYKEYSON) == 0 )
+// 	{
+// 		skOff.dwFlags &= ~SKF_HOTKEYACTIVE;
+// 		skOff.dwFlags &= ~SKF_CONFIRMHOTKEY;
+// 
+// 		SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(STICKYKEYS), &skOff, 0);
+// 	}
 }
 
 void InitializeWindow()
@@ -439,13 +439,16 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			{
 				Game::isRunning = false;
 			}
+			if(msg.message == WM_SIZE)
+			{
+				int width = (msg.lParam & 255);
+				int height = (msg.lParam & 65280);
+			}
 		}
 		else
 		{
 			Game::Run();
-		}
-
-		
+		}		
 	}
 
 	Game::Exit();

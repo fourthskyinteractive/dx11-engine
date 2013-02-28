@@ -34,6 +34,9 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{263403a2-04f2-4699-b07e-6037fab363db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{e329d539-d4a7-4b25-87ee-6b8c8721d032}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -87,6 +90,9 @@
   <ItemGroup>
     <FxCompile Include="Src\FX\color.fx">
       <Filter>Renderer\FX</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\BasicShader.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
