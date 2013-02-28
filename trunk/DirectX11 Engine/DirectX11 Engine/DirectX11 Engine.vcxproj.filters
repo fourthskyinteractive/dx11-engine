@@ -63,6 +63,9 @@
     <ClCompile Include="Src\Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\ShaderManager.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Src\Camera\Camera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\ShaderManager.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

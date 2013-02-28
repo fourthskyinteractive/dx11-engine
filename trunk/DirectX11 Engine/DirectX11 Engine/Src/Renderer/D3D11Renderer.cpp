@@ -1,4 +1,5 @@
 #include "D3D11Renderer.h"
+#include "ShaderManager.h"
 #include <windows.h>
 #include <d3d11.h>
 
