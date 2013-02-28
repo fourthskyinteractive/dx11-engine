@@ -91,7 +91,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\FX\BasicShader.hlsl">
+    <FxCompile Include="Src\FX\VertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

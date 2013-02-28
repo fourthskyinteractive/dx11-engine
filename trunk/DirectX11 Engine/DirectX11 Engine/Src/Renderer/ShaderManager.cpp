@@ -1,5 +1,6 @@
 #include "ShaderManager.h"
 #include "D3D11Renderer.h"
+#include <fstream>
 #include <windows.h>
 #include <d3d11.h>
 
@@ -18,7 +19,10 @@ void ShaderManager::AddEffect(char* _filePath)
 	ID3D11VertexShader* VS;
 	ID3DBlob* VSBuffer;
 
-	D3DReadFileToBlob(wcString, &VSBuffer);
-	D3D11Renderer::d3dDevice->CreateVertexShader(VSBuffer->GetBufferPointer(), VSBuffer->GetBufferSize(), NULL, &VS);
+	D3DReadFileToBlob(L"Res/Compiled Shaders/VertexShader.cso", &VSBuffer);
+
+	int siz = VSBuffer->GetBufferSize();
+	HRESULT hr = D3D11Renderer::d3dDevice->CreateVertexShader(VSBuffer->GetBufferPointer(), VSBuffer->GetBufferSize(), NULL, &VS);
+
 	D3D11Renderer::d3dImmediateContext->VSSetShader(VS, NULL, NULL);
 }

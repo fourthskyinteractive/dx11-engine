@@ -167,6 +167,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	vp.MaxDepth = 1.0f;
 
 	d3dImmediateContext->RSSetViewports(1, &vp);
+
+	ShaderManager::AddEffect("Res/Compiled Shaders/BasicShader.cso");
 	return true;
 }
 
