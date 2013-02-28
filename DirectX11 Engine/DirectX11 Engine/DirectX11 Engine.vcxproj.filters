@@ -28,9 +28,6 @@
     <Filter Include="Misc\Math Helpers">
       <UniqueIdentifier>{d1abbac3-7552-4b97-b7d1-2312b30ef64d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer\FX">
-      <UniqueIdentifier>{1d169b90-1ff3-4ebd-82a8-fe8352b3be2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{263403a2-04f2-4699-b07e-6037fab363db}</UniqueIdentifier>
     </Filter>
@@ -94,9 +91,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\FX\color.fx">
-      <Filter>Renderer\FX</Filter>
-    </FxCompile>
     <FxCompile Include="Src\FX\BasicShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
