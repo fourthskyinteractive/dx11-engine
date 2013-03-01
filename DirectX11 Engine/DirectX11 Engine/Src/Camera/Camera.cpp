@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 
-Camera::Camera()
+Camera::Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right)
 {
 
 }

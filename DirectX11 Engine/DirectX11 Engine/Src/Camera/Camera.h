@@ -10,7 +10,7 @@ using namespace DirectX;
 class Camera
 {
 public:
-	Camera();
+	Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right);
 	~Camera();
 
 	XMVECTOR GetPositionXM() const;

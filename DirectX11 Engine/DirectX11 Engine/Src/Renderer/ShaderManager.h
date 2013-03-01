@@ -13,6 +13,8 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
+enum VERTEX_SHADERS{BASIC_SHADER = 0};
+
 class ShaderManager
 {
 public:
@@ -21,7 +23,7 @@ public:
 	~ShaderManager();
 
 	static void Initialize();
-	static void AddEffect(char* _filePath);
+	static int AddShader(char* _filePath);
 	
 	static vector<ID3D11VertexShader*> vertexShaders;
 };
