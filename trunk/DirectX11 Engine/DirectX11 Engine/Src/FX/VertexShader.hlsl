@@ -1,4 +1,4 @@
-cbuffer cbPerObject
+cbuffer cbPerObject : register( b0 )
 {
 	matrix model;
 	matrix view;
@@ -8,7 +8,7 @@ cbuffer cbPerObject
 struct VertexIn
 {
 	float3 pos		: POSITION;
-	float4 color	: COLOR;
+	float3 color	: COLOR;
 };
 
 struct VertexOut
@@ -27,6 +27,6 @@ VertexOut VS( VertexIn vIn)
 	pos = mul(pos, projection);
 	vOut.pos = pos;
 
-	vOut.color = vIn.color;
+	vOut.color = float4(vIn.color, 1.0f);
 	return vOut;
 }

@@ -15,7 +15,7 @@
 struct SimpleCubeVertex
 {
     XMFLOAT3 pos;   // position
-    XMFLOAT4 color; // color
+    XMFLOAT3 color; // color
 };
 
 struct ConstantBuffer
@@ -57,10 +57,6 @@ private:
 	static ID3D11InputLayout* inputLayout;
 	
 	static ID3DX11EffectMatrixVariable* worldViewProj;
-
-	static XMFLOAT4X4 world;
-	static XMFLOAT4X4 view;
-	static XMFLOAT4X4 proj;	
 };
 
 

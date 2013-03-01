@@ -31,23 +31,15 @@ ID3DX11EffectMatrixVariable*	Game:: worldViewProj;
 
 ID3D11InputLayout*				Game::inputLayout;
 
-XMFLOAT4X4						Game::world;
-XMFLOAT4X4						Game::view;
-XMFLOAT4X4						Game::proj;
-
 Camera*							Game::camera;
 
 bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenWidth, int _nScreenHeight)
 {
 	degrees = 0.0f;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-
-	XMMATRIX I = XMMatrixIdentity();
-
-	XMStoreFloat4x4(&world, I);
-	XMStoreFloat4x4(&view, I);
-	XMStoreFloat4x4(&proj, I);
+	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera->SetLens(.78f, (800.0f / 600.0f), .01f, 100.0f);
+	camera->UpdateViewMatrix();
 
 	timer.Init();
 	
@@ -75,9 +67,18 @@ void Game::Run()
 
 void Game::Render()
 {
-	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f)));
+	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)));
 	
-	D3D11Renderer::d3dImmediateContext->IASetInputLayout(Game::inputLayout);
+	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
+		constantBuffer,
+		0,
+		nullptr,
+		&constantBufferData,
+		0,
+		0
+		);
+
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
 	UINT stride = sizeof(SimpleCubeVertex);
 	UINT offset = 0;
@@ -108,25 +109,19 @@ void Game::Render()
 		nullptr,
 		0);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(
-		38,
+		36,
 		0,
 		0);
 
-	D3D11Renderer::Present(0, 0);
+	D3D11Renderer::Present(1, 0);
 }
 
 void Game::Update()
 {
 	CalculateFrameStats();
+	camera->UpdateViewMatrix();
 
-	XMVECTOR pos = XMVectorSet(10.0f, 0.0f, 0.0f, 1.0f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&view, V);
-
-	degrees += (90.0f * timer.GetDeltaTimeFloat());
+	//degrees += (90.0f * timer.GetDeltaTimeFloat());
 	XMStoreFloat4x4(&constantBufferData.model, 
 		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
@@ -175,13 +170,15 @@ void Game::LoadCompiledShaders()
 
 void Game::MakeIndexAndVertexBuffers()
 {
+	HRESULT hr;
+
 	const D3D11_INPUT_ELEMENT_DESC basicVertexLayoutDesc[] = 
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	D3D11Renderer::d3dDevice->CreateInputLayout(
+	hr = D3D11Renderer::d3dDevice->CreateInputLayout(
 		basicVertexLayoutDesc,
 		ARRAYSIZE(basicVertexLayoutDesc),
 		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].buffer->GetBufferPointer(),
@@ -189,17 +186,17 @@ void Game::MakeIndexAndVertexBuffers()
 		&inputLayout);
 
 	SimpleCubeVertex cubeVertices[] =
-        {
-            { XMFLOAT3(-0.5f, 0.5f, -1.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) }, // +Y (top face)
-            { XMFLOAT3( 0.5f, 0.5f, -1.5f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
-            { XMFLOAT3( 0.5f, 0.5f,  -.5f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
-            { XMFLOAT3(-0.5f, 0.5f,  -.5f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+	{
+		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // +Y (top face)
+		{ XMFLOAT3( 0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3( 0.5f, 0.5f,  0.5f), XMFLOAT3(.50f, 1.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f, 0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
 
-            { XMFLOAT3(-0.5f, -0.5f,  -0.5f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) }, // -Y (bottom face)
-            { XMFLOAT3( 0.5f, -0.5f,  -0.5f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-            { XMFLOAT3( 0.5f, -0.5f, -1.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-            { XMFLOAT3(-0.5f, -0.5f, -1.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
-        };
+		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) }, // -Y (bottom face)
+		{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+	};
 
         unsigned short cubeIndices[] =
         {
@@ -235,7 +232,7 @@ void Game::MakeIndexAndVertexBuffers()
 		vertexBufferData.SysMemPitch = 0;
 		vertexBufferData.SysMemSlicePitch = 0;
 
-		D3D11Renderer::d3dDevice->CreateBuffer(
+		hr = D3D11Renderer::d3dDevice->CreateBuffer(
 			&vertexBufferDesc,
 			&vertexBufferData,
 			&boxVB);
@@ -253,7 +250,7 @@ void Game::MakeIndexAndVertexBuffers()
         indexBufferData.SysMemPitch = 0;
         indexBufferData.SysMemSlicePitch = 0;
 
-		D3D11Renderer::d3dDevice->CreateBuffer(
+		hr = D3D11Renderer::d3dDevice->CreateBuffer(
 			&indexBufferDesc,
 			&indexBufferData,
 			&boxIB);
@@ -266,11 +263,35 @@ void Game::MakeIndexAndVertexBuffers()
         constantBufferDesc.MiscFlags = 0;
         constantBufferDesc.StructureByteStride = 0;
 
-		D3D11Renderer::d3dDevice->CreateBuffer(
+		hr = D3D11Renderer::d3dDevice->CreateBuffer(
 			&constantBufferDesc,
 			nullptr,
 			&constantBuffer);
 
-		XMStoreFloat4x4(&constantBufferData.view, camera->GetViewMatrix());
-		XMStoreFloat4x4(&constantBufferData.projection, camera->GetProjectionMatrix());
+		constantBufferData.view = XMFLOAT4X4(
+			-1.00000000f, 0.00000000f,  0.00000000f,  0.00000000f,
+			0.00000000f, 0.89442718f,  0.44721359f,  0.00000000f,
+			0.00000000f, 0.44721359f, -0.89442718f, -2.23606800f,
+			0.00000000f, 0.00000000f,  0.00000000f,  1.00000000f
+			);
+
+		float xScale = 1.4281481f;
+		float yScale = 1.4281481f;
+
+		if(800 > 600)
+		{
+			xScale = yScale *
+				static_cast<float>(600) /
+				static_cast<float>(800);
+		}
+
+		constantBufferData.projection = XMFLOAT4X4(
+			xScale, 0.0f,    0.0f,  0.0f,
+			0.0f,   yScale,  0.0f,  0.0f,
+			0.0f,   0.0f,   -1.0f, -0.01f,
+			0.0f,   0.0f,   -1.0f,  0.0f
+			);
+
+		//XMStoreFloat4x4(&constantBufferData.view, camera->GetViewMatrix());
+		//XMStoreFloat4x4(&constantBufferData.projection, camera->GetProjectionMatrix());
 }

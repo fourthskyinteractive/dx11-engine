@@ -4,8 +4,8 @@
 #include <windows.h>
 #include <d3d11.h>
 
-vector<VertexShader> ShaderManager::vertexShaders;
-vector<PixelShader>	ShaderManager::pixelShaders;
+vector<VertexShader>	ShaderManager::vertexShaders;
+vector<PixelShader>		ShaderManager::pixelShaders;
 
 int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 {
