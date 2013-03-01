@@ -4,9 +4,10 @@
 #include <windows.h>
 #include <d3d11.h>
 
-vector<ID3D11VertexShader*> ShaderManager::vertexShaders;
+vector<VertexShader> ShaderManager::vertexShaders;
+vector<PixelShader>	ShaderManager::pixelShaders;
 
-int ShaderManager::AddShader(char* _filePath)
+int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 {
 	////CONVERTING THE char* to a wchar*
 	size_t origsize = strlen(_filePath) + 1;
@@ -16,15 +17,55 @@ int ShaderManager::AddShader(char* _filePath)
 	mbstowcs_s(&convertedChars, wcString, origsize, _filePath, _TRUNCATE);
 	wcscat_s(wcString, L"");
 
-	ID3D11VertexShader* VS;
-	ID3DBlob* VSBuffer;
+	ID3DBlob* shaderBuffer;
 
-	D3DReadFileToBlob(wcString, &VSBuffer);
+	D3DReadFileToBlob(wcString, &shaderBuffer);
+	HRESULT hr;
 
-	int siz = VSBuffer->GetBufferSize();
-	HRESULT hr = D3D11Renderer::d3dDevice->CreateVertexShader(VSBuffer->GetBufferPointer(), VSBuffer->GetBufferSize(), NULL, &VS);
+	if(_shaderType == VERTEX_SHADER)
+	{
+		ID3D11VertexShader* VS;
+		hr = D3D11Renderer::d3dDevice->CreateVertexShader(shaderBuffer->GetBufferPointer(), shaderBuffer->GetBufferSize(), NULL, &VS);
 
-	vertexShaders.push_back(VS);
+		if(hr != S_OK)
+		{
+			string errorStr = "Failed to load Compiled Shader ";
+			errorStr += _filePath;
 
-	return vertexShaders.size() - 1;
+			MessageBox(0, errorStr.c_str(), 0, 0);
+			return -1;
+		}
+
+		VertexShader vertexShader;
+		vertexShader.buffer = shaderBuffer;
+		vertexShader.shader = VS;
+
+		vertexShaders.push_back(vertexShader);
+
+		return vertexShaders.size() - 1;
+	}
+
+	else if(_shaderType == PIXEL_SHADER)
+	{
+		ID3D11PixelShader* PS;
+		hr = D3D11Renderer::d3dDevice->CreatePixelShader(shaderBuffer->GetBufferPointer(), shaderBuffer->GetBufferSize(), NULL, &PS);
+
+		if(hr != S_OK)
+		{
+			string errorStr = "Failed to load Compiled Shader ";
+			errorStr += _filePath;
+
+			MessageBox(0, errorStr.c_str(), 0, 0);
+			return -1;
+		}
+		PixelShader pixelShader;
+		pixelShader.buffer = shaderBuffer;
+		pixelShader.shader = PS;
+
+		pixelShaders.push_back(pixelShader);
+
+		return pixelShaders.size() - 1;
+	}
+
+	return -1;
 }

@@ -13,7 +13,21 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
-enum VERTEX_SHADERS{BASIC_SHADER = 0};
+enum SHADER_TYPE{VERTEX_SHADER, PIXEL_SHADER};
+enum VERTEX_SHADERS{BASIC_VERTEX_SHADER = 0};
+enum PIXEL_SHADERS{BASIC_PIXEL_SHADER = 0};
+
+struct VertexShader
+{
+	ID3DBlob* buffer;
+	ID3D11VertexShader* shader;
+};
+
+struct PixelShader
+{
+	ID3DBlob* buffer;
+	ID3D11PixelShader* shader;
+};
 
 class ShaderManager
 {
@@ -23,9 +37,10 @@ public:
 	~ShaderManager();
 
 	static void Initialize();
-	static int AddShader(char* _filePath);
+	static int AddShader(char* _filePath, SHADER_TYPE _shaderType);
 	
-	static vector<ID3D11VertexShader*> vertexShaders;
+	static vector<VertexShader> vertexShaders;
+	static vector<PixelShader> pixelShaders;
 };
 
 #endif
