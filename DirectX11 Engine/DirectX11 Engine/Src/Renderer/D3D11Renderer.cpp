@@ -2,6 +2,7 @@
 #include "ShaderManager.h"
 #include <windows.h>
 #include <d3d11.h>
+#include "../Game/Game.h"
 
 #include <assert.h>
 
@@ -184,7 +185,7 @@ void D3D11Renderer::Present(int _vBlankWait, int _presentationFlags)
 {
 	assert(d3dImmediateContext);
 	assert(swapChain);
-	
+
 	swapChain->Present(_vBlankWait, _presentationFlags);
 }
 
