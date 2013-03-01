@@ -3,7 +3,10 @@
 
 Camera::Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right)
 {
-
+	position = _position;
+	look = _look;
+	up = _up;
+	right = _right;
 }
 
 Camera::~Camera()

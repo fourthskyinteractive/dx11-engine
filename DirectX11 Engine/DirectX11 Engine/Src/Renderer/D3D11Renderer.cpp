@@ -160,12 +160,12 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		depthStencilView);
 
 	D3D11_VIEWPORT vp;
-	vp.TopLeftX = 20.0f;
-	vp.TopLeftY = 20.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
 	vp.Width = (float)_horizontalRes;
 	vp.Height = (float)_verticalRes;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
+	vp.MinDepth = D3D11_MIN_DEPTH;
+	vp.MaxDepth = D3D11_MAX_DEPTH;
 
 	d3dImmediateContext->RSSetViewports(1, &vp);
 
@@ -186,7 +186,7 @@ void D3D11Renderer::Present(int _vBlankWait, int _presentationFlags)
 	assert(d3dImmediateContext);
 	assert(swapChain);
 
-	swapChain->Present(_vBlankWait, _presentationFlags);
+	HRESULT hr = swapChain->Present(_vBlankWait, _presentationFlags);
 }
 
 void D3D11Renderer::ResetDevice()
