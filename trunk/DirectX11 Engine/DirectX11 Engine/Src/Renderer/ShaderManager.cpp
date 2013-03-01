@@ -6,7 +6,7 @@
 
 vector<ID3D11VertexShader*> ShaderManager::vertexShaders;
 
-void ShaderManager::AddEffect(char* _filePath)
+int ShaderManager::AddShader(char* _filePath)
 {
 	////CONVERTING THE char* to a wchar*
 	size_t origsize = strlen(_filePath) + 1;
@@ -19,10 +19,12 @@ void ShaderManager::AddEffect(char* _filePath)
 	ID3D11VertexShader* VS;
 	ID3DBlob* VSBuffer;
 
-	D3DReadFileToBlob(L"Res/Compiled Shaders/VertexShader.cso", &VSBuffer);
+	D3DReadFileToBlob(wcString, &VSBuffer);
 
 	int siz = VSBuffer->GetBufferSize();
 	HRESULT hr = D3D11Renderer::d3dDevice->CreateVertexShader(VSBuffer->GetBufferPointer(), VSBuffer->GetBufferSize(), NULL, &VS);
 
-	D3D11Renderer::d3dImmediateContext->VSSetShader(VS, NULL, NULL);
+	vertexShaders.push_back(VS);
+
+	return vertexShaders.size() - 1;
 }

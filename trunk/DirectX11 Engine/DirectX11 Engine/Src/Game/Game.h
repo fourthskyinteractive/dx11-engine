@@ -10,6 +10,7 @@
 #include "../EventSystem/Event.h"
 #include "../Utility/Misc/Timer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
+#include "../Camera/Camera.h"
 
 class Game
 {
@@ -26,13 +27,12 @@ public:
 	static void Exit();
 	static void CalculateFrameStats();
 	static Timer& GetTimer(){return timer;}
-	static void BuildGeometryBuffers();
-	static void BuildFX();
-	static void BuildVertexLayout();
+	static void LoadCompiledShaders();
 
 
 private:
 	static Timer timer;
+	static Camera* camera;
 
 	static ID3D11Buffer* boxVB;
 	static ID3D11Buffer* boxIB;
