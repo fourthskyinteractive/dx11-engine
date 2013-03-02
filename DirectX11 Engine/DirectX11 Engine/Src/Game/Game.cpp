@@ -121,7 +121,7 @@ void Game::Update()
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
 
-	//degrees += (90.0f * timer.GetDeltaTimeFloat());
+	degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
 	XMStoreFloat4x4(&constantBufferData.model, 
 		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
