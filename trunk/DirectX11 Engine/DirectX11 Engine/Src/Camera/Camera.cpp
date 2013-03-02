@@ -221,8 +221,8 @@ void Camera::UpdateViewMatrix()
 
 	//Fill in the view matrix entries
 	float x = -XMVectorGetX(XMVector3Dot(P, R));
-	float y = -XMVectorGetX(XMVector3Dot(P, U));
-	float z = -XMVectorGetX(XMVector3Dot(P, L));
+	float y = -XMVectorGetY(XMVector3Dot(P, U));
+	float z = -XMVectorGetZ(XMVector3Dot(P, L));
 
 	XMStoreFloat3(&right, R);
 	XMStoreFloat3(&up, U);
