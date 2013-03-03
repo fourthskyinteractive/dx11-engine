@@ -38,7 +38,7 @@ bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenW
 	degrees = 0.0f;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(.78f, (800.0f / 600.0f), .01f, 100.0f);
+	camera->SetLens(90.0f/180.0f*3.14159, (800.0f / 600.0f), 1.0f, 1000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
@@ -122,6 +122,7 @@ void Game::Update()
 	camera->UpdateViewMatrix();
 
 	degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
+
 	XMStoreFloat4x4(&constantBufferData.model, 
 		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
@@ -269,10 +270,10 @@ void Game::MakeIndexAndVertexBuffers()
 			&constantBuffer);
 
 		constantBufferData.view = XMFLOAT4X4(
-			-1.00000000f, 0.00000000f,  0.00000000f,  0.00000000f,
-			0.00000000f, 0.89442718f,  0.44721359f,  0.00000000f,
-			0.00000000f, 0.44721359f, -0.89442718f, -2.23606800f,
-			0.00000000f, 0.00000000f,  0.00000000f,  1.00000000f
+			1.00000000f, 0.00000000f,	0.00000000f,	0.00000000f,
+			0.00000000f, 1.0f,			0.0f,			0.00000000f,
+			0.00000000f, 0.0f,			1.0f,			-10,
+			0.00000000f, 0.00000000f,	0.00000000f,	1.00000000f
 			);
 
 		float xScale = 1.4281481f;
