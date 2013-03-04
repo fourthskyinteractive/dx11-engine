@@ -34,6 +34,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{e329d539-d4a7-4b25-87ee-6b8c8721d032}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{428964d1-a87f-48ce-8740-ec3246cee3fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -63,6 +66,9 @@
     <ClCompile Include="Src\Renderer\ShaderManager.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="Src\Renderer\ShaderManager.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectInput.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
