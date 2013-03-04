@@ -38,7 +38,7 @@ bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenW
 	degrees = 0.0f;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(90.0f/180.0f*3.14159, (800.0f / 600.0f), 1.0f, 1000.0f);
+	camera->SetLens(90.0f/180.0f*3.14159f, (800.0f / 600.0f), 1.0f, 1000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
@@ -125,6 +125,13 @@ void Game::Update()
 
 	XMStoreFloat4x4(&constantBufferData.model, 
 		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
+
+	int letter = 'w' & 0x8000;
+
+	if(GetAsyncKeyState(0x57))
+	{
+		bool t = true;
+	}
 
 	timer.TimeStep();
 }

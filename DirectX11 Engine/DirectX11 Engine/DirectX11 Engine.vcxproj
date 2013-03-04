@@ -70,6 +70,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirectInput.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="Src\Utility\Misc\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirectInput.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
