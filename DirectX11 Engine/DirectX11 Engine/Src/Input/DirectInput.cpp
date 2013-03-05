@@ -166,6 +166,8 @@ bool DirectInput::ReadKeyboard()
 			return false;
 		}
 	}
+
+	return true;
 }
 
 bool DirectInput::ReadMouse()

@@ -33,8 +33,10 @@ ID3D11InputLayout*				Game::inputLayout;
 
 Camera*							Game::camera;
 DirectInput*					Game::directInput;
-int								Game::mouseX;
-int								Game::mouseY;
+int								Game::currMouseX;
+int								Game::currMouseY;
+int								Game::prevMouseX;
+int								Game::prevMouseY;
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
@@ -126,15 +128,17 @@ void Game::Update()
 {
 	//Get Input
 	Input();
+
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
 
 	degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
-
+	
 	XMStoreFloat4x4(&constantBufferData.model, 
-		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
+		XMMatrixIdentity());
 
-
+	//XMStoreFloat4x4(&constantBufferData.model, 
+		//XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
 	timer.TimeStep();
 }
@@ -143,7 +147,10 @@ void Game::Input()
 {
 	//Update the directInput
 	directInput->Update();
-	directInput->GetMouseLocation(mouseX, mouseY);
+	prevMouseX = currMouseX;
+	prevMouseY = currMouseY;
+
+	directInput->GetMouseLocation(currMouseX, currMouseY);
 
 	if(directInput->IsKeyPressed(DIK_W))
 	{
@@ -160,6 +167,24 @@ void Game::Input()
 		if(directInput->IsKeyPressed(DIK_D))
 	{
 		constantBufferData.view._14 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+	}
+
+	if(prevMouseX != currMouseX)
+	{
+		float rotationScale = 5.0f * (prevMouseX - currMouseX);
+		XMMATRIX rotation = XMMatrixRotationY(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
+		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
+		mView *= rotation;
+		XMStoreFloat4x4(&constantBufferData.view, mView);
+	}
+
+	if(prevMouseY != currMouseY)
+	{
+		float rotationScale = 5.0f * (prevMouseY - currMouseY);
+		XMMATRIX rotation = XMMatrixRotationX(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
+		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
+		mView *= rotation;
+		XMStoreFloat4x4(&constantBufferData.view, mView);
 	}
 }
 
@@ -188,12 +213,12 @@ void Game::CalculateFrameStats()
 
 	frameCount ++;
 
-	if(elapsedTime >= 1.0f)
+	//if(elapsedTime >= 1.0f)
 	{
 		float framesPerSec = frameCount / elapsedTime;
 
 		char MyInfo[16];
-		sprintf_s(MyInfo, "%f", framesPerSec);
+		sprintf_s(MyInfo, "%i", currMouseX);
 
 		string FPS;
 		FPS += MyInfo;
