@@ -20,6 +20,8 @@ public:
 	static void Present(int _vBlankWait, int _presentationFlags);
 	static void Shutdown();
 
+	static void BackfaceCulling(bool _backfaceCulling);
+
 	static HWND hwnd;
 	static ID3D11Device* d3dDevice;
 	static ID3D11DeviceContext* d3dImmediateContext;
@@ -27,6 +29,8 @@ public:
 	static ID3D11RenderTargetView* renderTargetView;
 	static ID3D11Texture2D* depthStencilBuffer;
 	static ID3D11DepthStencilView* depthStencilView;
+	static ID3D11RasterizerState* rasterStateNoCulling;
+	static ID3D11RasterizerState* rasterStateBackfaceCulling;
 	
 	static D3D_FEATURE_LEVEL supportedFeatureLevel;
 };

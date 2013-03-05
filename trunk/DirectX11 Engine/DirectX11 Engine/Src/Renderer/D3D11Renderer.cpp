@@ -13,6 +13,8 @@ IDXGISwapChain*			D3D11Renderer::swapChain = NULL;
 ID3D11RenderTargetView* D3D11Renderer::renderTargetView = NULL;
 ID3D11Texture2D*		D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView* D3D11Renderer::depthStencilView = NULL;
+ID3D11RasterizerState*	D3D11Renderer::rasterStateBackfaceCulling = NULL;
+ID3D11RasterizerState*	D3D11Renderer::rasterStateNoCulling = NULL;
 
 D3D_FEATURE_LEVEL		D3D11Renderer::supportedFeatureLevel;
 
@@ -117,7 +119,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	ID3D11Texture2D* backBuffer;
 	swapChain->GetBuffer(0, _uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-	d3dDevice->CreateRenderTargetView(backBuffer, 0, &renderTargetView);
+	hr = d3dDevice->CreateRenderTargetView(backBuffer, 0, &renderTargetView);
 	ReleaseCOM(backBuffer);
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
@@ -159,6 +161,37 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		&renderTargetView,
 		depthStencilView);
 
+	D3D11_RASTERIZER_DESC rasterDesc;
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the no culling rasterizer state.
+	hr = d3dDevice->CreateRasterizerState(&rasterDesc, &rasterStateNoCulling);
+
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the backface culling rasterizer state.
+	hr = d3dDevice->CreateRasterizerState(&rasterDesc, &rasterStateBackfaceCulling);
+
+	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
+
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
@@ -192,6 +225,18 @@ void D3D11Renderer::Present(int _vBlankWait, int _presentationFlags)
 void D3D11Renderer::ResetDevice()
 {
 
+}
+
+void D3D11Renderer::BackfaceCulling(bool _backfaceCulling)
+{
+	if(_backfaceCulling)
+	{
+		d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
+	}
+	else
+	{
+		d3dImmediateContext->RSSetState(rasterStateNoCulling);
+	}
 }
 
 void D3D11Renderer::Shutdown()
