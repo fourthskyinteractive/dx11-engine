@@ -27,7 +27,8 @@ float							Game::degrees;
 ID3D11Buffer*					Game::constantBuffer;
 ConstantBuffer					Game::constantBufferData;
 
-ID3DX11EffectMatrixVariable*	Game:: worldViewProj;
+ID3DX11EffectMatrixVariable*	Game::worldViewProj;
+XMFLOAT4X4						Game::viewMatrix;
 
 ID3D11InputLayout*				Game::inputLayout;
 
@@ -38,17 +39,20 @@ int								Game::currMouseY;
 int								Game::prevMouseX;
 int								Game::prevMouseY;
 
+bool							Game::backfaceCulling;
+
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
 	bool result;
+	backfaceCulling = true;
 	degrees = 0.0f;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(90.0f/180.0f*3.14159f, (800.0f / 600.0f), 1.0f, 1000.0f);
+	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), .01f, 10000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
-	
+
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
@@ -76,7 +80,7 @@ void Game::Run()
 void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)));
-	
+
 	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
 		constantBuffer,
 		0,
@@ -108,10 +112,12 @@ void Game::Render()
 		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].shader,
 		nullptr,
 		0);
+
 	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(
 		0,
 		1,
 		&constantBuffer);
+
 	D3D11Renderer::d3dImmediateContext->PSSetShader(
 		ShaderManager::pixelShaders[BASIC_PIXEL_SHADER].shader,
 		nullptr,
@@ -133,12 +139,9 @@ void Game::Update()
 	camera->UpdateViewMatrix();
 
 	degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
-	
-	XMStoreFloat4x4(&constantBufferData.model, 
-		XMMatrixIdentity());
 
-	//XMStoreFloat4x4(&constantBufferData.model, 
-		//XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
+	XMStoreFloat4x4(&constantBufferData.world, 
+		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
 	timer.TimeStep();
 }
@@ -154,39 +157,42 @@ void Game::Input()
 
 	if(directInput->IsKeyPressed(DIK_W))
 	{
-		constantBufferData.view._34 += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Walk(5.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
 	}
 	if(directInput->IsKeyPressed(DIK_S))
 	{
-		constantBufferData.view._34 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Walk(-5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
 	}
 	if(directInput->IsKeyPressed(DIK_A))
 	{
-		constantBufferData.view._14 += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Strafe(-5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
 	}
-		if(directInput->IsKeyPressed(DIK_D))
+	if(directInput->IsKeyPressed(DIK_D))
 	{
-		constantBufferData.view._14 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Strafe(5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
 	}
 
-	float rotationScale = 1;
+	if(directInput->IsKeyPressed(DIK_B))
+	{
+		D3D11Renderer::BackfaceCulling(!backfaceCulling);
+		backfaceCulling = !backfaceCulling;
+	}
+
+	float rotationScale = 1.0f;
+
 	if(prevMouseX != currMouseX)
 	{
-		rotationScale *= (prevMouseX - currMouseX);
-		XMMATRIX rotation = XMMatrixRotationY(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
-		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
-		mView *= rotation;
-		XMStoreFloat4x4(&constantBufferData.view, mView);
+		rotationScale *= (currMouseX - prevMouseX);
+		camera->Yaw(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
 	}
 
 	if(prevMouseY != currMouseY)
 	{
-		rotationScale *= (prevMouseY - currMouseY);
-		XMMATRIX rotation = XMMatrixRotationX(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
-		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
-		mView *= rotation;
-		XMStoreFloat4x4(&constantBufferData.view, mView);
+		//rotationScale *= (currMouseY - prevMouseY);
+		//camera->Pitch(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
 	}
+
+	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
 }
 
 void Game::Exit()
@@ -196,7 +202,7 @@ void Game::Exit()
 	ReleaseCOM(boxVB);
 	ReleaseCOM(boxIB);
 	ReleaseCOM(inputLayout);
-	
+
 	if(directInput)
 	{
 		directInput->Shutdown();
@@ -266,100 +272,77 @@ void Game::MakeIndexAndVertexBuffers()
 		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
 	};
 
-        unsigned short cubeIndices[] =
-        {
-            0, 1, 2,
-            0, 2, 3,
+	unsigned short cubeIndices[] =
+	{
+		0, 1, 2,
+		0, 2, 3,
 
-            4, 5, 6,
-            4, 6, 7,
+		4, 5, 6,
+		4, 6, 7,
 
-            3, 2, 5,
-            3, 5, 4,
+		3, 2, 5,
+		3, 5, 4,
 
-            2, 1, 6,
-            2, 6, 5,
+		2, 1, 6,
+		2, 6, 5,
 
-            1, 7, 6,
-            1, 0, 7,
+		1, 7, 6,
+		1, 0, 7,
 
-            0, 3, 4,
-            0, 4, 7
-        };
+		0, 3, 4,
+		0, 4, 7
+	};
 
-		D3D11_BUFFER_DESC vertexBufferDesc = {0};
-		vertexBufferDesc.ByteWidth = sizeof(SimpleCubeVertex) * ARRAYSIZE(cubeVertices);
-		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDesc.CPUAccessFlags = 0;
-		vertexBufferDesc.MiscFlags = 0;
-		vertexBufferDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC vertexBufferDesc = {0};
+	vertexBufferDesc.ByteWidth = sizeof(SimpleCubeVertex) * ARRAYSIZE(cubeVertices);
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA vertexBufferData;
-		vertexBufferData.pSysMem = cubeVertices;
-		vertexBufferData.SysMemPitch = 0;
-		vertexBufferData.SysMemSlicePitch = 0;
+	D3D11_SUBRESOURCE_DATA vertexBufferData;
+	vertexBufferData.pSysMem = cubeVertices;
+	vertexBufferData.SysMemPitch = 0;
+	vertexBufferData.SysMemSlicePitch = 0;
 
-		hr = D3D11Renderer::d3dDevice->CreateBuffer(
-			&vertexBufferDesc,
-			&vertexBufferData,
-			&boxVB);
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(
+		&vertexBufferDesc,
+		&vertexBufferData,
+		&boxVB);
 
-		D3D11_BUFFER_DESC indexBufferDesc;
-        indexBufferDesc.ByteWidth = sizeof(unsigned short) * ARRAYSIZE(cubeIndices);
-        indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        indexBufferDesc.CPUAccessFlags = 0;
-        indexBufferDesc.MiscFlags = 0;
-        indexBufferDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC indexBufferDesc;
+	indexBufferDesc.ByteWidth = sizeof(unsigned short) * ARRAYSIZE(cubeIndices);
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
 
-        D3D11_SUBRESOURCE_DATA indexBufferData;
-        indexBufferData.pSysMem = cubeIndices;
-        indexBufferData.SysMemPitch = 0;
-        indexBufferData.SysMemSlicePitch = 0;
+	D3D11_SUBRESOURCE_DATA indexBufferData;
+	indexBufferData.pSysMem = cubeIndices;
+	indexBufferData.SysMemPitch = 0;
+	indexBufferData.SysMemSlicePitch = 0;
 
-		hr = D3D11Renderer::d3dDevice->CreateBuffer(
-			&indexBufferDesc,
-			&indexBufferData,
-			&boxIB);
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(
+		&indexBufferDesc,
+		&indexBufferData,
+		&boxIB);
 
-		 D3D11_BUFFER_DESC constantBufferDesc = {0};
-        constantBufferDesc.ByteWidth = sizeof(constantBufferData);
-        constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        constantBufferDesc.CPUAccessFlags = 0;
-        constantBufferDesc.MiscFlags = 0;
-        constantBufferDesc.StructureByteStride = 0;
+	int size = sizeof(ConstantBuffer);
+	D3D11_BUFFER_DESC constantBufferDesc = {0};
+	constantBufferDesc.ByteWidth = sizeof(constantBufferData);
+	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBufferDesc.CPUAccessFlags = 0;
+	constantBufferDesc.MiscFlags = 0;
+	constantBufferDesc.StructureByteStride = 0;
 
-		hr = D3D11Renderer::d3dDevice->CreateBuffer(
-			&constantBufferDesc,
-			nullptr,
-			&constantBuffer);
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(
+		&constantBufferDesc,
+		nullptr,
+		&constantBuffer);
 
-		constantBufferData.view = XMFLOAT4X4(
-			1.00000000f, 0.00000000f,	0.00000000f,	0.00000000f,
-			0.00000000f, 1.0f,			0.0f,			0.00000000f,
-			0.00000000f, 0.0f,			1.0f,			-10,
-			0.00000000f, 0.00000000f,	0.00000000f,	1.00000000f
-			);
-
-		float xScale = 1.4281481f;
-		float yScale = 1.4281481f;
-
-		if(800 > 600)
-		{
-			xScale = yScale *
-				static_cast<float>(600) /
-				static_cast<float>(800);
-		}
-
-		constantBufferData.projection = XMFLOAT4X4(
-			xScale, 0.0f,    0.0f,  0.0f,
-			0.0f,   yScale,  0.0f,  0.0f,
-			0.0f,   0.0f,   -1.0f, -0.01f,
-			0.0f,   0.0f,   -1.0f,  0.0f
-			);
-
-		//XMStoreFloat4x4(&constantBufferData.view, camera->GetViewMatrix());
-		//XMStoreFloat4x4(&constantBufferData.projection, camera->GetProjectionMatrix());
+	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
+	XMStoreFloat4x4(&constantBufferData.world, XMMatrixIdentity());
 }

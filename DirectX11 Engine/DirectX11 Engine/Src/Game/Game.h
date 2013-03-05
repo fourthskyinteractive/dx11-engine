@@ -21,9 +21,8 @@ struct SimpleCubeVertex
 
 struct ConstantBuffer
 {
-    XMFLOAT4X4 model;
-    XMFLOAT4X4 view;
-    XMFLOAT4X4 projection;
+    XMFLOAT4X4 world;
+    XMFLOAT4X4 viewProjection;
 };
 
 class Game
@@ -57,11 +56,13 @@ private:
 	static ConstantBuffer constantBufferData;
 
 	static ID3D11InputLayout* inputLayout;
-	
+	static XMFLOAT4X4 viewMatrix;
 	static ID3DX11EffectMatrixVariable* worldViewProj;
 
 	static DirectInput* directInput;
 	static int currMouseX, currMouseY, prevMouseX, prevMouseY;
+
+	static bool backfaceCulling;
 };
 
 
