@@ -1,4 +1,5 @@
 #include "DirectInput.h"
+#include "../Game/Definitions.h"
 
 DirectInput::DirectInput()
 {
@@ -99,36 +100,154 @@ bool DirectInput::Initialize(HINSTANCE _hinstance, HWND _hwnd, int _screenWidth,
 void DirectInput::Shutdown()
 {
 	//Release the mouse
+	if(mouse)
+	{
+		mouse->Unacquire();
+		mouse->Release();
+		mouse = 0;
+	}
 	
+	//Release the keyboard
+	if(keyboard)
+	{
+		keyboard->Unacquire();
+		keyboard->Release();
+		keyboard = 0;
+	}
+	if(directInput)
+	{
+		directInput->Release();
+		directInput = 0;
+	}
+
+	return;
 }
 
-bool DirectInput::Frame()
+bool DirectInput::Update()
 {
+	bool result;
+
+	//Read the current state of the keyboard
+	result = ReadKeyboard();
+	if(!result)
+	{
+		return false;
+	}
+	
+	//Raad the current state of the mouse
+	result = ReadMouse();
+	if(!result)
+	{
+		return false;
+	}
+
+	//Process the changes in the mouse and keyboard
+	ProcessInput();
+
 	return true;
 }
 
-bool DirectInput::ReadeKeyboard()
+bool DirectInput::ReadKeyboard()
 {
-	return true;
+	HRESULT hr;
+
+	//Read the keyboard device
+	ZeroMemory(&keyboardState, sizeof(keyboardState));
+	hr = keyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
+	if(FAILED(hr))
+	{
+		//If the keyboard lost focus or was not acquired then try to get control back
+		if((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+		{
+			keyboard->Acquire();
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 
 bool DirectInput::ReadMouse()
 {
+	HRESULT hr;
+
+	//Read the mouse device
+	ZeroMemory(&mouseState, sizeof(mouseState));
+	hr = mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
+	if(FAILED(hr))
+	{
+		//If the keyboard lost focus or was not acquired then try to get control back
+		if((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+		{
+			mouse->Acquire();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	return true;
+}
+
+bool DirectInput::IsKeyPressed(int _key)
+{
+	//HRESULT hr;
+
+	////Read the mouse device
+	//ZeroMemory(&mouseState, sizeof(mouseState));
+	//hr = mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
+	//if(FAILED(hr))
+	//{
+	//	//If the keyboard lost focus or was not acquired then try to get control back
+	//	if((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+	//	{
+	//		mouse->Acquire();
+	//	}
+	//	else
+	//	{
+	//		return false;
+	//	}
+	//}
+
+	if(keyboardState[_key] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void DirectInput::ProcessInput()
 {
+	//Update the location of the mouse cursor based on the change of the mouse location during the frame
+	mouseX += mouseState.lX;
+	mouseY += mouseState.lY;
 
+	//Ensure the mouse location doesn't exceed the creen width or height
+	//if(mouseX < 0) { mouseX = 0; }
+	//if(mouseY < 0) { mouseY = 0; }
+
+	//if(mouseX > screenWidth)  { mouseX = screenWidth; }
+	//if(mouseY > screenHeight) { mouseY = screenHeight; }
+
+	return;
 }
 
 bool DirectInput::IsEscapePressed()
 {
-	return true;
+	//Do a bitwise "and" on the keyboard state to check if the escape key is currently being pressed
+	if(keyboardState[DIK_ESCAPE] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void DirectInput::GetMouseLocation(int& _xPos, int& _yPos)
 {
-
+	_xPos = mouseX;
+	_yPos = mouseY;
 }
-

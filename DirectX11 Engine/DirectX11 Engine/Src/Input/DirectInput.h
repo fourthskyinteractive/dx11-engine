@@ -15,13 +15,14 @@ public:
 
 	bool Initialize(HINSTANCE _hinstance, HWND _hwnd, int _screenWidth, int _screenHeight);
 	void Shutdown();
-	bool Frame();
+	bool Update();
 
 	bool IsEscapePressed();
 	void GetMouseLocation(int& _xPos, int& _yPos);
+	bool IsKeyPressed(int _key);
 
 private:
-	bool ReadeKeyboard();
+	bool ReadKeyboard();
 	bool ReadMouse();
 	void ProcessInput();
 

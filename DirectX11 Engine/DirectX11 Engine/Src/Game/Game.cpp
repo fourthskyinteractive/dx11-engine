@@ -32,9 +32,13 @@ ID3DX11EffectMatrixVariable*	Game:: worldViewProj;
 ID3D11InputLayout*				Game::inputLayout;
 
 Camera*							Game::camera;
+DirectInput*					Game::directInput;
+int								Game::mouseX;
+int								Game::mouseY;
 
-bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenWidth, int _nScreenHeight)
+bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
+	bool result;
 	degrees = 0.0f;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
@@ -43,6 +47,8 @@ bool Game::Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenW
 
 	timer.Init();
 	
+	directInput = new DirectInput;
+	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
 	LoadCompiledShaders();
 	MakeIndexAndVertexBuffers();
@@ -118,6 +124,8 @@ void Game::Render()
 
 void Game::Update()
 {
+	//Get Input
+	Input();
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
 
@@ -126,14 +134,33 @@ void Game::Update()
 	XMStoreFloat4x4(&constantBufferData.model, 
 		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
-	int letter = 'w' & 0x8000;
 
-	if(GetAsyncKeyState(0x57))
-	{
-		bool t = true;
-	}
 
 	timer.TimeStep();
+}
+
+void Game::Input()
+{
+	//Update the directInput
+	directInput->Update();
+	directInput->GetMouseLocation(mouseX, mouseY);
+
+	if(directInput->IsKeyPressed(DIK_W))
+	{
+		constantBufferData.view._34 += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+	}
+	if(directInput->IsKeyPressed(DIK_S))
+	{
+		constantBufferData.view._34 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+	}
+	if(directInput->IsKeyPressed(DIK_A))
+	{
+		constantBufferData.view._14 += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+	}
+		if(directInput->IsKeyPressed(DIK_D))
+	{
+		constantBufferData.view._14 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+	}
 }
 
 void Game::Exit()
@@ -143,6 +170,13 @@ void Game::Exit()
 	ReleaseCOM(boxVB);
 	ReleaseCOM(boxIB);
 	ReleaseCOM(inputLayout);
+	
+	if(directInput)
+	{
+		directInput->Shutdown();
+		delete directInput;
+		directInput = NULL;
+	}
 }
 
 void Game::CalculateFrameStats()

@@ -417,7 +417,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	InitializeWindow();
 
-	bool result = Game::Initialize(hwnd, fullscreen, vsync, screenWidth, screenHeight);
+	bool result = Game::Initialize(hInstance, hwnd, fullscreen, vsync, screenWidth, screenHeight);
 
 	if(!result)
 	{

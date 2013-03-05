@@ -11,6 +11,7 @@
 #include "../Utility/Misc/Timer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Camera/Camera.h"
+#include "../Input/DirectInput.h"
 
 struct SimpleCubeVertex
 {
@@ -33,10 +34,11 @@ public:
 	Game(Game& game);
 
 	static bool isRunning;
-	static bool Initialize(HWND _hWnd, bool _bFullscreen, bool _bVsync, int _nScreenWidth, int _nScreenHeight);
+	static bool Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight);
 	static void Run();
 	static void Render();
 	static void Update();
+	static void Input();
 	static void Exit();
 	static void CalculateFrameStats();
 	static Timer& GetTimer(){return timer;}
@@ -57,6 +59,9 @@ private:
 	static ID3D11InputLayout* inputLayout;
 	
 	static ID3DX11EffectMatrixVariable* worldViewProj;
+
+	static DirectInput* directInput;
+	static int mouseX, mouseY;
 };
 
 
