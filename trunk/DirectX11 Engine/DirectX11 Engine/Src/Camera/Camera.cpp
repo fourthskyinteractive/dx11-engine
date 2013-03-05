@@ -186,7 +186,7 @@ void Camera::Yaw(float _angleDegrees)
 	XMMATRIX R = XMMatrixRotationY(XMConvertToRadians(_angleDegrees));
 
 	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	//XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 	XMStoreFloat3(&look, XMVector3TransformNormal(XMLoadFloat3(&look), R));
 }
 
