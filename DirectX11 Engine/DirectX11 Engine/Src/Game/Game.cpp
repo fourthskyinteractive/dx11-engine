@@ -169,9 +169,10 @@ void Game::Input()
 		constantBufferData.view._14 -= (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
 	}
 
+	float rotationScale = 1;
 	if(prevMouseX != currMouseX)
 	{
-		float rotationScale = 5.0f * (prevMouseX - currMouseX);
+		rotationScale *= (prevMouseX - currMouseX);
 		XMMATRIX rotation = XMMatrixRotationY(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
 		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
 		mView *= rotation;
@@ -180,7 +181,7 @@ void Game::Input()
 
 	if(prevMouseY != currMouseY)
 	{
-		float rotationScale = 5.0f * (prevMouseY - currMouseY);
+		rotationScale *= (prevMouseY - currMouseY);
 		XMMATRIX rotation = XMMatrixRotationX(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
 		XMMATRIX mView = XMLoadFloat4x4(&constantBufferData.view);
 		mView *= rotation;
