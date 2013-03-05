@@ -61,7 +61,7 @@ private:
 	static ID3DX11EffectMatrixVariable* worldViewProj;
 
 	static DirectInput* directInput;
-	static int mouseX, mouseY;
+	static int currMouseX, currMouseY, prevMouseX, prevMouseY;
 };
 
 
