@@ -41,11 +41,17 @@ int								Game::prevMouseY;
 
 bool							Game::backfaceCulling;
 
+
+XMFLOAT2						Game::cameraRotation;
+
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
+	ShowCursor(false);
 	bool result;
 	backfaceCulling = true;
 	degrees = 0.0f;
+	cameraRotation.x = 0;
+	cameraRotation.y = 0;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), .01f, 10000.0f);
@@ -178,18 +184,19 @@ void Game::Input()
 		backfaceCulling = !backfaceCulling;
 	}
 
-	float rotationScale = 1.0f;
 
-	if(prevMouseX != currMouseX)
-	{
-		rotationScale *= (currMouseX - prevMouseX);
-		camera->Yaw(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
+	float rotationScale = 2.0f;
+	float deltaX = (float)currMouseX - (float)prevMouseX;
+	float deltaY = (float)currMouseY - (float)prevMouseY;
+
+	if(deltaX != 0)
+	{	
+		camera->Yaw((deltaX * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
 	}
 
-	if(prevMouseY != currMouseY)
+	if(deltaY != 0)
 	{
-		//rotationScale *= (currMouseY - prevMouseY);
-		//camera->Pitch(rotationScale * (timer.GetDeltaTimeFloat() / 1000.0f));
+		camera->Pitch((deltaY * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
 	}
 
 	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));

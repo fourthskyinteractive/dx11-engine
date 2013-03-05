@@ -49,6 +49,7 @@ private:
 	static Timer timer;
 	static Camera* camera;
 	static float degrees;
+	static XMFLOAT2 cameraRotation;
 
 	static ID3D11Buffer* boxVB;
 	static ID3D11Buffer* boxIB;
