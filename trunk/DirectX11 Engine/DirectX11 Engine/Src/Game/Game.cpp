@@ -144,10 +144,9 @@ void Game::Update()
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
 
-	degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
-
-	XMStoreFloat4x4(&constantBufferData.world, 
-		XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
+	//degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
+	//XMStoreFloat4x4(&constantBufferData.world, 
+	//	XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
 
 	timer.TimeStep();
 }
@@ -186,7 +185,7 @@ void Game::Input()
 
 	if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
-		float rotationScale = 2.0f;
+		float rotationScale = 5.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
 		float deltaY = (float)currMouseY - (float)prevMouseY;
 
@@ -352,6 +351,7 @@ void Game::MakeIndexAndVertexBuffers()
 		nullptr,
 		&constantBuffer);
 
+	XMMATRIX translationMatrix = XMMatrixTranslation(0.0f, 0.0f, 20.0f);
 	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
-	XMStoreFloat4x4(&constantBufferData.world, XMMatrixIdentity());
+	XMStoreFloat4x4(&constantBufferData.world, XMMatrixTranspose(translationMatrix));
 }
