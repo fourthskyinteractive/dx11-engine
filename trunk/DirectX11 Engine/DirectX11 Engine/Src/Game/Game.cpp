@@ -184,19 +184,21 @@ void Game::Input()
 		backfaceCulling = !backfaceCulling;
 	}
 
-
-	float rotationScale = 2.0f;
-	float deltaX = (float)currMouseX - (float)prevMouseX;
-	float deltaY = (float)currMouseY - (float)prevMouseY;
-
-	if(deltaX != 0)
-	{	
-		camera->Yaw((deltaX * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
-	}
-
-	if(deltaY != 0)
+	if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
-		camera->Pitch((deltaY * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
+		float rotationScale = 2.0f;
+		float deltaX = (float)currMouseX - (float)prevMouseX;
+		float deltaY = (float)currMouseY - (float)prevMouseY;
+
+		if(deltaX != 0)
+		{	
+			camera->Yaw((deltaX * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
+		}
+
+		if(deltaY != 0)
+		{
+			camera->Pitch((deltaY * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
+		}
 	}
 
 	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));

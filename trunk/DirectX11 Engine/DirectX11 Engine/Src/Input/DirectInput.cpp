@@ -176,7 +176,7 @@ bool DirectInput::ReadMouse()
 
 	//Read the mouse device
 	ZeroMemory(&mouseState, sizeof(mouseState));
-	hr = mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
+	hr = mouse->GetDeviceState(sizeof(mouseState), (LPVOID)&mouseState);
 	if(FAILED(hr))
 	{
 		//If the keyboard lost focus or was not acquired then try to get control back
@@ -195,25 +195,17 @@ bool DirectInput::ReadMouse()
 
 bool DirectInput::IsKeyPressed(int _key)
 {
-	//HRESULT hr;
-
-	////Read the mouse device
-	//ZeroMemory(&mouseState, sizeof(mouseState));
-	//hr = mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
-	//if(FAILED(hr))
-	//{
-	//	//If the keyboard lost focus or was not acquired then try to get control back
-	//	if((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
-	//	{
-	//		mouse->Acquire();
-	//	}
-	//	else
-	//	{
-	//		return false;
-	//	}
-	//}
-
 	if(keyboardState[_key] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool DirectInput::IsMouseButtonPressed(int _button)
+{
+	if(mouseState.rgbButtons[_button & 0x80])
 	{
 		return true;
 	}
