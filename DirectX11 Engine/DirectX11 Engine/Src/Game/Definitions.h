@@ -7,6 +7,9 @@ using namespace DirectX;
 #include <string>
 using std::string;
 
+static const int MOUSE_LEFT = 0;
+static const int MOUSE_RIGHT = 1;
+
 #define ReleaseCOM(x) if(x != NULL) { x->Release(); x = NULL; }
 #if defined(DEBUG) | defined(_DEBUG)
 #ifndef HR

@@ -190,7 +190,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	// Create the backface culling rasterizer state.
 	hr = d3dDevice->CreateRasterizerState(&rasterDesc, &rasterStateBackfaceCulling);
 
-	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
+	d3dImmediateContext->RSSetState(rasterStateNoCulling);
 
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0.0f;
