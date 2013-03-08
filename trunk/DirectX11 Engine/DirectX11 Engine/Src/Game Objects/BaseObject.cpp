@@ -41,7 +41,7 @@ void BaseObject::AddTexture(WCHAR* _filename)
 
 void BaseObject::CreateCube(VertexStructure _vertexStructure)
 {
-	vertexSize = sizeof(World_ViewProj_ConstantBuffer);
+	vertexSize = sizeof(SimpleCubeVertex);
 	vertexShader = BASIC_VERTEX_SHADER;
 	pixelShader = BASIC_PIXEL_SHADER;
 
@@ -60,7 +60,7 @@ void BaseObject::CreateCube(VertexStructure _vertexStructure)
 		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].buffer->GetBufferSize(),
 		&inputLayout);
 
-	Pos_Color_Vertex cubeVertices[] =
+	SimpleCubeVertex cubeVertices[] =
 	{
 		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // +Y (top face)
 		{ XMFLOAT3( 0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
@@ -97,7 +97,7 @@ void BaseObject::CreateCube(VertexStructure _vertexStructure)
 	indexCount = 36;
 
 	D3D11_BUFFER_DESC vertexBufferDesc = {0};
-	vertexBufferDesc.ByteWidth = sizeof(Pos_Color_Vertex) * ARRAYSIZE(cubeVertices);
+	vertexBufferDesc.ByteWidth = sizeof(SimpleCubeVertex) * ARRAYSIZE(cubeVertices);
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
@@ -235,53 +235,3 @@ void BaseObject::SetRendererParameters()
 		0,
 		0);
 }
-
-	//D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
-
-	//D3D11Renderer::d3dImmediateContext->UpdateSubresource(
-	//	cubeObj.constantBuffer,
-	//	0,
-	//	nullptr,
-	//	&cubeObj.constantBufferData,
-	//	0,
-	//	0
-	//	);
-
-	//D3D11Renderer::d3dImmediateContext->IASetInputLayout(cubeObj.inputLayout);
-
-	//UINT stride = cubeObj.vertexSize;
-	//UINT offset = 0;
-
-	//D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(
-	//	0,
-	//	1,
-	//	&cubeObj.vertexBuffer,
-	//	&stride,
-	//	&offset);
-
-	//D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(
-	//	cubeObj.indexBuffer,
-	//	DXGI_FORMAT_R16_UINT,
-	//	0);
-
-	//D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//D3D11Renderer::d3dImmediateContext->VSSetShader(
-	//	ShaderManager::vertexShaders[cubeObj.vertexShader].shader,
-	//	nullptr,
-	//	0);
-
-	//D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(
-	//	0,
-	//	1,
-	//	&cubeObj.constantBuffer);
-
-	//D3D11Renderer::d3dImmediateContext->PSSetShader(
-	//	ShaderManager::pixelShaders[cubeObj.pixelShader].shader,
-	//	nullptr,
-	//	0);
-	//D3D11Renderer::d3dImmediateContext->DrawIndexed(
-	//	cubeObj.indexCount,
-	//	0,
-	//	0);
-
-	//D3D11Renderer::Present(1, 0);
