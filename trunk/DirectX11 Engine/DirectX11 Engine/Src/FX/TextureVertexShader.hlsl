@@ -1,4 +1,4 @@
-cbuffer cbPerObject
+cbuffer cbPerObject : register(cb0)
 {
 	matrix worldMatrix;
 	matrix viewProjectionMatrix;

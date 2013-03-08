@@ -22,6 +22,7 @@ bool							Game::isRunning;
 Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
+
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
 float							Game::degrees;
@@ -63,11 +64,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
 	LoadCompiledShaders();
-	MakeIndexAndVertexBuffers();
-
-	cubeObj.Initialize(OBJECT_CUBE);
-	cubeObj.SetWorldMatrix(XMFLOAT3(0.0f, 0.0f, 20.0f), 1.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
-	cubeObj.SetConstantBuffer();
+	InitializeObjects();
 
 	if(bResult)
 	{
@@ -91,7 +88,8 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	cubeObj.SetRendererParameters();
+	cubeObj.UpdateConstantBuffer();
+	cubeObj.Render();
 
 	D3D11Renderer::Present(1, 0);
 }
@@ -217,110 +215,16 @@ void Game::LoadCompiledShaders()
 {
 	ShaderManager::AddShader("Res/Compiled Shaders/VertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/PixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/TextureVertexShader.cso", VERTEX_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/TexturePixelShader.cso", PIXEL_SHADER);
 }
 
-void Game::MakeIndexAndVertexBuffers()
+void Game::InitializeObjects()
 {
-	HRESULT hr;
-
-	const D3D11_INPUT_ELEMENT_DESC basicVertexLayoutDesc[] = 
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(
-		basicVertexLayoutDesc,
-		ARRAYSIZE(basicVertexLayoutDesc),
-		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].buffer->GetBufferSize(),
-		&inputLayout);
-
-	SimpleCubeVertex cubeVertices[] =
-	{
-		{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // +Y (top face)
-		{ XMFLOAT3( 0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3( 0.5f, 0.5f,  0.5f), XMFLOAT3(.50f, 1.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f, 0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-
-		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) }, // -Y (bottom face)
-		{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-	};
-
-	unsigned short cubeIndices[] =
-	{
-		0, 1, 2,
-		0, 2, 3,
-
-		4, 5, 6,
-		4, 6, 7,
-
-		3, 2, 5,
-		3, 5, 4,
-
-		2, 1, 6,
-		2, 6, 5,
-
-		1, 7, 6,
-		1, 0, 7,
-
-		0, 3, 4,
-		0, 4, 7
-	};
-
-	D3D11_BUFFER_DESC vertexBufferDesc = {0};
-	vertexBufferDesc.ByteWidth = sizeof(SimpleCubeVertex) * ARRAYSIZE(cubeVertices);
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData;
-	vertexBufferData.pSysMem = cubeVertices;
-	vertexBufferData.SysMemPitch = 0;
-	vertexBufferData.SysMemSlicePitch = 0;
-
-	hr = D3D11Renderer::d3dDevice->CreateBuffer(
-		&vertexBufferDesc,
-		&vertexBufferData,
-		&boxVB);
-
-	D3D11_BUFFER_DESC indexBufferDesc;
-	indexBufferDesc.ByteWidth = sizeof(unsigned short) * ARRAYSIZE(cubeIndices);
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA indexBufferData;
-	indexBufferData.pSysMem = cubeIndices;
-	indexBufferData.SysMemPitch = 0;
-	indexBufferData.SysMemSlicePitch = 0;
-
-	hr = D3D11Renderer::d3dDevice->CreateBuffer(
-		&indexBufferDesc,
-		&indexBufferData,
-		&boxIB);
-
-	int size = sizeof(ConstantBuffer);
-	D3D11_BUFFER_DESC constantBufferDesc = {0};
-	constantBufferDesc.ByteWidth = sizeof(constantBufferData);
-	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constantBufferDesc.CPUAccessFlags = 0;
-	constantBufferDesc.MiscFlags = 0;
-	constantBufferDesc.StructureByteStride = 0;
-
-	hr = D3D11Renderer::d3dDevice->CreateBuffer(
-		&constantBufferDesc,
-		nullptr,
-		&constantBuffer);
-
-	XMMATRIX translationMatrix = XMMatrixTranslation(0.0f, 0.0f, 2.0f);
-	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
-	XMStoreFloat4x4(&constantBufferData.world, XMMatrixTranspose(translationMatrix));
+	cubeObj.Initialize(OBJECT_CUBE);
+	cubeObj.SetPosition(XMFLOAT3(0.0f, 0.0f, 2.0f));
+	cubeObj.SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
+	cubeObj.SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	cubeObj.SetWorldMatrix();
+	cubeObj.SetRendererParameters();
 }
