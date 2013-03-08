@@ -44,10 +44,16 @@ namespace Colors
 	XMGLOBALCONST XMFLOAT4 LightSteelBlue = XMFLOAT4(0.69f, 0.77f, 0.87f, 1.0f);
 }
 
-struct Vertex
+struct SimpleCubeVertex
 {
-	static XMFLOAT3 pos;
-	static XMFLOAT4 color;
+    XMFLOAT3 pos;   // position
+    XMFLOAT3 color; // color
+};
+
+struct ConstantBuffer
+{
+    XMFLOAT4X4 world;
+    XMFLOAT4X4 viewProjection;
 };
 
 struct ScreenInformation
