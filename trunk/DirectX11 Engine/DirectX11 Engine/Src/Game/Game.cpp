@@ -21,7 +21,7 @@ using std::stringstream;
 bool							Game::isRunning;
 Timer							Game::timer;
 
-BaseObject						Game::cubeObj[100];
+BaseObject						Game::cubeObj;
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
 float							Game::degrees;
@@ -65,12 +65,9 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	LoadCompiledShaders();
 	MakeIndexAndVertexBuffers();
 
-	for(int i = 0; i < 100; ++i)
-	{
-		cubeObj[i].Initialize(OBJECT_CUBE);
-		cubeObj[i].SetWorldMatrix(XMFLOAT3((float)((rand()% 40) - 20), (float)((rand()% 40) - 20), (float)((rand()% 40) - 20)), 1.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
-		cubeObj[i].SetConstantBuffer();
-	}
+	cubeObj.Initialize(OBJECT_CUBE);
+	cubeObj.SetWorldMatrix(XMFLOAT3(0.0f, 0.0f, 20.0f), 1.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
+	cubeObj.SetConstantBuffer();
 
 	if(bResult)
 	{
@@ -94,10 +91,7 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	for(int i = 0; i < 100; ++i)
-	{
-		cubeObj[i].SetRendererParameters();
-	}
+	cubeObj.SetRendererParameters();
 
 	D3D11Renderer::Present(1, 0);
 }
@@ -109,10 +103,9 @@ void Game::Update()
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
-	for(int i = 0; i < 100; ++i)
-	{
-		cubeObj[i].SetConstantBuffer();
-	}
+
+	cubeObj.SetConstantBuffer();
+
 
 	//degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
 	//XMStoreFloat4x4(&constantBufferData.world, 
@@ -204,12 +197,12 @@ void Game::CalculateFrameStats()
 
 	frameCount ++;
 
-	//if(elapsedTime >= 1.0f)
+	if(elapsedTime >= 1.0f)
 	{
 		float framesPerSec = frameCount / elapsedTime;
 
 		char MyInfo[16];
-		sprintf_s(MyInfo, "%i", currMouseX);
+		sprintf_s(MyInfo, "%f", framesPerSec);
 
 		string FPS;
 		FPS += MyInfo;
