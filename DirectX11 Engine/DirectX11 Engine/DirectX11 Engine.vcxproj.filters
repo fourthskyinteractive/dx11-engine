@@ -37,6 +37,9 @@
     <Filter Include="Input">
       <UniqueIdentifier>{428964d1-a87f-48ce-8740-ec3246cee3fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects">
+      <UniqueIdentifier>{a12880a9-8ab5-44ce-8d60-356d8f345e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -72,6 +75,9 @@
     <ClCompile Include="Src\Renderer\TextureManager.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\BaseObject.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Src\Renderer\TextureManager.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\BaseObject.h">
+      <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

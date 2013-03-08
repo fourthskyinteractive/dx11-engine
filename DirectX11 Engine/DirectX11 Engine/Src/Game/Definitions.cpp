@@ -1,8 +1,5 @@
 #include "Definitions.h"
 
-XMFLOAT3		Vertex::pos;
-XMFLOAT4		Vertex::color;
-
 float			ScreenInformation::horizontalRatio;
 float			ScreenInformation::verticalRatio;
 float			ScreenInformation::horizontalDifference;

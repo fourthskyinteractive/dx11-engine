@@ -12,18 +12,7 @@
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Camera/Camera.h"
 #include "../Input/DirectInput.h"
-
-struct SimpleCubeVertex
-{
-    XMFLOAT3 pos;   // position
-    XMFLOAT3 color; // color
-};
-
-struct ConstantBuffer
-{
-    XMFLOAT4X4 world;
-    XMFLOAT4X4 viewProjection;
-};
+#include "../Game Objects/BaseObject.h"
 
 class Game
 {
@@ -45,9 +34,11 @@ public:
 	static void LoadCompiledShaders();
 	static void MakeIndexAndVertexBuffers();
 
-private:
-	static Timer timer;
 	static Camera* camera;
+
+private:
+	static BaseObject cubeObj;
+	static Timer timer;
 	static float degrees;
 	static XMFLOAT2 cameraRotation;
 
@@ -55,10 +46,9 @@ private:
 	static ID3D11Buffer* boxIB;
 	static ID3D11Buffer* constantBuffer;
 	static ConstantBuffer constantBufferData;
-
 	static ID3D11InputLayout* inputLayout;
+
 	static XMFLOAT4X4 viewMatrix;
-	static ID3DX11EffectMatrixVariable* worldViewProj;
 
 	static DirectInput* directInput;
 	static int currMouseX, currMouseY, prevMouseX, prevMouseY;

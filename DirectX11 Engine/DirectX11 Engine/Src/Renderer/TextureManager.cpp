@@ -47,5 +47,7 @@ void TextureManager::Shutdown()
 		}
 	}
 
+	textures.clear();
+
 	return;
 }
