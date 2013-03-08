@@ -69,6 +69,9 @@
     <ClCompile Include="Src\Input\DirectInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\TextureManager.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -98,12 +101,21 @@
     <ClInclude Include="Src\Input\DirectInput.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Renderer\TextureManager.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\VertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\TextureVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\TexturePixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
