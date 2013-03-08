@@ -41,8 +41,7 @@ public:
 	void CreateCube(VertexStructure _vertexStructure);
 	void SetWorldMatrix(XMFLOAT3 _pos, float _scale, XMFLOAT3 _rotationDegrees);
 	void SetConstantBuffer();
-	void SetRendererParameters(ID3D11Buffer* _constantBuffer, ConstantBuffer _constantBuffferData,
-									   ID3D11Buffer* _vertexBuffer, ID3D11Buffer* _indexBuffer);
+	void SetRendererParameters();
 
 	//Stores the transpose of the world matrix so that it is ready to go to the shader
 	VERTEX_SHADERS vertexShader;

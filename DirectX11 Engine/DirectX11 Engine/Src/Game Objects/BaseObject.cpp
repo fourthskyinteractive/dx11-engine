@@ -187,8 +187,7 @@ void BaseObject::SetConstantBuffer()
 	XMStoreFloat4x4(&constantBufferData.world, worldMatrix);
 }
 
-void BaseObject::SetRendererParameters(ID3D11Buffer* _constantBuffer, ConstantBuffer _constantBuffferData,
-									   ID3D11Buffer* _vertexBuffer, ID3D11Buffer* _indexBuffer)
+void BaseObject::SetRendererParameters()
 {
 	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
 		constantBuffer,
