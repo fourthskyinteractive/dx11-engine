@@ -88,61 +88,61 @@ void Game::Run()
 
 void Game::Render()
 {
-	//D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
-
-	//D3D11Renderer::d3dImmediateContext->UpdateSubresource(
-	//	constantBuffer,
-	//	0,
-	//	nullptr,
-	//	&constantBufferData,
-	//	0,
-	//	0
-	//	);
-
-	//D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
-
-	//UINT stride = sizeof(SimpleCubeVertex);
-	//UINT offset = 0;
-
-	//D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(
-	//	0,
-	//	1,
-	//	&boxVB,
-	//	&stride,
-	//	&offset);
-
-	//D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(
-	//	boxIB,
-	//	DXGI_FORMAT_R16_UINT,
-	//	0);
-
-	//D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//D3D11Renderer::d3dImmediateContext->VSSetShader(
-	//	ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].shader,
-	//	nullptr,
-	//	0);
-
-	//D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(
-	//	0,
-	//	1,
-	//	&constantBuffer);
-
-	//D3D11Renderer::d3dImmediateContext->PSSetShader(
-	//	ShaderManager::pixelShaders[BASIC_PIXEL_SHADER].shader,
-	//	nullptr,
-	//	0);
-	//D3D11Renderer::d3dImmediateContext->DrawIndexed(
-	//	36,
-	//	0,
-	//	0);
-
-	//D3D11Renderer::Present(1, 0);
-
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
+
+	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
+		constantBuffer,
+		0,
+		nullptr,
+		&constantBufferData,
+		0,
+		0
+		);
+
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
+
+	UINT stride = sizeof(SimpleCubeVertex);
+	UINT offset = 0;
+
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(
+		0,
+		1,
+		&boxVB,
+		&stride,
+		&offset);
+
+	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(
+		boxIB,
+		DXGI_FORMAT_R16_UINT,
+		0);
+
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	D3D11Renderer::d3dImmediateContext->VSSetShader(
+		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].shader,
+		nullptr,
+		0);
+
+	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(
+		0,
+		1,
+		&constantBuffer);
+
+	D3D11Renderer::d3dImmediateContext->PSSetShader(
+		ShaderManager::pixelShaders[BASIC_PIXEL_SHADER].shader,
+		nullptr,
+		0);
+	D3D11Renderer::d3dImmediateContext->DrawIndexed(
+		36,
+		0,
+		0);
+
+	D3D11Renderer::Present(1, 0);
+
+	//D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	//cubeObj.SetRendererParameters();
 
-	D3D11Renderer::Present(1, 0);
+	//D3D11Renderer::Present(1, 0);
 }
 
 void Game::Update()
