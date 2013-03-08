@@ -21,7 +21,7 @@ using std::stringstream;
 bool							Game::isRunning;
 Timer							Game::timer;
 
-BaseObject						Game::cubeObj;
+BaseObject						Game::cubeObj[100];
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
 float							Game::degrees;
@@ -64,9 +64,13 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
 	LoadCompiledShaders();
 	MakeIndexAndVertexBuffers();
-	cubeObj.Initialize(OBJECT_CUBE);
-	cubeObj.SetWorldMatrix(XMFLOAT3(0.0f, 0.0f, 2.0f), 1.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
-	cubeObj.SetConstantBuffer();
+
+	for(int i = 0; i < 100; ++i)
+	{
+		cubeObj[i].Initialize(OBJECT_CUBE);
+		cubeObj[i].SetWorldMatrix(XMFLOAT3((float)((rand()% 40) - 20), (float)((rand()% 40) - 20), (float)((rand()% 40) - 20)), 1.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
+		cubeObj[i].SetConstantBuffer();
+	}
 
 	if(bResult)
 	{
@@ -90,59 +94,12 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
-		constantBuffer,
-		0,
-		nullptr,
-		&constantBufferData,
-		0,
-		0
-		);
-
-	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
-
-	UINT stride = sizeof(SimpleCubeVertex);
-	UINT offset = 0;
-
-	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(
-		0,
-		1,
-		&boxVB,
-		&stride,
-		&offset);
-
-	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(
-		boxIB,
-		DXGI_FORMAT_R16_UINT,
-		0);
-
-	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	D3D11Renderer::d3dImmediateContext->VSSetShader(
-		ShaderManager::vertexShaders[BASIC_VERTEX_SHADER].shader,
-		nullptr,
-		0);
-
-	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(
-		0,
-		1,
-		&constantBuffer);
-
-	D3D11Renderer::d3dImmediateContext->PSSetShader(
-		ShaderManager::pixelShaders[BASIC_PIXEL_SHADER].shader,
-		nullptr,
-		0);
-	D3D11Renderer::d3dImmediateContext->DrawIndexed(
-		36,
-		0,
-		0);
+	for(int i = 0; i < 100; ++i)
+	{
+		cubeObj[i].SetRendererParameters();
+	}
 
 	D3D11Renderer::Present(1, 0);
-
-	//D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
-
-	//cubeObj.SetRendererParameters();
-
-	//D3D11Renderer::Present(1, 0);
 }
 
 void Game::Update()
@@ -152,7 +109,10 @@ void Game::Update()
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
-	cubeObj.SetConstantBuffer();
+	for(int i = 0; i < 100; ++i)
+	{
+		cubeObj[i].SetConstantBuffer();
+	}
 
 	//degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
 	//XMStoreFloat4x4(&constantBufferData.world, 
