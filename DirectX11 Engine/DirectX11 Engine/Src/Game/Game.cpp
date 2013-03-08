@@ -85,7 +85,7 @@ void Game::Run()
 
 void Game::Render()
 {
-	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)));
+	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
 		constantBuffer,
