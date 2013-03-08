@@ -170,6 +170,12 @@ void Game::Input()
 		}
 	}
 
+	if(directInput->IsEscapePressed())
+	{
+
+		isRunning = false;
+	}
+
 	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
 }
 
