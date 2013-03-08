@@ -44,18 +44,6 @@ namespace Colors
 	XMGLOBALCONST XMFLOAT4 LightSteelBlue = XMFLOAT4(0.69f, 0.77f, 0.87f, 1.0f);
 }
 
-struct SimpleCubeVertex
-{
-    XMFLOAT3 pos;   // position
-    XMFLOAT3 color; // color
-};
-
-struct ConstantBuffer
-{
-    XMFLOAT4X4 world;
-    XMFLOAT4X4 viewProjection;
-};
-
 struct ScreenInformation
 {
 	static float horizontalRatio;
@@ -70,5 +58,36 @@ struct ScreenInformation
 	static float fov;
 	static float orthoRatio;
 };
+
+#pragma region INPUT LAYOUT STRUCTURES
+struct SimpleCubeVertex
+{
+    XMFLOAT3 pos;   // position
+    XMFLOAT3 color; // color
+};
+
+
+
+struct Pos_Color_Vertex
+{
+    XMFLOAT3 pos;
+    XMFLOAT3 color;
+};
+#pragma endregion
+
+
+#pragma region CONSTANT STRUCTURES
+struct World_ViewProj_ConstantBuffer
+{
+    XMFLOAT4X4 world;
+    XMFLOAT4X4 viewProjection;
+};
+
+struct ConstantBuffer
+{
+    XMFLOAT4X4 world;
+    XMFLOAT4X4 viewProjection;
+};
+#pragma endregion
 
 #endif

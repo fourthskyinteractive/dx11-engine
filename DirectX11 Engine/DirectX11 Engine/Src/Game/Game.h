@@ -32,7 +32,7 @@ public:
 	static Timer& GetTimer(){return timer;}
 
 	static void LoadCompiledShaders();
-	static void MakeIndexAndVertexBuffers();
+	static void InitializeObjects();
 
 	static Camera* camera;
 
