@@ -37,7 +37,7 @@ public:
 	static Camera* camera;
 
 private:
-	static BaseObject cubeObj[100];
+	static BaseObject cubeObj;
 	static Timer timer;
 	static float degrees;
 	static XMFLOAT2 cameraRotation;
