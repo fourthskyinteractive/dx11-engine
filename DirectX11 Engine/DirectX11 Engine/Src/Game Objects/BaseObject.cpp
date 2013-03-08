@@ -200,7 +200,7 @@ void BaseObject::SetRendererParameters()
 
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
-	UINT stride = vertexSize;
+	UINT stride = sizeof(Pos_Color_Vertex);
 	UINT offset = 0;
 
 	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(
