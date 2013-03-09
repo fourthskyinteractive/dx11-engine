@@ -22,6 +22,7 @@ bool							Game::isRunning;
 Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
+CubeObject						Game::cubeObject;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -88,8 +89,9 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	cubeObj.UpdateConstantBuffer();
-	cubeObj.Render();
+// 	cubeObj.UpdateConstantBuffer();
+// 	cubeObj.Render();
+	cubeObject.Render(D3D11Renderer::d3dImmediateContext);
 
 	D3D11Renderer::Present(1, 0);
 }
@@ -102,7 +104,7 @@ void Game::Update()
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
 
-	cubeObj.SetConstantBuffer();
+	//cubeObj.SetConstantBuffer();
 
 
 	//degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
@@ -221,10 +223,11 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-	cubeObj.Initialize(OBJECT_CUBE);
-	cubeObj.SetPosition(XMFLOAT3(0.0f, 0.0f, 2.0f));
-	cubeObj.SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
-	cubeObj.SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	cubeObj.SetWorldMatrix();
-	cubeObj.SetRendererParameters();
+// 	cubeObj.Initialize(OBJECT_CUBE);
+// 	cubeObj.SetPosition(XMFLOAT3(0.0f, 0.0f, 2.0f));
+// 	cubeObj.SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
+// 	cubeObj.SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+// 	cubeObj.SetWorldMatrix();
+// 	cubeObj.SetRendererParameters();
+	cubeObject.Initialize(D3D11Renderer::d3dDevice, XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
