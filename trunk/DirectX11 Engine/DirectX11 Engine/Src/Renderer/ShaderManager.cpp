@@ -7,6 +7,11 @@
 vector<VertexShader>	ShaderManager::vertexShaders;
 vector<PixelShader>		ShaderManager::pixelShaders;
 
+void ShaderManager::Initialize()
+{
+
+}
+
 int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 {
 	////CONVERTING THE char* to a wchar*
@@ -68,4 +73,25 @@ int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 	}
 
 	return -1;
+}
+
+void ShaderManager::Shutdown()
+{
+	for(unsigned int i = 0; i < vertexShaders.size(); ++i)
+	{
+		if(vertexShaders[i].shader)
+		{
+			vertexShaders[i].shader->Release();
+			vertexShaders[i].shader = 0;
+		}
+	}
+
+	for(unsigned int i = 0; i < pixelShaders.size(); ++i)
+	{
+		if(vertexShaders[i].shader)
+		{
+			pixelShaders[i].shader->Release();
+			pixelShaders[i].shader = 0;
+		}
+	}
 }

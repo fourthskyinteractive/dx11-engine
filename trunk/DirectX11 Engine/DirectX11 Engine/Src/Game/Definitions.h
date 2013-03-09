@@ -66,12 +66,16 @@ struct SimpleCubeVertex
     XMFLOAT3 color; // color
 };
 
-
-
 struct Pos_Color_Vertex
 {
     XMFLOAT3 pos;
     XMFLOAT3 color;
+};
+
+struct Pos_Tex_Vertex
+{
+	XMFLOAT3 pos;
+	XMFLOAT2 tex;
 };
 #pragma endregion
 

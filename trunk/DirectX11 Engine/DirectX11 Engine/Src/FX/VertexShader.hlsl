@@ -1,4 +1,4 @@
-cbuffer cbPerObject : register(cb0)
+cbuffer cbPerObject
 {
 	float4x4 world;
 	float4x4 viewProjection;

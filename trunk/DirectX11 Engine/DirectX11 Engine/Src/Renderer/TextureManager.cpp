@@ -14,7 +14,7 @@ TextureManager::TextureManager(const TextureManager& _textureManager)
 
 TextureManager::~TextureManager()
 {
-	
+	Shutdown();
 }
 
 int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
@@ -29,6 +29,11 @@ int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
 	}
 
 	return textures.size() - 1;
+}
+
+ID3D11ShaderResourceView* TextureManager::GetTexture(int _index)
+{
+	return textures[_index];
 }
 
 int TextureManager::NumberOfTextures()

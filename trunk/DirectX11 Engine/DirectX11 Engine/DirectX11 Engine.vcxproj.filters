@@ -40,6 +40,9 @@
     <Filter Include="Game Objects">
       <UniqueIdentifier>{a12880a9-8ab5-44ce-8d60-356d8f345e7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Shader Classes">
+      <UniqueIdentifier>{9832ed95-ad87-4224-8380-c0807ce2bf81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -78,6 +81,12 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\ColorShader.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\CubeObject.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -111,6 +120,12 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\BaseObject.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\ColorShader.h">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\CubeObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
