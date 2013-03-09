@@ -14,8 +14,8 @@ using namespace DirectX;
 using namespace std;
 
 enum SHADER_TYPE{VERTEX_SHADER, PIXEL_SHADER};
-enum VERTEX_SHADERS{BASIC_VERTEX_SHADER = 0, TEXTURE_VERTEX_SHADER};
-enum PIXEL_SHADERS{BASIC_PIXEL_SHADER = 0, TEXTURE_PIXEL_SHADER};
+enum VERTEX_SHADERS{COLOR_VERTEX_SHADER = 0, TEXTURE_VERTEX_SHADER};
+enum PIXEL_SHADERS{COLOR_PIXEL_SHADER = 0, TEXTURE_PIXEL_SHADER};
 
 struct VertexShader
 {
@@ -38,6 +38,7 @@ public:
 
 	static void Initialize();
 	static int AddShader(char* _filePath, SHADER_TYPE _shaderType);
+	static void Shutdown();
 	
 	static vector<VertexShader> vertexShaders;
 	static vector<PixelShader> pixelShaders;
