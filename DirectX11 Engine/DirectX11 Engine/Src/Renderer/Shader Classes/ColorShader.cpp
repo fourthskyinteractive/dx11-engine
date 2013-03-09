@@ -71,22 +71,25 @@ bool ColorShader::InitializeShader(ID3D11Device* _device, int _vertexShaderIndex
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	//Create the vertex input layout
-	hr = _device->CreateInputLayout(polygonLayout, numElements, ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
+	hr = _device->CreateInputLayout(polygonLayout, 
+		numElements, 
+		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), 
+		&inputLayout);
 
 
 	//Setup the description of the dynamic matrix constant buffer that is in the vertex shader
 	D3D11_BUFFER_DESC matrixBufferDesc = {0};
-	matrixBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	//CHECK THIS: if it doesnt work
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	matrixBufferDesc.CPUAccessFlags = 0;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
-	hr = _device->CreateBuffer(&matrixBufferDesc, NULL, &constantBuffer);
+	hr = _device->CreateBuffer(&matrixBufferDesc, nullptr, &constantBuffer);
 
 	if(FAILED(hr))
 	{

@@ -51,7 +51,6 @@ bool CubeObject::Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scal
 
 	XMMATRIX mWorldMat;
 	mWorldMat = mScale * mRotation * mTranslation;
-	mWorldMat = XMMatrixTranspose(mWorldMat);
 
 	XMStoreFloat4x4(&worldMatrix, mWorldMat);
 
@@ -69,9 +68,9 @@ bool CubeObject::Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scal
 
 void CubeObject::Update(float _dt)
 {
-	XMFLOAT4X4 viewProj;
-	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
-	shaderUsed.UpdateShaderConstants(D3D11Renderer::d3dImmediateContext, worldMatrix, viewProj);
+	//XMFLOAT4X4 viewProj;
+	//XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
+	//shaderUsed.UpdateShaderConstants(D3D11Renderer::d3dImmediateContext, worldMatrix, viewProj);
 }
 
 void CubeObject::Shutdown()
@@ -197,7 +196,7 @@ void CubeObject::RenderBuffers(ID3D11DeviceContext* _deviceContext)
 	_deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
-	_deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	_deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

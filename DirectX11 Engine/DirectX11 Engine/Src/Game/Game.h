@@ -13,6 +13,7 @@
 #include "../Camera/Camera.h"
 #include "../Input/DirectInput.h"
 #include "../Game Objects/BaseObject.h"
+#include "../Game Objects/CubeObject.h"
 
 class Game
 {
@@ -37,6 +38,7 @@ public:
 	static Camera* camera;
 
 private:
+	static CubeObject cubeObject;
 	static BaseObject cubeObj;
 	static Timer timer;
 	static float degrees;
