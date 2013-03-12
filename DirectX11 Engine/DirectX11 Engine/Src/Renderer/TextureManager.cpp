@@ -28,6 +28,8 @@ int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
 		return -1;
 	}
 
+	textures.push_back(srv);
+
 	return textures.size() - 1;
 }
 
