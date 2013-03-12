@@ -25,6 +25,7 @@ public:
 	void Shutdown();
 	void Render(ID3D11DeviceContext* _deviceContext);
 	void Update(float _dt);
+	void UpdateWorldMatrix(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 
 	int GetIndeCount();
 

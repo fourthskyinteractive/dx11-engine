@@ -46,6 +46,10 @@ bool							Game::backfaceCulling;
 
 XMFLOAT2						Game::cameraRotation;
 
+XMFLOAT3						Game::positions[10000];
+XMFLOAT3						Game::scales[10000];
+XMFLOAT3						Game::rotations[10000];
+
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
 	ShowCursor(false);
@@ -66,6 +70,14 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
 	LoadCompiledShaders();
 	InitializeObjects();
+
+	for(int i = 0; i < 10000; ++i)
+	{
+		positions[i] = XMFLOAT3((float)((rand()% 100) - 50), (float)((rand()% 100) - 50), (float)((rand()% 100) - 50));
+		float scale = (float)(rand() % 5);
+		scales[i] = XMFLOAT3(scale, scale, scale);
+		rotations[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	}
 
 	if(bResult)
 	{
@@ -89,9 +101,11 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-// 	cubeObj.UpdateConstantBuffer();
-// 	cubeObj.Render();
-	cubeObject.Render(D3D11Renderer::d3dImmediateContext);
+	for(int i = 0; i < 10000; ++i)
+	{
+		cubeObject.UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
+		cubeObject.Render(D3D11Renderer::d3dImmediateContext);
+	}	
 
 	D3D11Renderer::Present(1, 0);
 }
@@ -100,18 +114,17 @@ void Game::Update()
 {
 	//Get Input
 	Input();
+	timer.TimeStep();
+
+	degrees += (100.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
+
+	for(int i = 0; i < 10000; ++i)
+	{
+		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
+	}
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
-
-	//cubeObj.SetConstantBuffer();
-
-
-	//degrees += (1.2f * (timer.GetDeltaTimeFloat() / 1000.0f));
-	//XMStoreFloat4x4(&constantBufferData.world, 
-	//	XMMatrixRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), degrees));
-
-	timer.TimeStep();
 }
 
 void Game::Input()
@@ -223,11 +236,5 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-// 	cubeObj.Initialize(OBJECT_CUBE);
-// 	cubeObj.SetPosition(XMFLOAT3(0.0f, 0.0f, 2.0f));
-// 	cubeObj.SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
-// 	cubeObj.SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
-// 	cubeObj.SetWorldMatrix();
-// 	cubeObj.SetRendererParameters();
 	cubeObject.Initialize(D3D11Renderer::d3dDevice, XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 }

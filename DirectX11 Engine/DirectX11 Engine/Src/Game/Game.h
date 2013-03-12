@@ -38,6 +38,9 @@ public:
 	static Camera* camera;
 
 private:
+	static XMFLOAT3 positions[10000];
+	static XMFLOAT3 rotations[10000];
+	static XMFLOAT3 scales[10000];
 	static CubeObject cubeObject;
 	static BaseObject cubeObj;
 	static Timer timer;

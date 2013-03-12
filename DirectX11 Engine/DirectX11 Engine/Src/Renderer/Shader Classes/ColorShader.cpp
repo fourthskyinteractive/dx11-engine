@@ -1,5 +1,6 @@
 #include "ColorShader.h"
 #include "../ShaderManager.h"
+#include "../D3D11Renderer.h"
 
 
 ColorShader::ColorShader()
@@ -18,11 +19,11 @@ ColorShader::~ColorShader()
 
 }
 
-bool ColorShader::Initialize(ID3D11Device* _device)
+bool ColorShader::Initialize()
 {
 	bool result;
 
-	result = InitializeShader(_device, COLOR_VERTEX_SHADER, COLOR_PIXEL_SHADER);
+	result = InitializeShader(COLOR_VERTEX_SHADER, COLOR_PIXEL_SHADER);
 	if(!result)
 	{
 		return false;
@@ -36,25 +37,25 @@ void ColorShader::Shutdown()
 	ShutdownShader();
 }
 
-bool ColorShader::Render(ID3D11DeviceContext* _deviceContext, int _indexCount, XMFLOAT4X4 _worldMatrix,
+bool ColorShader::Render(int _indexCount, XMFLOAT4X4 _worldMatrix,
 	XMFLOAT4X4 _viewProjMatrix)
 {
 	bool result;
 
 	//Set the shader parameters that it will use for rendering
-	result = UpdateShaderConstants(_deviceContext, _worldMatrix, _viewProjMatrix);
+	result = UpdateShaderConstants(_worldMatrix, _viewProjMatrix);
 	if(!result)
 	{
 		return false;
 	}
 
 	//Now render the prepared buffers with the shader
-	RenderShader(_deviceContext, _indexCount);
+	RenderShader(_indexCount);
 
 	return true;
 }
 
-bool ColorShader::InitializeShader(ID3D11Device* _device, int _vertexShaderIndex, int _pixelShaderIndex)
+bool ColorShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)
 {
 	int numElements;
 	HRESULT hr;
@@ -71,7 +72,7 @@ bool ColorShader::InitializeShader(ID3D11Device* _device, int _vertexShaderIndex
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	//Create the vertex input layout
-	hr = _device->CreateInputLayout(polygonLayout, 
+	hr = D3D11Renderer::d3dDevice->CreateInputLayout(polygonLayout, 
 		numElements, 
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), 
@@ -89,12 +90,19 @@ bool ColorShader::InitializeShader(ID3D11Device* _device, int _vertexShaderIndex
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
-	hr = _device->CreateBuffer(&matrixBufferDesc, nullptr, &constantBuffer);
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, &constantBuffer);
 
 	if(FAILED(hr))
 	{
 		return false;
 	}
+
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
+
+	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+
+	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(0, 1, &constantBuffer);
 
 	return true;
 }
@@ -116,20 +124,17 @@ void ColorShader::ShutdownShader()
 	}
 }
 
-bool ColorShader::UpdateShaderConstants(ID3D11DeviceContext* _deviceContext, XMFLOAT4X4 _worldMatrix, 
+bool ColorShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, 
 	XMFLOAT4X4 _viewProjMatrix)
 {
 	MatrixBufferType constantBufferData;
 	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
 	XMMATRIX mViewProjection = XMMatrixTranspose(XMLoadFloat4x4(&_viewProjMatrix));
 
-	XMStoreFloat4x4(&_worldMatrix, mWorld);
-	XMStoreFloat4x4(&_viewProjMatrix, mViewProjection);
+	XMStoreFloat4x4(&constantBufferData.world, mWorld);
+	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
 
-	constantBufferData.world = _worldMatrix;
-	constantBufferData.viewProjection = _viewProjMatrix;
-
-	_deviceContext->UpdateSubresource(
+	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
 		constantBuffer,
 		0,
 		nullptr,
@@ -141,14 +146,7 @@ bool ColorShader::UpdateShaderConstants(ID3D11DeviceContext* _deviceContext, XMF
 	return true;
 }
 
-void ColorShader::RenderShader(ID3D11DeviceContext* _deviceContext, int _indexCount)
+void ColorShader::RenderShader(int _indexCount)
 {
-	_deviceContext->IASetInputLayout(inputLayout);
-
-	_deviceContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	_deviceContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
-
-	_deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
-
-	_deviceContext->DrawIndexed(_indexCount, 0, 0);
+	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }
