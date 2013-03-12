@@ -19,14 +19,14 @@ CubeObjectColor::~CubeObjectColor()
 
 }
 
-bool CubeObjectColor::Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation)
+bool CubeObjectColor::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation)
 {
 	UpdateWorldMatrix(_pos, _scale, _rotation);
 
 	bool result;
 	shaderUsed.Initialize();
 
-	result = InitializeBuffers(_device);
+	result = InitializeBuffers();
 	if(!result)
 	{
 		return false;
@@ -86,9 +86,9 @@ void CubeObjectColor::Shutdown()
 	ShutdownBuffers();
 }
 
-void CubeObjectColor::Render(ID3D11DeviceContext* _deviceContext)
+void CubeObjectColor::Render()
 {
-	RenderBuffers(_deviceContext);
+	RenderBuffers();
 }
 
 int CubeObjectColor::GetIndeCount()
@@ -96,7 +96,7 @@ int CubeObjectColor::GetIndeCount()
 	return indexCount;
 }
 
-bool CubeObjectColor::InitializeBuffers(ID3D11Device* _device)
+bool CubeObjectColor::InitializeBuffers()
 {
 	HRESULT hr;
 
@@ -173,6 +173,22 @@ bool CubeObjectColor::InitializeBuffers(ID3D11Device* _device)
 		&indexBufferData,
 		&indexBuffer);
 
+	unsigned int stride;
+	unsigned int offset;
+
+	//Set vertex buffer stride and offset
+	stride = sizeof(VertexType);
+	offset = 0;
+
+	// Set the vertex buffer to active in the input assembler so it can be rendered.
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+
+	// Set the index buffer to active in the input assembler so it can be rendered.
+	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	return true;
 }
 
@@ -191,24 +207,8 @@ void CubeObjectColor::ShutdownBuffers()
 	}
 }
 
-void CubeObjectColor::RenderBuffers(ID3D11DeviceContext* _deviceContext)
+void CubeObjectColor::RenderBuffers()
 {
-	unsigned int stride;
-	unsigned int offset;
-
-	//Set vertex buffer stride and offset
-	stride = sizeof(VertexType);
-	offset = 0;
-
-	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	_deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-
-	// Set the index buffer to active in the input assembler so it can be rendered.
-	_deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	XMFLOAT4X4 viewProj;
 	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
 

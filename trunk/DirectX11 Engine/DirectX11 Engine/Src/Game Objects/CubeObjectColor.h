@@ -21,18 +21,19 @@ public:
 	CubeObjectColor(const CubeObjectColor&);
 	~CubeObjectColor();
 
-	bool Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
+	bool Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 	void Shutdown();
-	void Render(ID3D11DeviceContext* _deviceContext);
+	void Render();
 	void Update(float _dt);
 	void UpdateWorldMatrix(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 
 	int GetIndeCount();
+	int GetVertexCount();
 
 private:
-	bool InitializeBuffers(ID3D11Device* _device);
+	bool InitializeBuffers();
 	void ShutdownBuffers();
-	void RenderBuffers(ID3D11DeviceContext* _deviceContext);
+	void RenderBuffers();
 
 private:
 	ColorShader shaderUsed;

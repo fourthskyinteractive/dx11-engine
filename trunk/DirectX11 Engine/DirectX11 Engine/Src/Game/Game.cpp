@@ -22,7 +22,7 @@ bool							Game::isRunning;
 Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
-CubeObjectColor						Game::cubeObject;
+CubeObjectColor					Game::cubeObject;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -104,7 +104,7 @@ void Game::Render()
 	for(int i = 0; i < 1000; ++i)
 	{
 		cubeObject.UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
-		cubeObject.Render(D3D11Renderer::d3dImmediateContext);
+		cubeObject.Render();
 	}	
 
 	D3D11Renderer::Present(0, 0);
@@ -159,14 +159,14 @@ void Game::Input()
 		backfaceCulling = !backfaceCulling;
 	}
 
-	if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
+	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
 		float rotationScale = 5.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
 		float deltaY = (float)currMouseY - (float)prevMouseY;
 
 		if(deltaX != 0)
-		{	
+		{
 			camera->Yaw((deltaX * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
 		}
 
@@ -236,5 +236,5 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-	cubeObject.Initialize(D3D11Renderer::d3dDevice, XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
