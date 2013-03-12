@@ -84,9 +84,9 @@ bool ColorShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 
 	//CHECK THIS: if it doesnt work
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = 0;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
@@ -134,14 +134,10 @@ bool ColorShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix,
 	XMStoreFloat4x4(&constantBufferData.world, mWorld);
 	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
 
-	D3D11Renderer::d3dImmediateContext->UpdateSubresource(
-		constantBuffer,
-		0,
-		nullptr,
-		&constantBufferData,
-		0,
-		0
-		);
+	D3D11_MAPPED_SUBRESOURCE edit;
+	D3D11Renderer::d3dImmediateContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &edit);
+	memcpy(edit.pData, &constantBufferData, sizeof(constantBufferData));
+	D3D11Renderer::d3dImmediateContext->Unmap(constantBuffer, 0);
 
 	return true;
 }

@@ -22,7 +22,7 @@ bool							Game::isRunning;
 Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
-CubeObject						Game::cubeObject;
+CubeObjectColor						Game::cubeObject;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -46,9 +46,9 @@ bool							Game::backfaceCulling;
 
 XMFLOAT2						Game::cameraRotation;
 
-XMFLOAT3						Game::positions[10000];
-XMFLOAT3						Game::scales[10000];
-XMFLOAT3						Game::rotations[10000];
+XMFLOAT3						Game::positions[1000];
+XMFLOAT3						Game::scales[1000];
+XMFLOAT3						Game::rotations[1000];
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
@@ -71,7 +71,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	LoadCompiledShaders();
 	InitializeObjects();
 
-	for(int i = 0; i < 10000; ++i)
+	for(int i = 0; i < 1000; ++i)
 	{
 		positions[i] = XMFLOAT3((float)((rand()% 100) - 50), (float)((rand()% 100) - 50), (float)((rand()% 100) - 50));
 		float scale = (float)(rand() % 5);
@@ -101,13 +101,13 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	for(int i = 0; i < 10000; ++i)
+	for(int i = 0; i < 1000; ++i)
 	{
 		cubeObject.UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
 		cubeObject.Render(D3D11Renderer::d3dImmediateContext);
 	}	
 
-	D3D11Renderer::Present(1, 0);
+	D3D11Renderer::Present(0, 0);
 }
 
 void Game::Update()
@@ -118,7 +118,7 @@ void Game::Update()
 
 	degrees += (100.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
 
-	for(int i = 0; i < 10000; ++i)
+	for(int i = 0; i < 1000; ++i)
 	{
 		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
 	}

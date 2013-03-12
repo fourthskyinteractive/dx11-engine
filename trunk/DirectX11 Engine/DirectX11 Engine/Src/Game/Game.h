@@ -13,7 +13,7 @@
 #include "../Camera/Camera.h"
 #include "../Input/DirectInput.h"
 #include "../Game Objects/BaseObject.h"
-#include "../Game Objects/CubeObject.h"
+#include "../Game Objects/CubeObjectColor.h"
 
 class Game
 {
@@ -38,10 +38,10 @@ public:
 	static Camera* camera;
 
 private:
-	static XMFLOAT3 positions[10000];
-	static XMFLOAT3 rotations[10000];
-	static XMFLOAT3 scales[10000];
-	static CubeObject cubeObject;
+	static XMFLOAT3 positions[1000];
+	static XMFLOAT3 rotations[1000];
+	static XMFLOAT3 scales[1000];
+	static CubeObjectColor cubeObject;
 	static BaseObject cubeObj;
 	static Timer timer;
 	static float degrees;
