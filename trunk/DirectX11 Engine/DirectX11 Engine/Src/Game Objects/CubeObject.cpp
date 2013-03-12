@@ -21,6 +21,30 @@ CubeObject::~CubeObject()
 
 bool CubeObject::Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation)
 {
+	UpdateWorldMatrix(_pos, _scale, _rotation);
+
+	bool result;
+	shaderUsed.Initialize();
+
+	result = InitializeBuffers(_device);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void CubeObject::Update(float _dt)
+{
+	
+	//XMFLOAT4X4 viewProj;
+	//XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
+	//shaderUsed.UpdateShaderConstants(D3D11Renderer::d3dImmediateContext, worldMatrix, viewProj);
+}
+
+void CubeObject::UpdateWorldMatrix(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation)
+{
 	XMMATRIX mScale;
 	XMMATRIX mTranslation;
 	XMMATRIX mRotation;
@@ -49,28 +73,12 @@ bool CubeObject::Initialize(ID3D11Device* _device, XMFLOAT3 _pos, XMFLOAT3 _scal
 		mRotation *= XMMatrixRotationAxis(XMLoadFloat3(&axis), _rotation.z);
 	}
 
-	XMMATRIX mWorldMat;
-	mWorldMat = mScale * mRotation * mTranslation;
+	XMMATRIX mWorldMat = XMMatrixIdentity();
+	mWorldMat *= mScale;
+	mWorldMat *= mRotation;
+	mWorldMat *= mTranslation;
 
 	XMStoreFloat4x4(&worldMatrix, mWorldMat);
-
-	bool result;
-	shaderUsed.Initialize(_device);
-
-	result = InitializeBuffers(_device);
-	if(!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void CubeObject::Update(float _dt)
-{
-	//XMFLOAT4X4 viewProj;
-	//XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
-	//shaderUsed.UpdateShaderConstants(D3D11Renderer::d3dImmediateContext, worldMatrix, viewProj);
 }
 
 void CubeObject::Shutdown()
@@ -204,7 +212,7 @@ void CubeObject::RenderBuffers(ID3D11DeviceContext* _deviceContext)
 	XMFLOAT4X4 viewProj;
 	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
 
-	shaderUsed.Render(_deviceContext, indexCount, worldMatrix, viewProj);
+	shaderUsed.Render(indexCount, worldMatrix, viewProj);
 
 	return;
 }

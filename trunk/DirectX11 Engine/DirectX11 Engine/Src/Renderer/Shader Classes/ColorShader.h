@@ -21,17 +21,17 @@ public:
 	ColorShader(const ColorShader&);
 	~ColorShader();
 
-	bool Initialize(ID3D11Device* _device);
+	bool Initialize();
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* _deviceContext, int _indexCount, XMFLOAT4X4 _worldMatrix,
+	bool Render(int _indexCount, XMFLOAT4X4 _worldMatrix,
 		XMFLOAT4X4 _viewProjMatrix);
-	bool UpdateShaderConstants(ID3D11DeviceContext* _deviceContext, XMFLOAT4X4 _worldMatrix, 
+	bool UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, 
 		XMFLOAT4X4 _viewProjMatrix);
 
 private:
-	bool InitializeShader(ID3D11Device* _device, int _vertexShaderIndex, int _pixelShaderIndex);
+	bool InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex);
 	void ShutdownShader();	
-	void RenderShader(ID3D11DeviceContext* _deviceContext, int _indexCount);
+	void RenderShader(int _indexCount);
 
 private:
 	unsigned int vertexShaderIndex;
