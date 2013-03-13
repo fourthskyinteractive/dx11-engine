@@ -43,6 +43,9 @@
     <Filter Include="Renderer\Shader Classes">
       <UniqueIdentifier>{9832ed95-ad87-4224-8380-c0807ce2bf81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects\Lights">
+      <UniqueIdentifier>{d4c83715-5ee7-46b3-8761-99380b50fb32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -90,6 +93,12 @@
     <ClCompile Include="Src\Game Objects\CubeObjectTexture.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Lights\LightDiffuse.cpp">
+      <Filter>Game Objects\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -133,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\CubeObjectTexture.h">
       <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Lights\LightDiffuse.h">
+      <Filter>Game Objects\Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

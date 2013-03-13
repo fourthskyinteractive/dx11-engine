@@ -6,7 +6,7 @@
 #include <d3d11shader.h>
 #include "../Game/Definitions.h"
 #include "../Renderer/TextureManager.h"
-#include "../Renderer/Shader Classes/ColorShader.h"
+#include "../Renderer/Shader Classes/LightShader.h"
 
 class CubeObjectTexture
 {
@@ -30,7 +30,7 @@ public:
 	CubeObjectTexture(const CubeObjectTexture&);
 	~CubeObjectTexture();
 
-	bool Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* modelFilename, WCHAR* textureFilename);
+	bool Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _modelFilename, WCHAR* _textureFilename);
 	void Shutdown();
 	void Render();
 
@@ -38,6 +38,7 @@ public:
 	int GetVertexCount(){return vertexCount;}
 	int GetNumTextures(){return textures->NumberOfTextures();}
 	ID3D11ShaderResourceView* GetTexture(int _textureIndex){return textures->GetTexture(_textureIndex);}
+	void UpdateWorldMatrix(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 
 private:
 	bool InitializeBuffers();
@@ -46,10 +47,11 @@ private:
 
 	bool AddTexture(WCHAR* _filePath);
 	void ReleaseTextures();
-	bool LoadModel(char*);
+	bool LoadModel(char* _filePath);
 	void ReleaseModel();
 
 private:
+	LightShader shaderUsed;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexbuffer;
 	int vertexCount;
@@ -57,5 +59,7 @@ private:
 	TextureManager* textures;
 
 	ModelType* model;
+
+	XMFLOAT4X4 worldMatrix;
 };
 #endif

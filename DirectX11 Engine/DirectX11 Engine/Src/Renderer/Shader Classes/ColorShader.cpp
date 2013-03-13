@@ -127,16 +127,16 @@ void ColorShader::ShutdownShader()
 bool ColorShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, 
 	XMFLOAT4X4 _viewProjMatrix)
 {
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType constantBufferData;
 	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
 	XMMATRIX mViewProjection = XMMatrixTranspose(XMLoadFloat4x4(&_viewProjMatrix));
 
 	XMStoreFloat4x4(&constantBufferData.world, mWorld);
 	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
-
-	D3D11_MAPPED_SUBRESOURCE edit;
-	D3D11Renderer::d3dImmediateContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &edit);
-	memcpy(edit.pData, &constantBufferData, sizeof(constantBufferData));
+	
+	D3D11Renderer::d3dImmediateContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));
 	D3D11Renderer::d3dImmediateContext->Unmap(constantBuffer, 0);
 
 	return true;

@@ -14,6 +14,8 @@
 #include "../Input/DirectInput.h"
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/CubeObjectColor.h"
+#include "../Game Objects/CubeObjectTexture.h"
+#include "../Game Objects/Lights/LightDiffuse.h"
 
 class Game
 {
@@ -36,13 +38,17 @@ public:
 	static void InitializeObjects();
 
 	static Camera* camera;
+	static LightDiffuse* lightDiffuse;
 
 private:
-	static XMFLOAT3 positions[1000];
-	static XMFLOAT3 rotations[1000];
-	static XMFLOAT3 scales[1000];
+	static XMFLOAT3 positions[100];
+	static XMFLOAT3 rotations[100];
+	static XMFLOAT3 scales[100];
+
+	static CubeObjectTexture* cubeObjectTexture;
 	static CubeObjectColor cubeObject;
 	static BaseObject cubeObj;
+
 	static Timer timer;
 	static float degrees;
 	static XMFLOAT2 cameraRotation;
