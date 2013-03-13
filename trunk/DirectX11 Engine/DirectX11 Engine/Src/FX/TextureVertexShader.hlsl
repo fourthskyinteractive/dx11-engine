@@ -8,12 +8,14 @@ struct VertexIn
 {
 	float3 pos		: POSITION;
 	float2 tex		: TEXCOORD0;
+	float3 normal	: NORMAL;
 };
 
 struct VertexOut
 {
 	float4 pos		: SV_POSITION;
 	float2 tex		: TEXCOORD0;
+	float3 normal	: NORMAL;
 };
 
 
@@ -27,6 +29,11 @@ VertexOut VS(VertexIn vIn)
 	vOut.pos = mul(vOut.pos, viewProjectionMatrix);
 
 	vOut.tex = vIn.tex;
+
+	//Calculate the normal vector against the world matrix only
+	vOut.normal = mul(vIn.normal, (float3x3)worldMatrix);
+
+	vOut.normal = normalize(vOut.normal);
 
 	return vOut;
 }
