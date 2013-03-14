@@ -24,7 +24,7 @@ Timer							Game::timer;
 BaseObject						Game::cubeObj;
 CubeObjectColor					Game::cubeObject;
 CubeObjectTexture*				Game::cubeObjectTexture = NULL;
-LightDiffuse*					Game::lightDiffuse = NULL;
+LightClass*						Game::lightDiffuse = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -48,9 +48,9 @@ bool							Game::backfaceCulling;
 
 XMFLOAT2						Game::cameraRotation;
 
-XMFLOAT3						Game::positions[100];
-XMFLOAT3						Game::scales[100];
-XMFLOAT3						Game::rotations[100];
+XMFLOAT3						Game::positions[1];
+XMFLOAT3						Game::scales[1];
+XMFLOAT3						Game::rotations[1];
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
@@ -73,7 +73,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	LoadCompiledShaders();
 	InitializeObjects();
 
-	for(int i = 0; i < 100; ++i)
+	for(int i = 0; i < 1; ++i)
 	{
 		positions[i] = XMFLOAT3((float)((rand()% 100) - 50), (float)((rand()% 100) - 50), (float)((rand()% 100) - 50));
 		float scale = (float)(rand() % 5);
@@ -103,16 +103,16 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	for(int i = 0; i < 100; ++i)
+	for(int i = 0; i < 1; ++i)
 	{
 		//cubeObject.UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
 		//cubeObject.Render();
 
-		cubeObjectTexture->UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
+		cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f,0.0f, 2.0f), scales[i], rotations[i]);
 		cubeObjectTexture->Render();
 	}	
 
-	D3D11Renderer::Present(0, 0);
+	D3D11Renderer::Present(1, 0);
 }
 
 void Game::Update()
@@ -121,9 +121,9 @@ void Game::Update()
 	Input();
 	timer.TimeStep();
 
-	degrees += (100.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
+	degrees += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
 
-	for(int i = 0; i < 100; ++i)
+	for(int i = 0; i < 1; ++i)
 	{
 		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
 	}
@@ -256,7 +256,8 @@ void Game::InitializeObjects()
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 		"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");
 
-	lightDiffuse = new LightDiffuse();
-	lightDiffuse->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+	lightDiffuse = new LightClass();
+	lightDiffuse->SetAmbientColor(1.0f, 1.0f, 0.0f, 1.0f);
+	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 0.0f, 1.0f);
 	lightDiffuse->SetDirection(0.0f, 0.0f, 1.0f);
 }
