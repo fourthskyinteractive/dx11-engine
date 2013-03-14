@@ -217,7 +217,7 @@ void CubeObjectTexture::RenderBuffers()
 	XMFLOAT4X4 viewProj;
 	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
 
-	shaderUsed.Render(worldMatrix, viewProj, textures->GetTexture(0), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), indexCount);
+	shaderUsed.Render(worldMatrix, viewProj, textures->GetTexture(0), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), Game::lightDiffuse->GetAmbientColor(), indexCount);
 }
 
 void CubeObjectTexture::ReleaseTextures()

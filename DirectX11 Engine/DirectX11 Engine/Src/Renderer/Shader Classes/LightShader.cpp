@@ -39,12 +39,12 @@ void LightShader::Shutdown()
 }
 
 bool LightShader::Render(XMFLOAT4X4 _world, XMFLOAT4X4 _viewProjection, ID3D11ShaderResourceView* _texture,
-						 XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, int _indexCount)
+						 XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor, int _indexCount)
 {
 	bool result;
 
 	//Set the shader parameters that it will use for rendering
-	result = UpdateShaderConstants(_world, _viewProjection, _texture, _lightDirection, _diffuseColor);
+	result = UpdateShaderConstants(_world, _viewProjection, _texture, _lightDirection, _diffuseColor, _ambientColor);
 	if(!result)
 	{
 		return false;
@@ -200,7 +200,7 @@ void LightShader::ShutdownShader()
 	}
 }
 
-bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, ID3D11ShaderResourceView* _texture, XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor)
+bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, ID3D11ShaderResourceView* _texture, XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor)
 {
 	HRESULT hr;
 
@@ -230,6 +230,7 @@ bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _vie
 
 	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_texture);
 
+	lightBufferData.ambientColor = _ambientColor;
 	lightBufferData.diffuseColor = _diffuseColor;
 	lightBufferData.lightDirection = _lightDirection;
 	lightBufferData.padding = 0.0f;

@@ -96,7 +96,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp">
       <Filter>Renderer\Shader Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game Objects\Lights\LightDiffuse.cpp">
+    <ClCompile Include="Src\Game Objects\Lights\LightClass.cpp">
       <Filter>Game Objects\Lights</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,7 +146,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h">
       <Filter>Renderer\Shader Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game Objects\Lights\LightDiffuse.h">
+    <ClInclude Include="Src\Game Objects\Lights\LightClass.h">
       <Filter>Game Objects\Lights</Filter>
     </ClInclude>
   </ItemGroup>
