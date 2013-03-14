@@ -103,14 +103,9 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	for(int i = 0; i < 1; ++i)
-	{
-		//cubeObject.UpdateWorldMatrix(positions[i], scales[i], rotations[i]);
-		//cubeObject.Render();
+	cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f,0.0f, 2.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), rotations[0]);
+	cubeObjectTexture->Render();
 
-		cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f,0.0f, 2.0f), scales[i], rotations[i]);
-		cubeObjectTexture->Render();
-	}	
 
 	D3D11Renderer::Present(1, 0);
 }
@@ -257,7 +252,7 @@ void Game::InitializeObjects()
 		"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");
 
 	lightDiffuse = new LightClass();
-	lightDiffuse->SetAmbientColor(1.0f, 1.0f, 0.0f, 1.0f);
-	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 0.0f, 1.0f);
+	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	lightDiffuse->SetDirection(0.0f, 0.0f, 1.0f);
 }
