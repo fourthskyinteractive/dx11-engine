@@ -55,5 +55,5 @@ float4 PS(PixelIn input) : SV_TARGET
 	//Multiply the texture pixel and the final diffuse color to get the final color result
 	color = color * textureColor;
 
-	return color;
+	return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }
