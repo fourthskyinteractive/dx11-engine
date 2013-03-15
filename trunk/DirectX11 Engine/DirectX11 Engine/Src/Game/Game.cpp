@@ -4,6 +4,7 @@
 #include "../Renderer/D3D11Renderer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Renderer/ShaderManager.h"
+#include "../Utility/Model Loaders/ObjLoader.h"
 
 //#include <D3DX11async.h>
 #include <fstream>
@@ -103,7 +104,7 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f,0.0f, 2.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), rotations[0]);
+	cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(.10f, .10f, .10f), rotations[0]);
 	cubeObjectTexture->Render();
 
 
@@ -116,7 +117,7 @@ void Game::Update()
 	Input();
 	timer.TimeStep();
 
-	degrees += (5.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
+	degrees += (30.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
 
 	for(int i = 0; i < 1; ++i)
 	{
@@ -248,8 +249,17 @@ void Game::InitializeObjects()
 {
 	//cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	cubeObjectTexture = new CubeObjectTexture();
+	/*cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
+	"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");*/
+
+	//ATTEMPT AT LOADING ALTAIR
+	int vertexCount, textureCount, normalCount, faceCount;
+
+	//ObjLoader::LoadObjFile("Res/Models/Altair/altair.obj", true, vertexCount, textureCount, normalCount, faceCount);
+
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-		"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");
+	"Res/Objects/altair.txt", L"Res/Textures/seafloor.dds");
+
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
