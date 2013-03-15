@@ -108,7 +108,7 @@ void Game::Render()
 	cubeObjectTexture->Render();
 
 
-	D3D11Renderer::Present(1, 0);
+	D3D11Renderer::Present(0, 0);
 }
 
 void Game::Update()
