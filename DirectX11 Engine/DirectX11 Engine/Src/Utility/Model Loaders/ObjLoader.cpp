@@ -12,7 +12,7 @@ using namespace DirectX;
 #include <fstream>
 using namespace std;
 
-bool ObjLoader::LoadObjFile(char* _filename, bool _usesBumpMap, int& _vertexCount, int& _textureCount, int& _normalCount, int& _faceCount)
+bool ObjLoader::LoadObjFile(char* _filename, bool _hasVertexNormals, int& _vertexCount, int& _textureCount, int& _normalCount, int& _faceCount)
 {
 	//Get the filecounts for the OBJ file
 	ifstream fin;
@@ -69,12 +69,12 @@ bool ObjLoader::LoadObjFile(char* _filename, bool _usesBumpMap, int& _vertexCoun
 
 	fin.close();
 
-	LoadDataStructures(_filename, _usesBumpMap, _vertexCount, _textureCount, _normalCount, _faceCount);
+	LoadDataStructures(_filename, _hasVertexNormals, _vertexCount, _textureCount, _normalCount, _faceCount);
 
 	return true;
 }
 
-bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vertexCount, int _textureCount, int _normalCount, int _faceCount)
+bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int _vertexCount, int _textureCount, int _normalCount, int _faceCount)
 {
 	Game::GetTimer().TimeStep();
 	float timeStart = (Game::GetTimer().GetDeltaTimeFloat() / 1000.0f);
@@ -129,6 +129,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		return false;
 	}
 
+	int linesRead = 0;
 	//Read in the vertices, texture coordinates, and normals into the data structures.
 	//Important: Also convert to left hand coordinate system since Maya uses right hand coordinate system.
 	fin.get(input);
@@ -177,25 +178,28 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 				fin >> faces[faceIndex].vIndex3;
 				fin >> input2;
 				fin >> faces[faceIndex].tIndex3;
-				if(!_usesBumpMap)
+				if(_hasVertexNormals)
 				{
+					fin >> input2;
 					fin >> faces[faceIndex].nIndex3;
 				}
 
 				fin	>> faces[faceIndex].vIndex2;
 				fin >> input2;
 				fin >> faces[faceIndex].tIndex2;
-				if(!_usesBumpMap)
+				if(_hasVertexNormals)
 				{
+					fin >> input2;
 					fin >> faces[faceIndex].nIndex2;
 				}
 
 				fin	>> faces[faceIndex].vIndex1;
 				fin >> input2;
 				fin >> faces[faceIndex].tIndex1;
-				if(!_usesBumpMap)
+				if(_hasVertexNormals)
 				{
-					fin >> faces[faceIndex].nIndex3;
+					fin >> input2;
+					fin >> faces[faceIndex].nIndex1;
 				}
 
 				faceIndex ++;
@@ -207,7 +211,11 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		{
 			fin.get(input);
 		}
-
+		linesRead ++;
+		if(linesRead == 30)
+		{
+			bool stopHere = true;
+		}
 		//Start reading the beginning of the next line
 		fin.get(input);
 	}
@@ -234,7 +242,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 	fout << "Vertex Count:" << (_faceCount * 3) << endl;
 	fout << endl;
 	fout << "Uses BumpMap ";
-	fout << _usesBumpMap;
+	fout << _hasVertexNormals;
 	fout << endl;
 	fout << "Data:" << endl;
 	fout << endl;
@@ -255,7 +263,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		fout << texCoords[tIndex].x;
 		fout << ' ';
 		fout << texCoords[tIndex].y;
-// 		if(!_usesBumpMap)
+// 		if(_hasVertexNormals)
 // 		{
 // 			fout << ' ';
 // 			fout << normals[nIndex].x;
@@ -270,7 +278,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		fout << 0;
 		fout << ' ';
 		fout << 0;
-		fout << endl;		
+ 		fout << endl;		
 
 		vIndex = faces[i].vIndex2 - 1;
 		tIndex = faces[i].tIndex2 - 1;
@@ -285,7 +293,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		fout << texCoords[tIndex].x;
 		fout << ' ';
 		fout << texCoords[tIndex].y;		
-// 		if(!_usesBumpMap)
+// 		if(_hasVertexNormals)
 // 		{
 // 			fout << ' ';
 // 			fout << normals[nIndex].x;
@@ -300,7 +308,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		fout << 0;
 		fout << ' ';
 		fout << 0;
-		fout << endl;
+ 		fout << endl;
 		
 
 		vIndex = faces[i].vIndex3 - 1;
@@ -316,7 +324,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _usesBumpMap, int _vert
 		fout << texCoords[tIndex].x;
 		fout << ' ';
 		fout << texCoords[tIndex].y;
-// 		if(!_usesBumpMap)
+// 		if(_hasVertexNormals)
 // 		{
 // 			fout << ' ';
 // 			fout << normals[nIndex].x;

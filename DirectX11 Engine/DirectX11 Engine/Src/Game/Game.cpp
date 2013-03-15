@@ -255,10 +255,10 @@ void Game::InitializeObjects()
 	//ATTEMPT AT LOADING ALTAIR
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	//ObjLoader::LoadObjFile("Res/Models/Altair/altair.obj", true, vertexCount, textureCount, normalCount, faceCount);
+	//ObjLoader::LoadObjFile("Res/Models/Fireman/Fireman.obj", false, vertexCount, textureCount, normalCount, faceCount);
 
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/altair.txt", L"Res/Textures/seafloor.dds");
+	"Res/Objects/Fireman.txt", L"Res/Textures/seafloor.dds");
 
 
 	lightDiffuse = new LightClass();
