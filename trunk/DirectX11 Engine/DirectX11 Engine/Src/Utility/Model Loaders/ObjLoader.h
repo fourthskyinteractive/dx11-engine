@@ -15,8 +15,8 @@ public:
 		int nIndex1, nIndex2, nIndex3;
 	};
 
-	static bool LoadObjFile(char* _filename, bool _usesBumpMap, int& _vertexCount, int& _textureCount, int& _normalCount, int& _faceCount);
-	static bool LoadDataStructures(char* _filename, bool _usesBumpMap, int _vertexCount, int _textureCount, int _normalCount, int _faceCount);
+	static bool LoadObjFile(char* _filename, bool _hasVertexNormals, int& _vertexCount, int& _textureCount, int& _normalCount, int& _faceCount);
+	static bool LoadDataStructures(char* _filename, bool _hasVertexNormals, int _vertexCount, int _textureCount, int _normalCount, int _faceCount);
 	static char* GetModelName(char* _filename);
 };
 
