@@ -263,7 +263,7 @@ void Game::InitializeObjects()
 
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 	"Res/Objects/altairTemp.txt");
-	cubeObjectTexture->AddTexture(L"Res/Textures/seafloor.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/boots.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
