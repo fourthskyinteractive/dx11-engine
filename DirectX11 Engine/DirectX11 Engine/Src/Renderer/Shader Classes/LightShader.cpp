@@ -38,13 +38,13 @@ void LightShader::Shutdown()
 	ShutdownShader();
 }
 
-bool LightShader::Render(XMFLOAT4X4 _world, XMFLOAT4X4 _viewProjection, ID3D11ShaderResourceView* _texture,
+bool LightShader::Render(XMFLOAT4X4 _world, XMFLOAT4X4 _viewProjection, ID3D11ShaderResourceView** _textureArray,
 						 XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor, int _indexCount)
 {
 	bool result;
 
 	//Set the shader parameters that it will use for rendering
-	result = UpdateShaderConstants(_world, _viewProjection, _texture, _lightDirection, _diffuseColor, _ambientColor);
+	result = UpdateShaderConstants(_world, _viewProjection, _textureArray, _lightDirection, _diffuseColor, _ambientColor);
 	if(!result)
 	{
 		return false;
@@ -61,7 +61,7 @@ bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 	vertexShaderIndex = _vertexShaderIndex;
 	pixelShaderIndex = _pixelShaderIndex;
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[5];
 	unsigned int numElements;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
@@ -96,6 +96,22 @@ bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
+
+	polygonLayout[3].SemanticName = "TANGENT";
+	polygonLayout[3].SemanticIndex = 0;
+	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[3].InputSlot = 0;
+	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[3].InstanceDataStepRate = 0;
+
+	polygonLayout[4].SemanticName = "BINORMAL";
+	polygonLayout[4].SemanticIndex = 0;
+	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[4].InputSlot = 0;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[4].InstanceDataStepRate = 0;
 
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
@@ -200,7 +216,7 @@ void LightShader::ShutdownShader()
 	}
 }
 
-bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, ID3D11ShaderResourceView* _texture, XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor)
+bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, ID3D11ShaderResourceView** _textureArray, XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor)
 {
 	HRESULT hr;
 
@@ -228,7 +244,7 @@ bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _vie
 
 	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferNumber, 1, &constantBuffer);
 
-	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_texture);
+	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 17, _textureArray);
 
 	lightBufferData.ambientColor = _ambientColor;
 	lightBufferData.diffuseColor = _diffuseColor;
