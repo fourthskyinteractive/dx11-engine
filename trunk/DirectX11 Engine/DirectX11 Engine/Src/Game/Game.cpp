@@ -164,7 +164,7 @@ void Game::Input(float _deltaTime)
 
 	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
-		float rotationScale = 30.0f;
+		float rotationScale = 5.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
 		float deltaY = (float)currMouseY - (float)prevMouseY;
 
@@ -259,14 +259,31 @@ void Game::InitializeObjects()
 	//ATTEMPT AT LOADING ALTAIR
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
+	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
 
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 	"Res/Objects/altairTemp.txt");
+
 	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/boots.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/bootsN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/eye.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/face.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/faceN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/gloves.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/glovesN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/hood.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/hoodN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/pants.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/pantsN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/shirt.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/shirtN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/sword.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordN.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordSaber.dds");
+	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordSaberN.dds");
 
 	lightDiffuse = new LightClass();
-	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	lightDiffuse->SetAmbientColor(1.0f, 1.0f, 1.0f, 1.0f);
 	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	lightDiffuse->SetDirection(0.0f, 0.0f, 1.0f);
 }

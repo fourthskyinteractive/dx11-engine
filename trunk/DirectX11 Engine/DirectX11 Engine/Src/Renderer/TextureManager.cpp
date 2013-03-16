@@ -38,6 +38,11 @@ ID3D11ShaderResourceView* TextureManager::GetTexture(int _index)
 	return textures[_index];
 }
 
+void* TextureManager::GetTextureArrayPointer()
+{
+	return &textures[0];
+}
+
 int TextureManager::NumberOfTextures()
 {
 	return textures.size();

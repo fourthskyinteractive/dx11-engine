@@ -34,6 +34,7 @@ bool CubeObjectTexture::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rot
 	}
 
 	shaderUsed.Initialize();
+	CalculateModelVectors();
 	result = InitializeBuffers();
 	if(!result)
 	{
@@ -90,6 +91,8 @@ bool CubeObjectTexture::InitializeBuffers()
 		vertices[i].position = XMFLOAT4(model[i].x, model[i].y, model[i].z, model[i].w);
 		vertices[i].texture = XMFLOAT2(model[i].tu, model[i].tv);
 		vertices[i].normal = XMFLOAT3(model[i].nx, model[i].ny, model[i].nz);
+		vertices[i].tangent = XMFLOAT3(model[i].tx, model[i].ty, model[i].tz);
+		vertices[i].binormal = XMFLOAT3(model[i].bx, model[i].by, model[i].bz);
 
 		indices[i] = i;
 	}
@@ -216,7 +219,7 @@ void CubeObjectTexture::RenderBuffers()
 	XMFLOAT4X4 viewProj;
 	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
 
-	shaderUsed.Render(worldMatrix, viewProj, textures->GetTexture(0), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), Game::lightDiffuse->GetAmbientColor(), indexCount);
+	shaderUsed.Render(worldMatrix, viewProj, (ID3D11ShaderResourceView**)textures->GetTextureArrayPointer(), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), Game::lightDiffuse->GetAmbientColor(), indexCount);
 }
 
 void CubeObjectTexture::ReleaseTextures()
@@ -281,6 +284,170 @@ bool CubeObjectTexture::LoadModel(char* _filePath)
 	fin.close();
 
  	return true;
+}
+
+void CubeObjectTexture::CalculateModelVectors()
+{
+	int faceCount, i, index;
+	TempVertexType vertex1, vertex2, vertex3;
+	VectorType tangent, binormal, normal;
+
+
+	// Calculate the number of faces in the model.
+	faceCount = vertexCount / 3;
+
+	// Initialize the index to the model data.
+	index = 0;
+
+	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
+	for(i=0; i<faceCount; i++)
+	{
+		// Get the three vertices for this face from the model.
+		vertex1.x = model[index].x;
+		vertex1.y = model[index].y;
+		vertex1.z = model[index].z;
+		vertex1.tu = model[index].tu;
+		vertex1.tv = model[index].tv;
+		vertex1.nx = model[index].nx;
+		vertex1.ny = model[index].ny;
+		vertex1.nz = model[index].nz;
+		index++;
+
+		vertex2.x = model[index].x;
+		vertex2.y = model[index].y;
+		vertex2.z = model[index].z;
+		vertex2.tu = model[index].tu;
+		vertex2.tv = model[index].tv;
+		vertex2.nx = model[index].nx;
+		vertex2.ny = model[index].ny;
+		vertex2.nz = model[index].nz;
+		index++;
+
+		vertex3.x = model[index].x;
+		vertex3.y = model[index].y;
+		vertex3.z = model[index].z;
+		vertex3.tu = model[index].tu;
+		vertex3.tv = model[index].tv;
+		vertex3.nx = model[index].nx;
+		vertex3.ny = model[index].ny;
+		vertex3.nz = model[index].nz;
+		index++;
+
+		// Calculate the tangent and binormal of that face.
+		CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
+
+		// Calculate the new normal using the tangent and binormal.
+		CalculateNormal(tangent, binormal, normal);
+
+		// Store the normal, tangent, and binormal for this face back in the model structure.
+		model[index-1].nx = normal.x;
+		model[index-1].ny = normal.y;
+		model[index-1].nz = normal.z;
+		model[index-1].tx = tangent.x;
+		model[index-1].ty = tangent.y;
+		model[index-1].tz = tangent.z;
+		model[index-1].bx = binormal.x;
+		model[index-1].by = binormal.y;
+		model[index-1].bz = binormal.z;
+
+		model[index-2].nx = normal.x;
+		model[index-2].ny = normal.y;
+		model[index-2].nz = normal.z;
+		model[index-2].tx = tangent.x;
+		model[index-2].ty = tangent.y;
+		model[index-2].tz = tangent.z;
+		model[index-2].bx = binormal.x;
+		model[index-2].by = binormal.y;
+		model[index-2].bz = binormal.z;
+
+		model[index-3].nx = normal.x;
+		model[index-3].ny = normal.y;
+		model[index-3].nz = normal.z;
+		model[index-3].tx = tangent.x;
+		model[index-3].ty = tangent.y;
+		model[index-3].tz = tangent.z;
+		model[index-3].bx = binormal.x;
+		model[index-3].by = binormal.y;
+		model[index-3].bz = binormal.z;
+	}
+
+	return;
+}
+
+void CubeObjectTexture::CalculateTangentBinormal(TempVertexType _vertex1, TempVertexType _vertex2, TempVertexType _vertex3, VectorType& tangent, VectorType& binormal)
+{
+	float vector1[3], vector2[3];
+	float tuVector[2], tvVector[2];
+	float den;
+	float length;
+
+
+	// Calculate the two vectors for this face.
+	vector1[0] = _vertex2.x - _vertex1.x;
+	vector1[1] = _vertex2.y - _vertex1.y;
+	vector1[2] = _vertex2.z - _vertex1.z;
+
+	vector2[0] = _vertex3.x - _vertex1.x;
+	vector2[1] = _vertex3.y - _vertex1.y;
+	vector2[2] = _vertex3.z - _vertex1.z;
+
+	// Calculate the tu and tv texture space vectors.
+	tuVector[0] = _vertex2.tu - _vertex1.tu;
+	tvVector[0] = _vertex2.tv - _vertex1.tv;
+
+	tuVector[1] = _vertex3.tu - _vertex1.tu;
+	tvVector[1] = _vertex3.tv - _vertex1.tv;
+
+	// Calculate the denominator of the tangent/binormal equation.
+	den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+
+	// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
+	tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
+	tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+	tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+
+	binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
+	binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+	binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
+
+	// Calculate the length of this normal.
+	length = sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
+
+	// Normalize the normal and then store it
+	tangent.x = tangent.x / length;
+	tangent.y = tangent.y / length;
+	tangent.z = tangent.z / length;
+
+	// Calculate the length of this normal.
+	length = sqrt((binormal.x * binormal.x) + (binormal.y * binormal.y) + (binormal.z * binormal.z));
+
+	// Normalize the normal and then store it
+	binormal.x = binormal.x / length;
+	binormal.y = binormal.y / length;
+	binormal.z = binormal.z / length;
+
+	return;
+}
+
+void CubeObjectTexture::CalculateNormal(VectorType _tangent, VectorType _binormal, VectorType& _normal)
+{
+	float length;
+
+
+	// Calculate the cross product of the _tangent and _bi_normal which will give the normal vector.
+	_normal.x = (_tangent.y * _binormal.z) - (_tangent.z * _binormal.y);
+	_normal.y = (_tangent.z * _binormal.x) - (_tangent.x * _binormal.z);
+	_normal.z = (_tangent.x * _binormal.y) - (_tangent.y * _binormal.x);
+
+	// Calculate the length of the normal.
+	length = sqrt((_normal.x * _normal.x) + (_normal.y * _normal.y) + (_normal.z * _normal.z));
+
+	// Normalize the normal.
+	_normal.x = _normal.x / length;
+	_normal.y = _normal.y / length;
+	_normal.z = _normal.z / length;
+
+	return;
 }
 
 void CubeObjectTexture::ReleaseModel()

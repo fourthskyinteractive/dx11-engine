@@ -16,7 +16,8 @@ private:
 		XMFLOAT4 position;
 		XMFLOAT2 texture;
 		XMFLOAT3 normal;
-		int		 textureIndex;
+		XMFLOAT3 tangent;
+		XMFLOAT3 binormal;
 	};
 
 	struct ModelType
@@ -24,6 +25,20 @@ private:
 		float x, y, z, w;
 		float tu, tv;
 		float nx, ny, nz;
+		float tx, ty, tz;
+		float bx, by, bz;
+	};
+
+	struct TempVertexType
+	{
+		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
+	};
+
+	struct VectorType
+	{
+		float x, y, z;
 	};
 
 public:
@@ -51,6 +66,11 @@ private:
 	void ReleaseTextures();
 	bool LoadModel(char* _filePath);
 	void ReleaseModel();
+
+	void CalculateModelVectors();
+	void CalculateTangentBinormal(TempVertexType _vertex1, TempVertexType _vertex2, TempVertexType _vertex3,
+		VectorType& tangent, VectorType& binormal);
+	void CalculateNormal(VectorType _tangent, VectorType _binormal, VectorType& _normal);
 
 private:
 	LightShader shaderUsed;
