@@ -17,6 +17,7 @@ struct PixelIn
 	float4 pos		: SV_POSITION;
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
+	float textureIndex: TEXINDEX;
 };
 
 
@@ -29,7 +30,10 @@ float4 PS(PixelIn input) : SV_TARGET
 	
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
-	textureColor = float4(1.0f, 1.0f, 1.0f, 1.0f);//shaderTexture.Sample(sampleType, input.tex);
+	if(input.textureIndex == 5.0f)
+		textureColor = shaderTexture.Sample(sampleType, input.tex);
+	else
+		return float4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	//Set the default output color to the ambient light value for all pixels
 	color = ambientColor;
@@ -55,5 +59,5 @@ float4 PS(PixelIn input) : SV_TARGET
 	//Multiply the texture pixel and the final diffuse color to get the final color result
 	color = color * textureColor;
 
-	return float4(1.0f, 0.0f, 0.0f, 1.0f);
+	return color;//float4(1.0f, 0.0f, 0.0f, 1.0f);
 }

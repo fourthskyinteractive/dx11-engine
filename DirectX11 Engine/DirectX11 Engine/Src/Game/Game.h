@@ -29,7 +29,7 @@ public:
 	static void Run();
 	static void Render();
 	static void Update();
-	static void Input();
+	static void Input(float _deltaTime);
 	static void Exit();
 	static void CalculateFrameStats();
 	static Timer& GetTimer(){return timer;}
