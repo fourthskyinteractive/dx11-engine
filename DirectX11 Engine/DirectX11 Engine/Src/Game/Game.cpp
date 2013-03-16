@@ -259,7 +259,7 @@ void Game::InitializeObjects()
 	//ATTEMPT AT LOADING ALTAIR
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
+	ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
 
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 	"Res/Objects/altairTemp.txt");
