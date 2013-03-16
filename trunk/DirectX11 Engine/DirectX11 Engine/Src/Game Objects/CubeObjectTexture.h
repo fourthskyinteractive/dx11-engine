@@ -13,14 +13,15 @@ class CubeObjectTexture
 private:
 	struct VertexType
 	{
-		XMFLOAT3 position;
+		XMFLOAT4 position;
 		XMFLOAT2 texture;
 		XMFLOAT3 normal;
+		int		 textureIndex;
 	};
 
 	struct ModelType
 	{
-		float x, y, z;
+		float x, y, z, w;
 		float tu, tv;
 		float nx, ny, nz;
 	};
@@ -30,7 +31,7 @@ public:
 	CubeObjectTexture(const CubeObjectTexture&);
 	~CubeObjectTexture();
 
-	bool Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _modelFilename, WCHAR* _textureFilename);
+	bool Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _modelFilename);
 	void Shutdown();
 	void Render();
 
@@ -39,13 +40,14 @@ public:
 	int GetNumTextures(){return textures->NumberOfTextures();}
 	ID3D11ShaderResourceView* GetTexture(int _textureIndex){return textures->GetTexture(_textureIndex);}
 	void UpdateWorldMatrix(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation);
+	void AddTexture(WCHAR* _filePath);
 
 private:
 	bool InitializeBuffers();
 	void ShutdownBuffers();
 	void RenderBuffers();
 
-	bool AddTexture(WCHAR* _filePath);
+	
 	void ReleaseTextures();
 	bool LoadModel(char* _filePath);
 	void ReleaseModel();

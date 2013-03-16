@@ -113,11 +113,13 @@ void Game::Render()
 
 void Game::Update()
 {
-	//Get Input
-	Input();
 	timer.TimeStep();
+	float deltaTime = (timer.GetDeltaTimeFloat() / 1000.0f);
 
-	degrees += (30.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
+	//Get Input
+	Input(deltaTime);
+
+	degrees += (30.0f * deltaTime);
 
 	for(int i = 0; i < 1; ++i)
 	{
@@ -128,7 +130,7 @@ void Game::Update()
 	camera->UpdateViewMatrix();
 }
 
-void Game::Input()
+void Game::Input(float _deltaTime)
 {
 	//Update the directInput
 	directInput->Update();
@@ -139,19 +141,19 @@ void Game::Input()
 
 	if(directInput->IsKeyPressed(DIK_W))
 	{
-		camera->Walk(5.0f * (timer.GetDeltaTimeFloat() / 1000.0f));
+		camera->Walk(5.0f * _deltaTime);
 	}
 	if(directInput->IsKeyPressed(DIK_S))
 	{
-		camera->Walk(-5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Walk(-5.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_A))
 	{
-		camera->Strafe(-5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Strafe(-5.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_D))
 	{
-		camera->Strafe(5.0f * (timer.GetDeltaTimeFloat() / 1000.0f)); 
+		camera->Strafe(5.0f * _deltaTime); 
 	}
 
 	if(directInput->IsKeyPressed(DIK_B))
@@ -162,18 +164,18 @@ void Game::Input()
 
 	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
-		float rotationScale = 5.0f;
+		float rotationScale = 30.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
 		float deltaY = (float)currMouseY - (float)prevMouseY;
 
 		if(deltaX != 0)
 		{
-			camera->Yaw((deltaX * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
+			camera->Yaw((deltaX * rotationScale) * _deltaTime);
 		}
 
 		if(deltaY != 0)
 		{
-			camera->Pitch((deltaY * rotationScale) * (timer.GetDeltaTimeFloat() / 1000.0f));
+			camera->Pitch((deltaY * rotationScale) * _deltaTime);
 		}
 	}
 
@@ -243,6 +245,8 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/PixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/TextureVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/TexturePixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTextureVertexShader.cso", VERTEX_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTexturePixelShader.cso", PIXEL_SHADER);
 }
 
 void Game::InitializeObjects()
@@ -255,11 +259,11 @@ void Game::InitializeObjects()
 	//ATTEMPT AT LOADING ALTAIR
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	//ObjLoader::LoadObjFile("Res/Models/Fireman/Fireman.obj", false, vertexCount, textureCount, normalCount, faceCount);
+	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
 
 	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/Fireman.txt", L"Res/Textures/seafloor.dds");
-
+	"Res/Objects/altairTemp.txt");
+	cubeObjectTexture->AddTexture(L"Res/Textures/seafloor.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);

@@ -24,7 +24,7 @@ CubeObjectTexture::~CubeObjectTexture()
 
 }
 
-bool CubeObjectTexture::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _modelFilename, WCHAR* _textureFilename)
+bool CubeObjectTexture::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _modelFilename)
 {
 	bool result;
 	result = LoadModel(_modelFilename);
@@ -40,13 +40,12 @@ bool CubeObjectTexture::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rot
 		return false;
 	}
 
-	int textureIndex = textures->AddTexture(D3D11Renderer::d3dDevice, _textureFilename);
-	if(!textureIndex)
-	{
-		return false;
-	}
-
 	return true;
+}
+
+void CubeObjectTexture::AddTexture(WCHAR* _filePath)
+{
+	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
 }
 
 void CubeObjectTexture::Shutdown()
@@ -88,7 +87,7 @@ bool CubeObjectTexture::InitializeBuffers()
 	//Load the vertex array and index array with data
 	for(int i = 0; i < vertexCount; ++i)
 	{
-		vertices[i].position = XMFLOAT3(model[i].x, model[i].y, model[i].z);
+		vertices[i].position = XMFLOAT4(model[i].x, model[i].y, model[i].z, model[i].w);
 		vertices[i].texture = XMFLOAT2(model[i].tu, model[i].tv);
 		vertices[i].normal = XMFLOAT3(model[i].nx, model[i].ny, model[i].nz);
 
@@ -273,7 +272,7 @@ bool CubeObjectTexture::LoadModel(char* _filePath)
 	// Read in the vertex data.
 	for(i=0; i<vertexCount; i++)
 	{
-		fin >> model[i].x >> model[i].y >> model[i].z;
+		fin >> model[i].x >> model[i].y >> model[i].z >> model[i].w;
 		fin >> model[i].tu >> model[i].tv;
 		fin >> model[i].nx >> model[i].ny >> model[i].nz;
 	}
@@ -281,7 +280,7 @@ bool CubeObjectTexture::LoadModel(char* _filePath)
 	// Close the model file.
 	fin.close();
 
-	return true;
+ 	return true;
 }
 
 void CubeObjectTexture::ReleaseModel()

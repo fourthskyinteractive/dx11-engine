@@ -79,7 +79,8 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 	Game::GetTimer().TimeStep();
 	float timeStart = (Game::GetTimer().GetDeltaTimeFloat() / 1000.0f);
 	float timeEnd;
-	XMFLOAT3* vertices;
+	float textureIndex = -1.0;
+	XMFLOAT4* vertices;
 	XMFLOAT3* texCoords;
 	XMFLOAT3* normals;
 
@@ -90,7 +91,7 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 	ofstream fout;
 
 	//Initialize the four data structures
-	vertices = new XMFLOAT3[_vertexCount];
+	vertices = new XMFLOAT4[_vertexCount];
 	if(!vertices)
 	{
 		return false;
@@ -135,12 +136,17 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 	fin.get(input);
 	while(!fin.eof())
 	{
+		if(input == 'g')
+		{
+			textureIndex ++;
+		}
 		if(input == 'v')
 		{
 			fin.get(input);
 			if(input == ' ')
 			{
 				fin >> vertices[vertexIndex].x >> vertices[vertexIndex].y >> vertices[vertexIndex].z;
+				vertices[vertexIndex].w = textureIndex;
 
 				//Invert the Z vertex to change to left hand system.
 				vertices[vertexIndex].z = vertices[vertexIndex].z * -1;
@@ -223,7 +229,6 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 	//Close the file
 	fin.close();
 
-	Game::GetTimer().TimeStep();
 	timeEnd = (Game::GetTimer().GetDeltaTimeFloat() / 1000.0f);
 	float actualTime = timeEnd - timeStart;
 
@@ -260,6 +265,8 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 		fout << ' ';
 		fout << vertices[vIndex].z;
 		fout << ' ';
+		fout << vertices[vIndex].w;
+		fout << ' ';
 		fout << texCoords[tIndex].x;
 		fout << ' ';
 		fout << texCoords[tIndex].y;
@@ -289,6 +296,8 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 		fout << vertices[vIndex].y;
 		fout << ' ';
 		fout << vertices[vIndex].z;
+		fout << ' ';
+		fout << vertices[vIndex].w;
 		fout << ' ';
 		fout << texCoords[tIndex].x;
 		fout << ' ';
@@ -320,6 +329,8 @@ bool ObjLoader::LoadDataStructures(char* _filename, bool _hasVertexNormals, int 
 		fout << vertices[vIndex].y;
 		fout << ' ';
 		fout << vertices[vIndex].z;
+		fout << ' ';
+		fout << vertices[vIndex].w;
 		fout << ' ';
 		fout << texCoords[tIndex].x;
 		fout << ' ';

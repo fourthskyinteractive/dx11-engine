@@ -24,7 +24,7 @@ bool LightShader::Initialize()
 {
 	bool result;
 
-	result = InitializeShader(TEXTURE_VERTEX_SHADER, TEXTURE_PIXEL_SHADER);
+	result = InitializeShader(MULTIPLE_TEXTURE_VERTEX_SHADER, MULTIPLE_TEXTURE_PIXEL_SHADER);
 	if(!result)
 	{
 		return false;
@@ -69,7 +69,7 @@ bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 
 	polygonLayout[0].SemanticName = "POSITION";
 	polygonLayout[0].SemanticIndex = 0;
-	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[0].InputSlot = 0;
 	polygonLayout[0].AlignedByteOffset = 0;
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
