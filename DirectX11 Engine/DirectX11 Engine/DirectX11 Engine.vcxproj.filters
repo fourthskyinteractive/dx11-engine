@@ -105,9 +105,6 @@
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp">
       <Filter>Misc\Model Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utility\Model Loaders\FBXModelLoader.cpp">
-      <Filter>Misc\Model Loaders</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -159,9 +156,6 @@
       <Filter>Game Objects\Lights</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h">
-      <Filter>Misc\Model Loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Utility\Model Loaders\FBXModelLoader.h">
       <Filter>Misc\Model Loaders</Filter>
     </ClInclude>
   </ItemGroup>
