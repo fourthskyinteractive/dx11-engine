@@ -70,7 +70,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, true); 
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false); 
 	LoadCompiledShaders();
 	InitializeObjects();
 
@@ -108,7 +108,7 @@ void Game::Render()
 	cubeObjectTexture->Render();
 
 
-	D3D11Renderer::Present(0, 0);
+	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
 
 void Game::Update()
@@ -283,7 +283,7 @@ void Game::InitializeObjects()
 	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordSaberN.dds");
 
 	lightDiffuse = new LightClass();
-	lightDiffuse->SetAmbientColor(1.0f, 1.0f, 1.0f, 1.0f);
+	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);
 	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	lightDiffuse->SetDirection(0.0f, 0.0f, 1.0f);
 }
