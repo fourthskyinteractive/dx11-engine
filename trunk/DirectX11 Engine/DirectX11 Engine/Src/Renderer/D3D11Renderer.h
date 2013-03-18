@@ -5,6 +5,7 @@
 #include "../Game/Definitions.h"
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <dxgi.h>
 using namespace DirectX;
 
 class D3D11Renderer
@@ -22,12 +23,17 @@ public:
 
 	static void BackfaceCulling(bool _backfaceCulling);
 
+	static bool vsyncEnabled;
+	static int videoCardMemory;
+	static char videoCardDescription[128];
+
 	static HWND hwnd;
 	static ID3D11Device* d3dDevice;
 	static ID3D11DeviceContext* d3dImmediateContext;
 	static IDXGISwapChain* swapChain;
 	static ID3D11RenderTargetView* renderTargetView;
 	static ID3D11Texture2D* depthStencilBuffer;
+	static ID3D11DepthStencilState* depthStencilState;
 	static ID3D11DepthStencilView* depthStencilView;
 	static ID3D11RasterizerState* rasterStateNoCulling;
 	static ID3D11RasterizerState* rasterStateBackfaceCulling;

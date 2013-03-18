@@ -115,16 +115,16 @@ float4 PS(PixelIn input) : SV_TARGET
 	lightDir = normalize(lightDir);
 
 	//Calculate the amount of light on this pixel
-	//lightIntensity = saturate(dot(bumpNormal, lightDir));
+	lightIntensity = saturate(dot(bumpNormal, lightDir));
 
-	//if(lightIntensity > 0.0f)
-	//{
+	if(lightIntensity > 0.0f)
+	{
 		//Determine the final diffuse color based on the amount of light intensity
-		//color += (diffuseColor * lightIntensity);
-	//}
+		color += (diffuseColor * lightIntensity);
+	}
 
 	//Determine the final amount of diffuse color based on the diffuse color combined with the light intensity
-	//color = saturate(color);
+	color = saturate(color);
 
 	//Multiply the texture pixel and the final diffuse color to get the final color result
 	color = color * textureColor;

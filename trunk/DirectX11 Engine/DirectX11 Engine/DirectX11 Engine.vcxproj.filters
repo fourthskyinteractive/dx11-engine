@@ -46,7 +46,7 @@
     <Filter Include="Game Objects\Lights">
       <UniqueIdentifier>{d4c83715-5ee7-46b3-8761-99380b50fb32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Misc\Obj Loader">
+    <Filter Include="Misc\Model Loaders">
       <UniqueIdentifier>{4ffed362-9101-43de-8575-1ca45ddc08b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -103,7 +103,10 @@
       <Filter>Game Objects\Lights</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp">
-      <Filter>Misc\Obj Loader</Filter>
+      <Filter>Misc\Model Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utility\Model Loaders\FBXModelLoader.cpp">
+      <Filter>Misc\Model Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,7 +159,10 @@
       <Filter>Game Objects\Lights</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h">
-      <Filter>Misc\Obj Loader</Filter>
+      <Filter>Misc\Model Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utility\Model Loaders\FBXModelLoader.h">
+      <Filter>Misc\Model Loaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

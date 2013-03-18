@@ -70,7 +70,7 @@ bool ObjLoader::LoadObjFile(char* _filename, bool _hasVertexNormals, int& _verte
 	fin.close();
 
 	LoadDataStructures(_filename, _hasVertexNormals, _vertexCount, _textureCount, _normalCount, _faceCount);
-
+	
 	return true;
 }
 
