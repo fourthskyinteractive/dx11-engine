@@ -95,7 +95,6 @@
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
     <ClCompile Include="Src\Utility\Misc\DebugOutput.cpp" />
     <ClCompile Include="Src\Utility\Misc\Timer.cpp" />
-    <ClCompile Include="Src\Utility\Model Loaders\FBXModelLoader.cpp" />
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +114,6 @@
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h" />
     <ClInclude Include="Src\Utility\Misc\Timer.h" />
-    <ClInclude Include="Src\Utility\Model Loaders\FBXModelLoader.h" />
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h" />
   </ItemGroup>
   <ItemGroup>
