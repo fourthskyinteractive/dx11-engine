@@ -5,6 +5,7 @@
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Renderer/ShaderManager.h"
 #include "../Utility/Model Loaders/ObjLoader.h"
+#include "../Utility/Model Loaders/FBXLoader.h"
 
 //#include <D3DX11async.h>
 #include <fstream>
@@ -24,7 +25,7 @@ Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
 CubeObjectColor					Game::cubeObject;
-CubeObjectTexture*				Game::cubeObjectTexture = NULL;
+Model*							Game::model = NULL;
 LightClass*						Game::lightDiffuse = NULL;
 
 ID3D11Buffer*					Game::boxVB;
@@ -70,7 +71,8 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false); 
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+
 	LoadCompiledShaders();
 	InitializeObjects();
 
@@ -104,8 +106,8 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	cubeObjectTexture->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(.10f, .10f, .10f), rotations[0]);
-	cubeObjectTexture->Render();
+	model->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(.10f, .10f, .10f), rotations[0]);
+	model->Render();
 
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
@@ -196,10 +198,10 @@ void Game::Exit()
 		delete lightDiffuse;
 		lightDiffuse = 0;
 	}
-	if(cubeObjectTexture)
+	if(model)
 	{
-		delete cubeObjectTexture;
-		cubeObjectTexture = 0;
+		delete model;
+		model = 0;
 	}
 
 	ReleaseCOM(boxVB);
@@ -251,8 +253,10 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
+	FBXLoader::Initialize();
+
 	//cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	cubeObjectTexture = new CubeObjectTexture();
+	model = new Model();
 	/*cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 	"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");*/
 
@@ -260,26 +264,26 @@ void Game::InitializeObjects()
 	int vertexCount, textureCount, normalCount, faceCount;
 
 	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
-	cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
+	model->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
 	"Res/Objects/altairTemp.txt");
 
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/boots.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/bootsN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/eye.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/face.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/faceN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/gloves.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/glovesN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/hood.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/hoodN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/pants.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/pantsN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/shirt.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/shirtN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/sword.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordN.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordSaber.dds");
-	cubeObjectTexture->AddTexture(L"Res/Models/Altair/tex/swordSaberN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/boots.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/bootsN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/eye.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/face.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/faceN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/gloves.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/glovesN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/hood.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/hoodN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/pants.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/pantsN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/shirt.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/shirtN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/sword.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/swordN.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/swordSaber.dds");
+	model->AddTexture(L"Res/Models/Altair/tex/swordSaberN.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);
