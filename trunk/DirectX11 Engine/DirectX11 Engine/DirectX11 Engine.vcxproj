@@ -82,7 +82,7 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightClass.cpp" />
-    <ClCompile Include="Src\Game Objects\Model.cpp" />
+    <ClCompile Include="Src\Game Objects\Mesh.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
     <ClCompile Include="Src\Input\DirectInput.cpp" />
@@ -103,7 +103,7 @@
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
     <ClInclude Include="Src\Game Objects\Lights\LightClass.h" />
-    <ClInclude Include="Src\Game Objects\Model.h" />
+    <ClInclude Include="Src\Game Objects\Mesh.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
     <ClInclude Include="Src\Input\DirectInput.h" />

@@ -10,13 +10,10 @@ public:
 	FBXLoader(const FBXLoader&);
 	~FBXLoader();
 
-	static void Initialize();
-	static void GetFbxInfo(FbxNode* _node);
+	static bool LoadFBX(char* _filePath);
+	static void FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray);
+	static void FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray);
 
 private:
-	static FbxManager* fbxManager;
-	static FbxIOSettings* fbxIOSettings;
-	static FbxImporter* fbxImporter;
-	static FbxScene* fbxScene;
 };
 #endif
