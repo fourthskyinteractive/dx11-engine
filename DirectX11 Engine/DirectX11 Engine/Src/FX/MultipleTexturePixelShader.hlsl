@@ -31,6 +31,8 @@ float4 PS(PixelIn input) : SV_TARGET
 	float3 lightDir;
 	float lightIntensity;
 	float4 color;
+
+	return float4(1.0f, 0.0f, 0.0f, 1.0f);
 	
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
