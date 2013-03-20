@@ -167,13 +167,13 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	if(FAILED(hr))
 	{
-		MessageBox(0, "D3D11CreateDevice Failed.", 0, 0);
+		printf("D3D11CreateDevice Failed.");
 		return false;
 	}
 
 	if(supportedFeatureLevel != D3D_FEATURE_LEVEL_11_0)
 	{
-		MessageBox(0, "Direct3D Feature Level 11 unsupported.", 0, 0);
+		printf("Direct3D Feature Level 11 unsupported.");
 		return false;
 	}
 
@@ -225,7 +225,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	if(hr == DXGI_ERROR_INVALID_CALL)
 	{
-		MessageBox(0, "Direct3D Feature Level 11 unsupported.", 0, 0);
+		printf("DX 11 Unsupported");
 		return false;
 	}
 

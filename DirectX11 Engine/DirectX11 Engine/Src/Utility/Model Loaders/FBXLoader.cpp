@@ -2,89 +2,103 @@
 
 #include "../../Game/Definitions.h"
 #include "../../Game/Game.h"
+#include "../../Game Objects/Mesh.h"
 
 #include <Windows.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;
 
-FbxManager*		FBXLoader::fbxManager = NULL;
-FbxIOSettings*	FBXLoader::fbxIOSettings = NULL;
-FbxImporter*	FBXLoader::fbxImporter = NULL;
-FbxScene*		FBXLoader::fbxScene = NULL;
-
-void FBXLoader::Initialize()
+bool FBXLoader::LoadFBX(char* _filePath)
 {
-	fbxManager = FbxManager::Create();
-
-	const char* filename = "Res/Models/soldier.fbx";
-
-	fbxIOSettings = FbxIOSettings::Create(fbxManager, IOSROOT);
-	fbxManager->SetIOSettings(fbxIOSettings);
-
-	fbxImporter = FbxImporter::Create(fbxManager, "FBXIMPORTER");
-
-	if(!fbxImporter->Initialize(filename, -1, fbxManager->GetIOSettings()))
+	FbxManager* fbxManager = FbxManager::Create();
+	if(!fbxManager)
 	{
-		bool ErrorHERE = true;
+		printf( "ERROR %s : %d failed creating FBX Manager!\n", __FILE__, __LINE__ );
 	}
 
-	fbxScene = FbxScene::Create(fbxManager, "MyScene");
+	FbxIOSettings* ioSettings = FbxIOSettings::Create(fbxManager, IOSROOT);
+	fbxManager->SetIOSettings(ioSettings);
 
-	fbxImporter->Import(fbxScene);
+	FbxString filePath = FbxGetApplicationDirectory();
+	fbxManager->LoadPluginsDirectory(filePath.Buffer());
 
-	fbxImporter->Destroy();
+	FbxScene* scene = FbxScene::Create(fbxManager, "");
 
-	FbxNode* rootNode = fbxScene->GetRootNode();
+	int fileMinor, fileRevision;
+	int sdkMajor, sdkMinor, sdkRevision;
+	int i, fileFormat;
 
-	if(rootNode)
+	FbxManager::GetFileFormatVersion(sdkMajor, sdkMinor, sdkRevision);
+	FbxImporter* importer = FbxImporter::Create(fbxManager, "");
+
+	if(!fbxManager->GetIOPluginRegistry()->DetectReaderFileFormat(_filePath, fileFormat))
 	{
-		GetFbxInfo(rootNode);
+		//Unrecognizable file format. Try to fall back on FbxImorter::eFBX_BINARY
+		fileFormat = fbxManager->GetIOPluginRegistry()->FindReaderIDByDescription("FBX binary (*.fbx)");
 	}
+
+	bool importStatus = importer->Initialize(_filePath, fileFormat, fbxManager->GetIOSettings());
+	importer->GetFileVersion(fileMinor, fileMinor, fileRevision);
+
+	if(!importStatus)
+	{
+		printf( "ERROR %s : %d FbxImporter Initialize failed!\n", __FILE__, __LINE__ );
+		return false;
+	}
+
+	importStatus = importer->Import(scene);
+
+	if(!importStatus)
+	{
+		printf( "ERROR %s : %d FbxImporter failed to import the file to the scene!\n", __FILE__, __LINE__ );
+		return false;
+	}
+
+	FbxAxisSystem sceneAxisSystem = scene->GetGlobalSettings().GetAxisSystem();
+	FbxAxisSystem axisSystem = FbxAxisSystem::DirectX;
+
+	if(sceneAxisSystem != axisSystem)
+	{
+		axisSystem.ConvertScene(scene);
+	}
+
+	FbxArray<FbxMesh*> meshes;
+	FillMeshArray(scene, meshes);
+
+	unsigned short vertexCount = 0;
+	unsigned short triangleCount = 0;
+	unsigned short faceCount = 0;
+	unsigned short materialCount = 0;
+	unsigned short indicesCount = 0;
+
+	
+
+	return true;
 }
 
-void FBXLoader::GetFbxInfo(FbxNode* _node)
+void FBXLoader::FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray)
 {
-	int numKids = _node->GetChildCount();
-	FbxNode* childNode = NULL;
-	XMFLOAT4* verts;
-	int* indices;
+	_meshArray.Clear();
+	FillMeshArrayRecursive(_scene->GetRootNode(), _meshArray);
+}
 
-	for(int i = 0; i < numKids; ++i)
+void FBXLoader::FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray)
+{
+	if(_node)
 	{
-		childNode = _node->GetChild(i);
-		FbxMesh* mesh = childNode->GetMesh();
-
-		if(mesh != NULL)
+		if(_node->GetNodeAttribute())
 		{
-			//Get the verts
-			int numVerts = mesh->GetControlPointsCount();
-			verts = new XMFLOAT4[numVerts];
-			for(int j = 0; j < numVerts; ++j)
+			if(_node->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
 			{
-				FbxVector4 vert = mesh->GetControlPointAt(j);
-				verts[j].x = vert.mData[0];
-				verts[j].y = vert.mData[1];
-				verts[j].z = vert.mData[2];
-			}
-
-			int numIndices = mesh->GetPolygonVertexCount();
-			indices = new int[numIndices];
-			indices = mesh->GetPolygonVertices();
-
-			int polyCount = mesh->GetPolygonCount();
-			for(int j = 0; j < polyCount; ++j)
-			{
-				FbxLayerElementArrayTemplate<FbxVector2>* uvVertices = 0;
-				mesh->GetTextureUV(&uvVertices, FbxLayerElement::eTextureDiffuse);
-
-				for(int k = 0; k < mesh->GetPolygonSize(j); ++k)
-				{
-					//FbxVector2 uv = uvVertices[mesh->GetTextureUVIndex(j, k)];
-				}
+				_meshArray.Add(_node->GetMesh());
 			}
 		}
-	}
 
-	bool win = true;
+		const int count = _node->GetChildCount();
+		for(int i = 0; i < count; ++i)
+		{
+			FillMeshArrayRecursive(_node->GetChild(i), _meshArray);
+		}
+	}
 }
