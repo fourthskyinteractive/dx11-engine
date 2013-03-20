@@ -72,7 +72,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 	unsigned short materialCount = 0;
 	unsigned short indicesCount = 0;
 
-	
+	Mesh::VertexType* veritces;
 
 	return true;
 }

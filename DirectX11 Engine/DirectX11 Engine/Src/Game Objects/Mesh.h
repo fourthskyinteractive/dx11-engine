@@ -10,7 +10,7 @@
 
 class Mesh
 {
-private:
+public:
 	struct VertexType
 	{
 		XMFLOAT4 position;
