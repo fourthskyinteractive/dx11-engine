@@ -482,7 +482,7 @@ bool OGLMesh::LoadFBX( const std::string& szFile )
 		usVertexCount = vMeshs[i]->GetControlPointsCount();
 		if( usVertexCount == 0 )
 			continue;
-
+		
 		usTriangleCount = vMeshs[i]->GetPolygonVertexCount() / 3;
 		usIndicesCount = vMeshs[i]->GetPolygonVertexCount();
 

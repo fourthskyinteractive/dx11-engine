@@ -13,6 +13,12 @@ public:
 	static bool LoadFBX(char* _filePath);
 	static void FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray);
 	static void FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray);
+	static char* GetModelName(char* _filePath);
+
+	struct Face
+	{
+		int indices[3];
+	};
 
 private:
 };

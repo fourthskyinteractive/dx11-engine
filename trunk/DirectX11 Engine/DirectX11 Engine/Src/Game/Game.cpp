@@ -253,6 +253,8 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
+
+	FBXLoader::LoadFBX("Res/Models/soldier.fbx");
 	//cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	mesh = new Mesh();
 	/*cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
@@ -263,7 +265,7 @@ void Game::InitializeObjects()
 
 	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
 	mesh->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/altairTemp.txt");
+	"Res/Objects/soldier.txt");
 
 	mesh->AddTexture(L"Res/Models/Altair/tex/boots.dds");
 	mesh->AddTexture(L"Res/Models/Altair/tex/bootsN.dds");
