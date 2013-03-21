@@ -112,9 +112,9 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 			FbxVector2 fbxUV(0, 0);
 
 			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0);
-			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
-			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
-			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
+			vertices[index].position.x = (float)fbxVerts[index][0];
+			vertices[index].position.y = (float)fbxVerts[index][1];
+			vertices[index].position.z = (float)fbxVerts[index][2];
 			vertices[index].position.w = 0;
 			meshes[i]->GetPolygonVertexNormal(j, 0, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
@@ -125,9 +125,9 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 			vertices[index].texture.y = (float)fbxUV[1];
 
 			face.indices[1] = index = meshes[i]->GetPolygonVertex(j, 1);
-			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
-			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
-			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
+			vertices[index].position.x = (float)fbxVerts[index][0];
+			vertices[index].position.y = (float)fbxVerts[index][1];
+			vertices[index].position.z = (float)fbxVerts[index][2];
 			vertices[index].position.w = 0;
 			meshes[i]->GetPolygonVertexNormal(j, 1, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
@@ -138,9 +138,9 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 			vertices[index].texture.y = (float)fbxUV[1];
 
 			face.indices[2] = index = meshes[i]->GetPolygonVertex(j, 2);
-			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
-			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
-			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
+			vertices[index].position.x = (float)fbxVerts[index][0];
+			vertices[index].position.y = (float)fbxVerts[index][1];
+			vertices[index].position.z = (float)fbxVerts[index][2];
 			vertices[index].position.w = 0;
 			meshes[i]->GetPolygonVertexNormal(j, 2, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
