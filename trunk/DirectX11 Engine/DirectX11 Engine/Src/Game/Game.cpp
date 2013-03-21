@@ -106,7 +106,7 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	mesh->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(.10f, .10f, .10f), rotations[0]);
+	mesh->UpdateWorldMatrix(XMFLOAT3(0.0f, 0.0f, 20.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), rotations[0]);
 	mesh->Render();
 
 
@@ -254,7 +254,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 
-	FBXLoader::LoadFBX("Res/Models/soldier.fbx");
+	//FBXLoader::LoadFBX("Res/Models/Soldier/box.fbx");
 	//cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 	mesh = new Mesh();
 	/*cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
@@ -265,25 +265,9 @@ void Game::InitializeObjects()
 
 	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
 	mesh->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/soldier.txt");
+	"Res/Objects/box.txt");
 
-	mesh->AddTexture(L"Res/Models/Altair/tex/boots.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/bootsN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/eye.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/face.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/faceN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/gloves.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/glovesN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/hood.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/hoodN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/pants.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/pantsN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/shirt.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/shirtN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/sword.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/swordN.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/swordSaber.dds");
-	mesh->AddTexture(L"Res/Models/Altair/tex/swordSaberN.dds");
+	mesh->AddTexture(L"Res/Models/Soldier/tex/soldier.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);

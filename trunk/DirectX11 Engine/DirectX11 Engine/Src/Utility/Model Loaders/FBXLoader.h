@@ -14,6 +14,8 @@ public:
 	static void FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray);
 	static void FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray);
 	static char* GetModelName(char* _filePath);
+	static void TriangulateRecursive(FbxNode* _node);
+	//static void CalculateNormals(Mesh::VertexType* _vertices);
 
 	struct Face
 	{

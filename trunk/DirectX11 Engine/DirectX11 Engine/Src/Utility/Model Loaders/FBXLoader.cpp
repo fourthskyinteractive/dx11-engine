@@ -68,6 +68,8 @@ bool FBXLoader::LoadFBX(char* _filePath)
 		axisSystem.ConvertScene(scene);
 	}
 
+	TriangulateRecursive(scene->GetRootNode());
+
 	FbxArray<FbxMesh*> meshes;
 	FillMeshArray(scene, meshes);
 
@@ -81,8 +83,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 	int numberOfVertices = 0;
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
-		numberOfVertices += meshes[i]->GetPolygonVertexCount();
-		
+		numberOfVertices += meshes[i]->GetPolygonVertexCount();		
 	}
 	
 	vertices = new Mesh::VertexType[numberOfVertices];
@@ -158,6 +159,25 @@ bool FBXLoader::LoadFBX(char* _filePath)
 
 		numberOfVertices += triangleCount * 3;
 	}
+
+// 	for(int i = 0; i < faces.size(); ++i)
+// 	{
+// 		XMVECTOR v0 = XMLoadFloat4(&vertices[faces[i].indices[2]].position);
+// 		XMVECTOR v1 = XMLoadFloat4(&vertices[faces[i].indices[1]].position);
+// 		XMVECTOR v2 = XMLoadFloat4(&vertices[faces[i].indices[0]].position);
+// 
+// 		
+// 
+// 		XMVECTOR v10 = v0 - v1;
+// 		XMVECTOR v12 = v2 - v1;
+// 
+// 		XMVECTOR f3Normal;
+// 		XMVector4Cross(f3Normal, v12, v10);
+// 		XMVector4Normalize(f3Normal);
+// 
+// 		XMFLOAT4 norm;
+// 		XMStoreFloat4(&norm, f3Normal);
+// 	}
 
 	//Open the output file
 	ofstream fout;
@@ -270,6 +290,29 @@ void FBXLoader::FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray)
 {
 	_meshArray.Clear();
 	FillMeshArrayRecursive(_scene->GetRootNode(), _meshArray);
+}
+
+void FBXLoader::TriangulateRecursive(FbxNode* _node)
+{
+	FbxNodeAttribute* nodeAttr = _node->GetNodeAttribute();
+
+	if(nodeAttr)
+	{
+		if( nodeAttr->GetAttributeType() == FbxNodeAttribute::eMesh ||
+			nodeAttr->GetAttributeType() == FbxNodeAttribute::eNurbs ||
+			nodeAttr->GetAttributeType() == FbxNodeAttribute::eNurbsSurface ||
+			nodeAttr->GetAttributeType() == FbxNodeAttribute::ePatch)
+		{
+			FbxGeometryConverter converter(_node->GetFbxManager());
+			converter.TriangulateInPlace(_node);
+		}
+	}
+
+	const int chileCould = _node->GetChildCount();
+	for(int i = 0; i < chileCould; ++i)
+	{
+		TriangulateRecursive(_node->GetChild(i));
+	}
 }
 
 void FBXLoader::FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray)
