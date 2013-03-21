@@ -125,7 +125,7 @@ void Game::Update()
 
 	for(int i = 0; i < 1; ++i)
 	{
-		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
+		rotations[i] = XMFLOAT3(-90.0f, degrees, 0.0f);
 	}
 
 	CalculateFrameStats();
