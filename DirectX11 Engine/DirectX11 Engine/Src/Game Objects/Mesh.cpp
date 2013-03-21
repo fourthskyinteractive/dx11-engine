@@ -72,7 +72,7 @@ bool Mesh::InitializeBuffers()
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT hr;
 
-	FBXLoader::LoadFBX("Res/Models/legoDude.fbx", &vertices, &indices, vertexCount, indexCount);
+	FBXLoader::LoadFBX("Res/Models/mask.fbx", &vertices, &indices, vertexCount, indexCount);
 
 // 	//Create the vertex array
 // 	vertices = new VertexType[vertexCount];
