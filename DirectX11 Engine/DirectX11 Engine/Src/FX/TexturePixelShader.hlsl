@@ -29,7 +29,7 @@ float4 PS(PixelIn input) : SV_TARGET
 	
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
-	textureColor = float4(1.0f, 1.0f, 1.0f, 1.0f);//shaderTexture.Sample(sampleType, input.tex);
+	textureColor = float4(1.0f, 0.0f, 0.0f, 1.0f);//shaderTexture.Sample(sampleType, input.tex);
 
 	//Set the default output color to the ambient light value for all pixels
 	color = ambientColor;

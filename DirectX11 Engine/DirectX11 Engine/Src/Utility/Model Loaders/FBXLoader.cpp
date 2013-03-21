@@ -2,7 +2,6 @@
 
 #include "../../Game/Definitions.h"
 #include "../../Game/Game.h"
-#include "../../Game Objects/Mesh.h"
 
 #include <Windows.h>
 #include <d3d11.h>
@@ -14,7 +13,7 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
-bool FBXLoader::LoadFBX(char* _filePath)
+bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsigned long** _indicesPtr, int& _numVertices, int& _numIndices)
 {
 	FbxManager* fbxManager = FbxManager::Create();
 	if(!fbxManager)
@@ -77,7 +76,6 @@ bool FBXLoader::LoadFBX(char* _filePath)
 	unsigned short triangleCount = 0;
 	unsigned short faceCount = 0;
 	unsigned short materialCount = 0;
-	unsigned short indicesCount = 0;
 
 	Mesh::VertexType* vertices;
 	int numberOfVertices = 0;
@@ -91,6 +89,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 	Face face;
 	vector<Face> faces;
 	numberOfVertices = 0;
+	int indicesCount = 0;
 
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
@@ -100,7 +99,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 			continue;
 
 		int triangleCount = meshes[i]->GetPolygonVertexCount() / 3;
-		int indiciesCount = meshes[i]->GetPolygonVertexCount();
+		indicesCount = meshes[i]->GetPolygonVertexCount();
 
 		FbxVector4* fbxVerts = new FbxVector4[vertexCount];
 		int arrayIndex = 0;
@@ -112,7 +111,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 			FbxVector4 fbxNorm(0, 0, 0, 0);
 			FbxVector2 fbxUV(0, 0);
 
-			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0) + numberOfVertices;
+			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0);
 			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
 			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
 			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
@@ -125,7 +124,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 			vertices[index].texture.x = (float)fbxUV[0];
 			vertices[index].texture.y = (float)fbxUV[1];
 
-			face.indices[1] = index = meshes[i]->GetPolygonVertex(j, 1) + numberOfVertices;
+			face.indices[1] = index = meshes[i]->GetPolygonVertex(j, 1);
 			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
 			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
 			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
@@ -138,7 +137,7 @@ bool FBXLoader::LoadFBX(char* _filePath)
 			vertices[index].texture.x = (float)fbxUV[0];
 			vertices[index].texture.y = (float)fbxUV[1];
 
-			face.indices[2] = index = meshes[i]->GetPolygonVertex(j, 2) + numberOfVertices;
+			face.indices[2] = index = meshes[i]->GetPolygonVertex(j, 2);
 			vertices[index].position.x = (float)fbxVerts[index - numberOfVertices][0];
 			vertices[index].position.y = (float)fbxVerts[index - numberOfVertices][1];
 			vertices[index].position.z = (float)fbxVerts[index - numberOfVertices][2];
@@ -160,6 +159,22 @@ bool FBXLoader::LoadFBX(char* _filePath)
 		numberOfVertices += triangleCount * 3;
 	}
 
+	unsigned long* indices = new unsigned long[faces.size() * 3]; 
+	int indicie = 0;
+	for(unsigned int i = 0; i < faces.size(); ++i)
+	{
+		indices[indicie++] = faces[i].indices[0];
+		indices[indicie++] = faces[i].indices[1];
+		indices[indicie++] = faces[i].indices[2];
+
+	}
+
+	_numVertices = numberOfVertices;
+	_numIndices = indicesCount;
+
+	*_verticesPtr = vertices;
+	*_indicesPtr = indices;
+
 // 	for(int i = 0; i < faces.size(); ++i)
 // 	{
 // 		XMVECTOR v0 = XMLoadFloat4(&vertices[faces[i].indices[2]].position);
@@ -179,109 +194,109 @@ bool FBXLoader::LoadFBX(char* _filePath)
 // 		XMStoreFloat4(&norm, f3Normal);
 // 	}
 
-	//Open the output file
-	ofstream fout;
-
-	char* modelName = GetModelName(_filePath);
-	string newFilename = "Res/Objects/";
-	newFilename += modelName;
-	newFilename[newFilename.size() - 4] = '.';
-	newFilename[newFilename.size() - 3] = 't';
-	newFilename[newFilename.size() - 2] = 'x';
-	newFilename[newFilename.size() - 1] = 't';
-	newFilename[newFilename.size()] = '\0';
-	fout.open(newFilename);
-	int numFaces = faces.size();
-	//Write out the file header that our model format uses.
-	fout << "Vertex Count:" << (numFaces * 3) << endl;
-	fout << endl;
-	fout << "Uses BumpMap ";
-	fout << true;
-	fout << endl;
-	fout << "Data:" << endl;
-	fout << endl;
-	int vIndex = 0;
-	int tIndex = 0;
-	int nIndex = 0;
-
-	// Now loop through all the faces and output the three vertices for each face.
-	for(int i=0; i<numFaces; i++)
-	{
-		fout << vertices[faces[i].indices[0]].position.x;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].position.y;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].position.z;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].position.w;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].texture.x;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].texture.y;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].normal.x;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].normal.y;
-		fout << ' ';
-		fout << vertices[faces[i].indices[0]].normal.z;
-
-		fout << endl;		
-
-		fout << vertices[faces[i].indices[1]].position.x;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].position.y;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].position.z;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].position.w;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].texture.x;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].texture.y;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].normal.x;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].normal.y;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[1]].normal.z;
-
-		fout << endl;
-
-		fout << vertices[faces[i].indices[2]].position.x;
-		fout << ' ';
-		fout << vertices[faces[i].indices[2]].position.y;
-		fout << ' ';
-		fout << vertices[faces[i].indices[2]].position.z;
-		fout << ' ';
-		fout << vertices[faces[i].indices[2]].position.w;
-		fout << ' ';
-		fout << vertices[faces[i].indices[2]].texture.x;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[2]].texture.y;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[2]].normal.x;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[2]].normal.y;
-		fout << ' ';						  
-		fout << vertices[faces[i].indices[2]].normal.z;
-
-		fout << endl;
-	}
-
-	// Close the output file.
-	fout.close();
-
-	importer->Destroy();
-	importer = NULL;
-
-	scene->Destroy();
-	scene = NULL;
-
-	ioSettings->Destroy();
-	ioSettings = NULL;
-
-	fbxManager->Destroy();
-	fbxManager = NULL;
+// 	//Open the output file
+// 	ofstream fout;
+// 
+// 	char* modelName = GetModelName(_filePath);
+// 	string newFilename = "Res/Objects/";
+// 	newFilename += modelName;
+// 	newFilename[newFilename.size() - 4] = '.';
+// 	newFilename[newFilename.size() - 3] = 't';
+// 	newFilename[newFilename.size() - 2] = 'x';
+// 	newFilename[newFilename.size() - 1] = 't';
+// 	newFilename[newFilename.size()] = '\0';
+// 	fout.open(newFilename);
+// 	int numFaces = faces.size();
+// 	//Write out the file header that our model format uses.
+// 	fout << "Vertex Count:" << (numFaces * 3) << endl;
+// 	fout << endl;
+// 	fout << "Uses BumpMap ";
+// 	fout << true;
+// 	fout << endl;
+// 	fout << "Data:" << endl;
+// 	fout << endl;
+// 	int vIndex = 0;
+// 	int tIndex = 0;
+// 	int nIndex = 0;
+// 
+// 	// Now loop through all the faces and output the three vertices for each face.
+// 	for(int i=0; i<numFaces; i++)
+// 	{
+// 		fout << vertices[faces[i].indices[0]].position.x;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].position.y;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].position.z;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].position.w;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].texture.x;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].texture.y;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].normal.x;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].normal.y;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[0]].normal.z;
+// 
+// 		fout << endl;		
+// 
+// 		fout << vertices[faces[i].indices[1]].position.x;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].position.y;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].position.z;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].position.w;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].texture.x;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].texture.y;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].normal.x;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].normal.y;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[1]].normal.z;
+// 
+// 		fout << endl;
+// 
+// 		fout << vertices[faces[i].indices[2]].position.x;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[2]].position.y;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[2]].position.z;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[2]].position.w;
+// 		fout << ' ';
+// 		fout << vertices[faces[i].indices[2]].texture.x;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[2]].texture.y;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[2]].normal.x;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[2]].normal.y;
+// 		fout << ' ';						  
+// 		fout << vertices[faces[i].indices[2]].normal.z;
+// 
+// 		fout << endl;
+// 	}
+// 
+// 	// Close the output file.
+// 	fout.close();
+// 
+// 	importer->Destroy();
+// 	importer = NULL;
+// 
+// 	scene->Destroy();
+// 	scene = NULL;
+// 
+// 	ioSettings->Destroy();
+// 	ioSettings = NULL;
+// 
+// 	fbxManager->Destroy();
+// 	fbxManager = NULL;
 
 	return true;
 }

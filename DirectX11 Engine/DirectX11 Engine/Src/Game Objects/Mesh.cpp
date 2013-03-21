@@ -1,6 +1,7 @@
 #include "mesh.h"
 #include "../Renderer/D3D11Renderer.h"
 #include "../Game/Game.h"
+#include "../Utility/Model Loaders/FBXLoader.h"
 
 #include <fstream>
 using namespace std;
@@ -26,8 +27,8 @@ Mesh::~Mesh()
 
 bool Mesh::Initialize(XMFLOAT3 _pos, XMFLOAT3 _scale, XMFLOAT3 _rotation, char* _meshFilename)
 {
-	bool result;
-	result = LoadMesh(_meshFilename);
+	bool result = true;
+	//result = LoadMesh(_meshFilename);
 	if(!result) 
 	{
 		return false;
@@ -65,37 +66,39 @@ void Mesh::Render()
 
 bool Mesh::InitializeBuffers()
 {
-	VertexType* vertices;
-	unsigned long* indices;
+	VertexType* vertices = NULL;
+	unsigned long* indices = NULL;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT hr;
 
-	//Create the vertex array
-	vertices = new VertexType[vertexCount];
-	if(!vertices)
-	{
-		return false;
-	}
+	FBXLoader::LoadFBX("Res/Models/Soldier/zombie.fbx", &vertices, &indices, vertexCount, indexCount);
 
-	//Create the index array
-	indices = new unsigned long[indexCount];
-	if(!indices)
-	{
-		return false;
-	}
+// 	//Create the vertex array
+// 	vertices = new VertexType[vertexCount];
+// 	if(!vertices)
+// 	{
+// 		return false;
+// 	}
+// 
+// 	//Create the index array
+// 	indices = new unsigned long[indexCount];
+// 	if(!indices)
+// 	{
+// 		return false;
+// 	}
 
 	//Load the vertex array and index array with data
-	for(int i = 0; i < vertexCount; ++i)
-	{
-		vertices[i].position = XMFLOAT4(mesh[i].x, mesh[i].y, mesh[i].z, mesh[i].w);
-		vertices[i].texture = XMFLOAT2(mesh[i].tu, mesh[i].tv);
-		vertices[i].normal = XMFLOAT3(mesh[i].nx, mesh[i].ny, mesh[i].nz);
-		vertices[i].tangent = XMFLOAT3(mesh[i].tx, mesh[i].ty, mesh[i].tz);
-		vertices[i].binormal = XMFLOAT3(mesh[i].bx, mesh[i].by, mesh[i].bz);
-
-		indices[i] = i;
-	}
+// 	for(int i = 0; i < vertexCount; ++i)
+// 	{
+// 		vertices[i].position = XMFLOAT4(mesh[i].x, mesh[i].y, mesh[i].z, mesh[i].w);
+// 		vertices[i].texture = XMFLOAT2(mesh[i].tu, mesh[i].tv);
+// 		vertices[i].normal = XMFLOAT3(mesh[i].nx, mesh[i].ny, mesh[i].nz);
+// 		vertices[i].tangent = XMFLOAT3(mesh[i].tx, mesh[i].ty, mesh[i].tz);
+// 		vertices[i].binormal = XMFLOAT3(mesh[i].bx, mesh[i].by, mesh[i].bz);
+// 
+// 		indices[i] = i;
+// 	}
 
 	//Set up the description of the static vertex buffer
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
