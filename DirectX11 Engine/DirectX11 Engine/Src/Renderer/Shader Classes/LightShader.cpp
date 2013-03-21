@@ -244,7 +244,7 @@ bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _vie
 
 	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferNumber, 1, &constantBuffer);
 
-	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 17, _textureArray);
+	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, _textureArray);
 
 	lightBufferData.ambientColor = _ambientColor;
 	lightBufferData.diffuseColor = _diffuseColor;
