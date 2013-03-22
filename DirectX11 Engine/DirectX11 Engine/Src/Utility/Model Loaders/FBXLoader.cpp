@@ -88,8 +88,9 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 
 	Face face;
 	vector<Face> faces;
-	numberOfVertices = 0;
 	int indicesCount = 0;
+
+	int ptrMove = 0;
 
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
@@ -156,7 +157,9 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 		meshes[i]->Destroy();
 		meshes[i] = NULL;
 
-		numberOfVertices += triangleCount * 3;
+		memcpy(&vertices[ptrMove], vertices, (vertexCount * sizeof(Mesh::VertexType)));
+
+		ptrMove += vertexCount;
 	}
 
 	unsigned long* indices = new unsigned long[faces.size() * 3]; 
@@ -166,7 +169,6 @@ bool FBXLoader::LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsign
 		indices[indicie++] = faces[i].indices[0];
 		indices[indicie++] = faces[i].indices[1];
 		indices[indicie++] = faces[i].indices[2];
-
 	}
 
 	_numVertices = numberOfVertices;

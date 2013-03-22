@@ -1,0 +1,76 @@
+#include "ParentMeshObject.h"
+#include "ChildMeshObject.h"
+
+
+ParentMeshObject::ParentMeshObject()
+{
+
+}
+
+ParentMeshObject::ParentMeshObject(const ParentMeshObject& _parentMeshObject)
+{
+
+}
+
+ParentMeshObject::~ParentMeshObject()
+{
+
+}
+
+void ParentMeshObject::Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation)
+{
+	position = _position;
+	scale = _scale;
+	rotation = _rotation;
+
+	UpdateWorldMatrix();
+}
+
+void ParentMeshObject::Render()
+{
+
+}
+
+void ParentMeshObject::AddChild(ChildMeshObject* _child)
+{
+	_child->SetParent(this);
+	children.push_back(_child);
+}
+
+void ParentMeshObject::UpdateWorldMatrix()
+{
+	XMMATRIX mScale;
+	XMMATRIX mTranslation;
+	XMMATRIX mRotation;
+
+	mScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	mTranslation = XMMatrixTranslation(position.x, position.y, position.z);
+
+	rotation.x = XMConvertToRadians(rotation.x);
+	rotation.y = XMConvertToRadians(rotation.y);
+	rotation.z = XMConvertToRadians(rotation.z);
+
+	mRotation = XMMatrixIdentity();
+	if(rotation.x != 0)
+	{
+		XMFLOAT3 axis = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		mRotation *= XMMatrixRotationAxis(XMLoadFloat3(&axis), rotation.x);
+	}
+	if(rotation.y != 0)
+	{
+		XMFLOAT3 axis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		mRotation *= XMMatrixRotationAxis(XMLoadFloat3(&axis), rotation.y);
+	}
+	if(rotation.z != 0)
+	{
+		XMFLOAT3 axis = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		mRotation *= XMMatrixRotationAxis(XMLoadFloat3(&axis), rotation.z);
+	}
+
+	XMMATRIX mWorldMat = XMMatrixIdentity();
+	mWorldMat *= mScale;
+	mWorldMat *= mRotation;
+	mWorldMat *= mTranslation;
+
+	XMStoreFloat4x4(&worldMatrix, mWorldMat);
+}

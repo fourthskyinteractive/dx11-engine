@@ -49,9 +49,12 @@ public:
 	void LookAt(const XMFLOAT3& _cameraPos, const XMFLOAT3& _targetPos, const XMFLOAT3& _worldUp);
 
 	//Get View/Projection matrices
-	XMMATRIX GetViewMatrix() const;
-	XMMATRIX GetProjectionMatrix() const;
-	XMMATRIX GetViewProjectionMatrix() const;
+	XMMATRIX GetViewMatrixM() const;
+	XMMATRIX GetProjectionMatrixM() const;
+	XMMATRIX GetViewProjectionMatrixM() const;
+	XMFLOAT4X4 GetViewMatrixF() const;
+	XMFLOAT4X4 GetProjectionMatrixF() const;
+	XMFLOAT4X4 GetViewProjectionMatrixF() const;
 
 	//Strafe/Walk the camera a distance _d
 	void Strafe(float _d);

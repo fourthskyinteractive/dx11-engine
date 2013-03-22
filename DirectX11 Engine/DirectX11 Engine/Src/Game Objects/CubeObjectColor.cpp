@@ -209,10 +209,7 @@ void CubeObjectColor::ShutdownBuffers()
 
 void CubeObjectColor::RenderBuffers()
 {
-	XMFLOAT4X4 viewProj;
-	XMStoreFloat4x4(&viewProj, Game::camera->GetViewProjectionMatrix());
-
-	shaderUsed.Render(indexCount, worldMatrix, viewProj);
+	shaderUsed.Render(indexCount, worldMatrix, Game::camera->GetViewProjectionMatrixF());
 
 	return;
 }
