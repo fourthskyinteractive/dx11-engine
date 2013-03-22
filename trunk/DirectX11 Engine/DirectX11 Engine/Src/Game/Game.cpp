@@ -106,7 +106,7 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	mesh->UpdateWorldMatrix(XMFLOAT3(0.0f, 0.0f, 20.0f), XMFLOAT3(0.10f, 0.10f, 0.10f), rotations[0]);
+	mesh->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(0.10f, 0.10f, 0.10f), rotations[0]);
 	mesh->Render();
 
 
@@ -125,7 +125,7 @@ void Game::Update()
 
 	for(int i = 0; i < 1; ++i)
 	{
-		rotations[i] = XMFLOAT3(-90.0f, degrees, 0.0f);
+		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
 	}
 
 	CalculateFrameStats();
@@ -187,7 +187,7 @@ void Game::Input(float _deltaTime)
 		isRunning = false;
 	}
 
-	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrix()));
+	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrixM()));
 }
 
 void Game::Exit()

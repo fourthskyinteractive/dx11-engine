@@ -140,19 +140,36 @@ void Camera::LookAt(const XMFLOAT3& _cameraPos, const XMFLOAT3& _targetPos, cons
 	XMStoreFloat4x4(&view,XMMatrixLookAtLH(XMLoadFloat3(&_cameraPos), XMLoadFloat3(&_targetPos), XMLoadFloat3(&_worldUp)) );
 }
 
-XMMATRIX Camera::GetViewMatrix() const
+XMMATRIX Camera::GetViewMatrixM() const
 {
 	return XMLoadFloat4x4(&view);
 }
 
-XMMATRIX Camera::GetProjectionMatrix() const
+XMMATRIX Camera::GetProjectionMatrixM() const
 {
 	return XMLoadFloat4x4(&projection);
 }
 
-XMMATRIX  Camera::GetViewProjectionMatrix() const
+XMMATRIX  Camera::GetViewProjectionMatrixM() const
 {	
 	return XMMatrixMultiply(XMLoadFloat4x4(&view), XMLoadFloat4x4(&projection));
+}
+
+XMFLOAT4X4 Camera::GetViewMatrixF() const
+{
+	return view;
+}
+
+XMFLOAT4X4 Camera::GetProjectionMatrixF() const
+{
+	return projection;
+}
+
+XMFLOAT4X4 Camera::GetViewProjectionMatrixF() const
+{
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, XMMatrixMultiply(XMLoadFloat4x4(&view), XMLoadFloat4x4(&projection)));
+	return viewProj;
 }
 
 void Camera::Strafe(float _d)
