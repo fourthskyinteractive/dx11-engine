@@ -37,7 +37,7 @@ float4 PS(PixelIn input) : SV_TARGET
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
 	//HOOD
-	textureColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
+	textureColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	
 	//Expant the range of the normal value from (0, +1) to (-1, +1)
 	//bumpMap = (bumpMap * 2.0f) - 1.0f;

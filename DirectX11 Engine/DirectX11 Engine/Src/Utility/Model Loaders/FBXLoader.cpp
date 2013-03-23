@@ -77,14 +77,14 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 	unsigned short faceCount = 0;
 	unsigned short materialCount = 0;
 
-	VertexType* vertices;
+	
 	int numberOfVertices = 0;
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
 		numberOfVertices += meshes[i]->GetPolygonVertexCount();		
 	}
 	
-	vertices = new VertexType[numberOfVertices];
+	
 
 	Face face;
 	vector<Face> faces;
@@ -98,6 +98,9 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 		vertexCount = meshes[i]->GetControlPointsCount();
 		if(vertexCount == 0)
 			continue;
+
+		VertexType* vertices;
+		vertices = new VertexType[vertexCount];
 
 		int triangleCount = meshes[i]->GetPolygonVertexCount() / 3;
 		indicesCount = meshes[i]->GetPolygonVertexCount();
