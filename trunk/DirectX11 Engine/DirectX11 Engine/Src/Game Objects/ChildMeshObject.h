@@ -14,15 +14,6 @@ class ParentMeshObject;
 class ChildMeshObject
 {
 private:
-	struct VertexType
-	{
-		XMFLOAT4 position;
-		XMFLOAT2 texture;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-		XMFLOAT3 binormal;
-	};
-
 	XMFLOAT4X4 worldMatrix;
 	XMFLOAT4X4 localMatrix;
 	XMFLOAT3 position;
@@ -35,7 +26,6 @@ private:
 	int vertexCount;
 	int indexCount;
 	TextureManager* textures;
-
 	ParentMeshObject* parent;
 
 public:
@@ -50,6 +40,8 @@ public:
 	XMFLOAT3 GetPosition(){return position;}
 	XMFLOAT3 GetRotation(){return rotation;}
 	XMFLOAT3 GetScale(){return scale;}
+	int GetVertexCount(){return vertexCount;}
+	int GetIndexCount(){return indexCount;}
 
 	ParentMeshObject* GetParent(){return parent;}
 
@@ -58,6 +50,8 @@ public:
 	void SetPosition(XMFLOAT3 _position){;}
 	void SetRotation(XMFLOAT3 _rotation){rotation = _rotation;}
 	void SetScale(XMFLOAT3 _scale){scale = _scale;}
+	void SetVertexCount(int _vertexCount){vertexCount = _vertexCount;}
+	void SetIndexCount(int _indexCount){indexCount = _indexCount;}
 
 	void SetParent(ParentMeshObject* _parent){parent = _parent;}
 
@@ -65,5 +59,10 @@ public:
 	void Render();	
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();
+	void AddTexture(WCHAR* _filePath);
+
+
+	//D3DX Buffer Initialization
+	bool InitializeBuffers(VertexType* _vertices, unsigned long* _indices);
 };
 #endif

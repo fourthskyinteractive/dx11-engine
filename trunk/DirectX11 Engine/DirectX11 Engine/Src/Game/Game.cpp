@@ -6,6 +6,7 @@
 #include "../Renderer/ShaderManager.h"
 #include "../Utility/Model Loaders/ObjLoader.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
+#include "../Game Objects/ParentMeshObject.h"
 
 //#include <D3DX11async.h>
 #include <fstream>
@@ -25,7 +26,7 @@ Timer							Game::timer;
 
 BaseObject						Game::cubeObj;
 CubeObjectColor					Game::cubeObject;
-Mesh*							Game::mesh = NULL;
+ParentMeshObject*				Game::mesh = NULL;
 LightClass*						Game::lightDiffuse = NULL;
 
 ID3D11Buffer*					Game::boxVB;
@@ -71,7 +72,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeObjects();
@@ -106,7 +107,7 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
-	mesh->UpdateWorldMatrix(XMFLOAT3(0.0f, -10.0f, 20.0f), XMFLOAT3(0.10f, 0.10f, 0.10f), rotations[0]);
+	mesh->UpdateWorldMatrix();
 	mesh->Render();
 
 
@@ -253,19 +254,10 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-	//cubeObject.Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	mesh = new Mesh();
-	/*cubeObjectTexture->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/TexturedCube.txt", L"Res/Textures/seafloor.dds");*/
+	mesh = new ParentMeshObject();
+	mesh->Initialize("Res/Models/soldier.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-	//ATTEMPT AT LOADING ALTAIR
-	int vertexCount, textureCount, normalCount, faceCount;
-
-	//ObjLoader::LoadObjFile("Res/Models/Altair/altairTemp.obj", false, vertexCount, textureCount, normalCount, faceCount);
-	mesh->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),
-	"Res/Objects/soldier.txt");
-
-	mesh->AddTexture(L"Res/Models/Soldier/tex/soldier.dds");
+	mesh->AddTexture(L"Res/Models/Soldier/tex/soldier.dds", 0);
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);

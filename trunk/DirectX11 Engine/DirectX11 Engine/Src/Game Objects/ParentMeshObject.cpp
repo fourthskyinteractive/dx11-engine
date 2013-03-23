@@ -1,5 +1,6 @@
 #include "ParentMeshObject.h"
 #include "ChildMeshObject.h"
+#include "../Utility/Model Loaders/FBXLoader.h"
 
 
 ParentMeshObject::ParentMeshObject()
@@ -17,24 +18,39 @@ ParentMeshObject::~ParentMeshObject()
 
 }
 
-void ParentMeshObject::Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation)
+void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation)
 {
 	position = _position;
 	scale = _scale;
 	rotation = _rotation;
 
 	UpdateWorldMatrix();
+
+	FBXLoader::LoadFBX(this, _filePath);
 }
 
 void ParentMeshObject::Render()
 {
-
+	for(unsigned int i = 0; i < children.size(); ++i)
+	{
+		children[i]->Render();
+	}
 }
 
-void ParentMeshObject::AddChild(ChildMeshObject* _child)
+void ParentMeshObject::AddChild(VertexType* _vertices, unsigned long* _indices, int _numVertices, int _numIdices)
 {
-	_child->SetParent(this);
-	children.push_back(_child);
+	ChildMeshObject* child = new ChildMeshObject();
+	child->SetParent(this);
+	child->SetIndexCount(_numIdices);
+	child->SetVertexCount(_numVertices);
+	child->Initialize(XMFLOAT3(0.0f, 0.0f, 10.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	child->InitializeBuffers(_vertices, _indices);
+	children.push_back(child);
+}
+
+void ParentMeshObject::AddTexture(WCHAR* _filePath, int _child)
+{
+	children[_child]->AddTexture(_filePath);
 }
 
 void ParentMeshObject::UpdateWorldMatrix()

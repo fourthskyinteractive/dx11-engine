@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3d11shader.h>
-#include <list>
+#include <vector>
 using namespace std;
 
 
@@ -23,7 +23,7 @@ private:
 	XMFLOAT3	rotation;
 	XMFLOAT3	scale;
 
-	list<ChildMeshObject*> children;
+	vector<ChildMeshObject*> children;
 
 public:
 	ParentMeshObject();
@@ -42,9 +42,10 @@ public:
 	void SetPosition(XMFLOAT3 _position){;}
 	void SetRotation(XMFLOAT3 _rotation){rotation = _rotation;}
 	void SetScale(XMFLOAT3 _scale){scale = _scale;}
-	void Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
-	void AddChild(ChildMeshObject* _child);
+	void Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
+	void AddChild(VertexType* _vertices, unsigned long* _indices, int _numVertices, int _numIdices);
 	void Render();
+	void AddTexture(WCHAR* _filePath, int _child);
 
 	void UpdateWorldMatrix();
 };
