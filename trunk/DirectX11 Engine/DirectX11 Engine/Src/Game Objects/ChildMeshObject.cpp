@@ -84,6 +84,14 @@ bool ChildMeshObject::InitializeBuffers(VertexType* _vertices, unsigned long* _i
 	delete[] _indices;
 	_indices = 0;
 
+	SetShaderBuffers();
+
+	return true;
+}
+
+void ChildMeshObject::SetShaderBuffers()
+{
+
 	unsigned int stride;
 	unsigned int offset;
 
@@ -99,7 +107,6 @@ bool ChildMeshObject::InitializeBuffers(VertexType* _vertices, unsigned long* _i
 
 	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
 	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	return true;
 }
 
 void ChildMeshObject::AddTexture(WCHAR* _filePath)
@@ -111,12 +118,13 @@ void ChildMeshObject::Render()
 {
 	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
 	
+	SetShaderBuffers();
 	//TODO: Create a light manager that houses all of the lights.
 	shaderUsed.Render(worldMatrix, 
 		Game::camera->GetViewProjectionMatrixF(), 
 		(ID3D11ShaderResourceView**)textures->GetTextureArrayPointer(),
 		XMFLOAT3(0.0f, 0.0f, 1.0f), 
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT4(.50f, .50f, 0.0f, 1.0f),
 		XMFLOAT4(.15f, .15f, .15f, 1.0f),
 		indexCount);
 }

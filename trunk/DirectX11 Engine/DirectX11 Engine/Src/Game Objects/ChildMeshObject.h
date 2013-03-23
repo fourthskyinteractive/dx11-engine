@@ -56,6 +56,7 @@ public:
 	void SetParent(ParentMeshObject* _parent){parent = _parent;}
 
 	void Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
+	void SetShaderBuffers();
 	void Render();	
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();

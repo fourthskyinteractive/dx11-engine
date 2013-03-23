@@ -43,14 +43,17 @@ void ParentMeshObject::AddChild(VertexType* _vertices, unsigned long* _indices, 
 	child->SetParent(this);
 	child->SetIndexCount(_numIdices);
 	child->SetVertexCount(_numVertices);
-	child->Initialize(XMFLOAT3(0.0f, 0.0f, 10.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	child->Initialize(XMFLOAT3(0.0f, -10.0f, 10.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 180.0f, 0.0f));
 	child->InitializeBuffers(_vertices, _indices);
 	children.push_back(child);
 }
 
 void ParentMeshObject::AddTexture(WCHAR* _filePath, int _child)
 {
-	children[_child]->AddTexture(_filePath);
+	for(int i = 0; i < children.size(); ++i)
+	{
+		children[i]->AddTexture(_filePath);
+	}	
 }
 
 void ParentMeshObject::UpdateWorldMatrix()
