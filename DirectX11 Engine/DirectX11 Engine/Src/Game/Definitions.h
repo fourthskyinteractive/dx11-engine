@@ -60,6 +60,15 @@ struct ScreenInformation
 };
 
 #pragma region INPUT LAYOUT STRUCTURES
+struct VertexType
+{
+	XMFLOAT4 position;
+	XMFLOAT2 texture;
+	XMFLOAT3 normal;
+	XMFLOAT3 tangent;
+	XMFLOAT3 binormal;
+};
+
 struct SimpleCubeVertex
 {
     XMFLOAT3 pos;   // position

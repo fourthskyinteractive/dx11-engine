@@ -4,6 +4,7 @@
 #include <fbxsdk.h>
 
 #include "../../Game Objects/Mesh.h"
+#include "../../Game Objects/ParentMeshObject.h"
 
 class FBXLoader
 {
@@ -12,7 +13,7 @@ public:
 	FBXLoader(const FBXLoader&);
 	~FBXLoader();
 
-	static bool LoadFBX(char* _filePath, Mesh::VertexType** _verticesPtr, unsigned long** _indicesPtr, int& _numVertices, int& _numIndices);
+	static bool LoadFBX(ParentMeshObject* _parentMesh, char* _filePath);
 	static void FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray);
 	static void FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray);
 	static char* GetModelName(char* _filePath);

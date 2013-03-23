@@ -16,6 +16,7 @@
 #include "../Game Objects/CubeObjectColor.h"
 #include "../Game Objects/Mesh.h"
 #include "../Game Objects/Lights/LightClass.h"
+#include "../Game Objects/ParentMeshObject.h"
 
 class Game
 {
@@ -45,7 +46,7 @@ private:
 	static XMFLOAT3 rotations[1];
 	static XMFLOAT3 scales[1];
 
-	static Mesh* mesh;
+	static ParentMeshObject* mesh;
 	static CubeObjectColor cubeObject;
 	static BaseObject cubeObj;
 

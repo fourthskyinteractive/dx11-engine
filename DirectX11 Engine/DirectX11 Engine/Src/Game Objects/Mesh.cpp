@@ -72,7 +72,7 @@ bool Mesh::InitializeBuffers()
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT hr;
 
-	FBXLoader::LoadFBX("Res/Models/soldier.fbx", &vertices, &indices, vertexCount, indexCount);
+	//FBXLoader::LoadFBX("Res/Models/soldier.fbx", &vertices, &indices, vertexCount, indexCount);
 
 // 	//Create the vertex array
 // 	vertices = new VertexType[vertexCount];
@@ -139,7 +139,7 @@ bool Mesh::InitializeBuffers()
 	}
 
 	//Release the arrays now that the vertex and index buffers have been created and loaded.
-	//delete[] vertices;
+	delete[] vertices;
 	vertices = 0;
 
 	delete[] indices;
