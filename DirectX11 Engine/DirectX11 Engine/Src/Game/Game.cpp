@@ -72,7 +72,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeObjects();
@@ -255,7 +255,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/fullchessboard.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), true, L"Res/Models/Soldier/tex/soldier.dds");
+	mesh->Initialize("Res/Models/car.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 90.0f, 90.0f), true, L"Res/Models/Soldier/tex/soldier.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);
