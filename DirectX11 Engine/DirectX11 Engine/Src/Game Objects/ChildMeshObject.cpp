@@ -25,7 +25,6 @@ void ChildMeshObject::Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _
 	position = _position;
 	scale = _scale;
 	rotation = _rotation;
-	shaderUsed.Initialize();
 	UpdateLocalMatrix();
 	UpdateWorldMatrix();
 }
@@ -114,19 +113,13 @@ void ChildMeshObject::AddTexture(WCHAR* _filePath)
 	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
 }
 
-void ChildMeshObject::Render()
+void ChildMeshObject::Render(LightShader* _shaderUsed)
 {
 	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
 	
 	SetShaderBuffers();
 	//TODO: Create a light manager that houses all of the lights.
-	shaderUsed.Render(worldMatrix, 
-		Game::camera->GetViewProjectionMatrixF(), 
-		(ID3D11ShaderResourceView**)textures->GetTextureArrayPointer(),
-		XMFLOAT3(0.0f, 0.0f, 1.0f), 
-		XMFLOAT4(.50f, .50f, 0.0f, 1.0f),
-		XMFLOAT4(.15f, .15f, .15f, 1.0f),
-		indexCount);
+	_shaderUsed->Render(indexCount);
 }
 
 void ChildMeshObject::UpdateLocalMatrix()

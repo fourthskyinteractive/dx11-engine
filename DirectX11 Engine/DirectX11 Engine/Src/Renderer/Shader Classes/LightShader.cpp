@@ -38,18 +38,8 @@ void LightShader::Shutdown()
 	ShutdownShader();
 }
 
-bool LightShader::Render(XMFLOAT4X4 _world, XMFLOAT4X4 _viewProjection, ID3D11ShaderResourceView** _textureArray,
-						 XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor, int _indexCount)
+bool LightShader::Render(int _indexCount)
 {
-	bool result;
-
-	//Set the shader parameters that it will use for rendering
-	result = UpdateShaderConstants(_world, _viewProjection, _textureArray, _lightDirection, _diffuseColor, _ambientColor);
-	if(!result)
-	{
-		return false;
-	}
-
 	//Now render the prepared buffers with the shader
 	RenderShader(_indexCount);
 
@@ -216,13 +206,12 @@ void LightShader::ShutdownShader()
 	}
 }
 
-bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, ID3D11ShaderResourceView** _textureArray, XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor)
+bool LightShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)
 {
 	HRESULT hr;
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType constantBufferData;
-	LightBufferType lightBufferData;
 	unsigned int bufferNumber;
 
 	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
@@ -232,19 +221,28 @@ bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _vie
 	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
 
 	hr = D3D11Renderer::d3dImmediateContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	
+
 	if(FAILED(hr))
 	{
 		return false;
 	}
-	
+
 	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));	
 	D3D11Renderer::d3dImmediateContext->Unmap(constantBuffer, 0);
-	bufferNumber = 0;
 
+	bufferNumber = 0;
 	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferNumber, 1, &constantBuffer);
 
-	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, _textureArray);
+	return true;
+}
+
+bool LightShader::UpdatePixelShaderLightConstants(XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor)
+{
+	HRESULT hr;
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	LightBufferType lightBufferData;
+	unsigned int bufferNumber;
 
 	lightBufferData.ambientColor = _ambientColor;
 	lightBufferData.diffuseColor = _diffuseColor;
@@ -264,6 +262,16 @@ bool LightShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _vie
 	D3D11Renderer::d3dImmediateContext->PSSetConstantBuffers(bufferNumber, 1, &lightBuffer);
 
 	return true;
+}
+
+bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray)
+{
+	if(_textureArray)
+	{
+		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_textureArray);
+		return true;
+	}
+	return false;
 }
 
 void LightShader::RenderShader(int _indexCount)

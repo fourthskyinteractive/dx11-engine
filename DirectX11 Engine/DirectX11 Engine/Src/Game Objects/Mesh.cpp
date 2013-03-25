@@ -219,7 +219,7 @@ void Mesh::ShutdownBuffers()
 
 void Mesh::RenderBuffers()
 {
-	shaderUsed.Render(worldMatrix,  Game::camera->GetViewProjectionMatrixF(), (ID3D11ShaderResourceView**)textures->GetTextureArrayPointer(), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), Game::lightDiffuse->GetAmbientColor(), indexCount);
+	//shaderUsed.Render(worldMatrix,  Game::camera->GetViewProjectionMatrixF(), (ID3D11ShaderResourceView**)textures->GetTextureArrayPointer(), Game::lightDiffuse->GetDirection(), Game::lightDiffuse->GetDiffuseColor(), Game::lightDiffuse->GetAmbientColor(), indexCount);
 }
 
 void Mesh::ReleaseTextures()

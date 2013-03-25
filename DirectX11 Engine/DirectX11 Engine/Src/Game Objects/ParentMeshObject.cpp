@@ -1,11 +1,13 @@
 #include "ParentMeshObject.h"
 #include "ChildMeshObject.h"
+#include "../Game/Game.h"
+#include "../Renderer/D3D11Renderer.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
 
 
 ParentMeshObject::ParentMeshObject()
 {
-
+	textures = NULL;
 }
 
 ParentMeshObject::ParentMeshObject(const ParentMeshObject& _parentMeshObject)
@@ -18,22 +20,33 @@ ParentMeshObject::~ParentMeshObject()
 
 }
 
-void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation)
+void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, bool _oneTexture, WCHAR* _textureFilePath)
 {
 	position = _position;
 	scale = _scale;
 	rotation = _rotation;
 
+	textures = new TextureManager();
+	if( _oneTexture)
+	{
+		AddTexture(_textureFilePath);
+	}
+
+	shaderUsed.Initialize();
+	shaderUsed.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	shaderUsed.UpdatePixelShaderLightConstants(XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT4(.70f, .70f, 0.0f, 1.0f), XMFLOAT4(.15f, .15f, .15f, 1.0f));
 	UpdateWorldMatrix();
 
 	FBXLoader::LoadFBX(this, _filePath);
 }
 
+
 void ParentMeshObject::Render()
 {
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
-		children[i]->Render();
+		shaderUsed.UpdateVertexShaderConstants(children[i]->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+		children[i]->Render(&shaderUsed);
 	}
 }
 
@@ -43,17 +56,19 @@ void ParentMeshObject::AddChild(VertexType* _vertices, unsigned long* _indices, 
 	child->SetParent(this);
 	child->SetIndexCount(_numIdices);
 	child->SetVertexCount(_numVertices);
-	child->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 90.0f, 90.0f));
+	child->Initialize(XMFLOAT3(0.0f, 0.0f, 2.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 90.0f, 0.0f));
 	child->InitializeBuffers(_vertices, _indices);
 	children.push_back(child);
 }
 
-void ParentMeshObject::AddTexture(WCHAR* _filePath, int _child)
+void ParentMeshObject::AddTexture(WCHAR* _filePath)
 {
-	for(int i = 0; i < children.size(); ++i)
-	{
-		children[i]->AddTexture(_filePath);
-	}	
+	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
+}
+
+void ParentMeshObject::AddChildTexture(WCHAR* _filePath, int _child)
+{
+	children[_child]->AddTexture(_filePath);
 }
 
 void ParentMeshObject::UpdateWorldMatrix()

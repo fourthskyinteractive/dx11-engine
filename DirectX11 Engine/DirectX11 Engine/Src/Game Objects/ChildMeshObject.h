@@ -20,7 +20,6 @@ private:
 	XMFLOAT3 scale;
 	XMFLOAT3 rotation;
 
-	LightShader shaderUsed;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexbuffer;
 	int vertexCount;
@@ -57,7 +56,7 @@ public:
 
 	void Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 	void SetShaderBuffers();
-	void Render();	
+	void Render(LightShader* _shaderUsed);	
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();
 	void AddTexture(WCHAR* _filePath);
