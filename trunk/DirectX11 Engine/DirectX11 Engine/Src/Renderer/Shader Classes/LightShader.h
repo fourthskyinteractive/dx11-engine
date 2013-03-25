@@ -32,15 +32,14 @@ public:
 
 	bool Initialize();
 	void Shutdown();
-	bool Render(XMFLOAT4X4 _world, XMFLOAT4X4 _viewProjection, ID3D11ShaderResourceView** _textureArray,
-		XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor, int _indexCount);
+	bool Render(int _indexCount);
+	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
+	bool UpdatePixelShaderLightConstants(XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor);
+	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 
 private:
 	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
 	void ShutdownShader();
-	bool UpdateShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix, 
-		ID3D11ShaderResourceView** _textureArray, XMFLOAT3 _lightDirection, 
-		XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor);
 	void RenderShader(int _indexCount);
 
 private:

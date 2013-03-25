@@ -255,9 +255,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/car.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
-	mesh->AddTexture(L"Res/Models/Soldier/tex/soldier.dds", 0);
+	mesh->Initialize("Res/Models/fullchessboard.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), true, L"Res/Models/Soldier/tex/soldier.dds");
 
 	lightDiffuse = new LightClass();
 	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);

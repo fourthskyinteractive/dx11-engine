@@ -15,7 +15,7 @@ public:
 
 	int AddTexture(ID3D11Device* _device, WCHAR* _filename);
 	int NumberOfTextures();
-	void* GetTextureArrayPointer();
+	ID3D11ShaderResourceView* GetTextureArrayPointer();
 	void Shutdown();
 
 
