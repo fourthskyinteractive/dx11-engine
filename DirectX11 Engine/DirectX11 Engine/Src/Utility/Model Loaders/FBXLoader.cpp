@@ -169,7 +169,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			indices[indicie++] = faces[i].indices[1];
 			indices[indicie++] = faces[i].indices[2];
 		}
-
+		faces.clear();
 		_parentMesh->AddChild(vertices, indices, vertexCount, indexCount);
 	}
 
