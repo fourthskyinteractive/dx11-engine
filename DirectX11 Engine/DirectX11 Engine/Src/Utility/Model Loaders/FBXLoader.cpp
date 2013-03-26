@@ -3,7 +3,6 @@
 #include "../../Game/Definitions.h"
 #include "../../Game/Game.h"
 
-#include <Windows.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;

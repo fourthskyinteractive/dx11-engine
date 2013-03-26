@@ -1,7 +1,6 @@
 #ifndef D3D11RENDERER_H
 #define D3D11RENDERER_H
 
-#include <Windows.h>
 #include "../Game/Definitions.h"
 #include <d3d11.h>
 #include <DirectXMath.h>

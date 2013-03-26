@@ -1,7 +1,6 @@
 #include "ShaderManager.h"
 #include "D3D11Renderer.h"
 #include <fstream>
-#include <windows.h>
 #include <d3d11.h>
 
 vector<VertexShader>	ShaderManager::vertexShaders;

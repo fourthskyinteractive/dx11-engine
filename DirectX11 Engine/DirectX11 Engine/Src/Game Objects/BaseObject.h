@@ -1,7 +1,6 @@
 #ifndef BASEOBJECT_H
 #define BASEOBJECT_H
 
-#include <Windows.h>
 #include <d3d11.h>
 #include <d3d11shader.h>
 

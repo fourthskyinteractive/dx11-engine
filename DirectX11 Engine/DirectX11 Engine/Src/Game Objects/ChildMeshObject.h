@@ -1,7 +1,6 @@
 #ifndef CHILDMESHOBJECT_H
 #define CHILDMESHOBJECT_H
 
-#include <Windows.h>
 #include <d3d11.h>
 #include <d3d11shader.h>
 

@@ -1,7 +1,6 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <Windows.h>
 #include <d3d11.h>
 #include <d3d11shader.h>
 #include "../Game/Definitions.h"
