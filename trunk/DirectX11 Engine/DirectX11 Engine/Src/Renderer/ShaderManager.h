@@ -1,7 +1,6 @@
 #ifndef SHADERMANAGER_H
 #define SHADERMANAGER_H
 
-#include <Windows.h>
 #include "../Game/Definitions.h"
 #include "Effects/d3dx11effect.h"
 #include <d3d11.h>

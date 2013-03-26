@@ -1,6 +1,7 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <windows.h>
 #include <DirectXMath.h>
 using namespace DirectX;
 

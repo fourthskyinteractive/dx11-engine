@@ -114,6 +114,9 @@
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp">
+      <Filter>Game Objects\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -175,6 +178,18 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h">
       <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Lights\DirectionalLight.h">
+      <Filter>Game Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h">
+      <Filter>Game Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Lights\PointLight.h">
+      <Filter>Game Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Lights\LightManager.h">
+      <Filter>Game Objects\Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

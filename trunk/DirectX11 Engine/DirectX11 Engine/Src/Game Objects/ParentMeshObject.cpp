@@ -20,14 +20,14 @@ ParentMeshObject::~ParentMeshObject()
 
 }
 
-void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, bool _oneTexture, WCHAR* _textureFilePath)
+void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, bool _hasOneTexture /* = false */, WCHAR* _textureFilePath /* = L"" */)
 {
 	position = _position;
 	scale = _scale;
 	rotation = _rotation;
 
 	textures = new TextureManager();
-	if( _oneTexture)
+	if( _hasOneTexture)
 	{
 		AddTexture(_textureFilePath);
 	}

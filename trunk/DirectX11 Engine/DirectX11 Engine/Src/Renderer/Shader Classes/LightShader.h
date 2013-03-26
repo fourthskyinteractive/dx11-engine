@@ -1,7 +1,6 @@
 #ifndef LIGHTSHADER_H
 #define LIGHTSHADER_H
 
-#include <Windows.h>
 #include <d3d11.h>
 #include <d3d11shader.h>
 #include "../../Game/Definitions.h"

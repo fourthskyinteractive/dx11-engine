@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <windows.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;
