@@ -1,5 +1,9 @@
 #include "LightManager.h"
 
+AmbientLight*				LightManager::ambientLight;
+vector<DirectionalLight*>	LightManager::directionalLights;
+vector<PointLight*>			LightManager::pointLights;
+
 LightManager::LightManager()
 {
 
@@ -17,13 +21,13 @@ LightManager::~LightManager()
 
 void LightManager::SetAmbientLight(char* _lightName, XMFLOAT4 _color, bool _isLightOn)
 {
-	AmbientLight* ambientLight = new AmbientLight();
+	AmbientLight* aLight = new AmbientLight();
 
-	ambientLight->SetLightName(_lightName);
-	ambientLight->SetLightColor(_color);
-	ambientLight->SetIsLightOn(_isLightOn);
+	aLight->SetLightName(_lightName);
+	aLight->SetLightColor(_color);
+	aLight->SetIsLightOn(_isLightOn);
 
-	this->ambientLight = ambientLight;
+	ambientLight = aLight;
 }
 
 void LightManager::AddDirectionalLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _direction, bool _isLightOn)

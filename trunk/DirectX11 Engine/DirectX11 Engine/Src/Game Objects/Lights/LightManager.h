@@ -14,31 +14,31 @@ using namespace std;
 class LightManager
 {
 private:
-	AmbientLight* ambientLight;
-	vector<DirectionalLight*> directionalLights;
-	vector<PointLight*> pointLights;
+	static AmbientLight* ambientLight;
+	static vector<DirectionalLight*> directionalLights;
+	static vector<PointLight*> pointLights;
 
 public:
 	LightManager();
 	LightManager(const LightManager& _lightManager);
 	~LightManager();
 
-	void SetAmbientLight(char* _lightName, XMFLOAT4 _color, bool _isLightOn);
-	void AddDirectionalLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _direction, bool _isLightOn);
-	void AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _position, float _radius, bool _isLightOn);
+	static void SetAmbientLight(char* _lightName, XMFLOAT4 _color, bool _isLightOn);
+	static void AddDirectionalLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _direction, bool _isLightOn);
+	static void AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _position, float _radius, bool _isLightOn);
 
-	void TurnOffAbientLight(){ambientLight->SetIsLightOn(false);}
-	void TurnOnAmbientLight(){ambientLight->SetIsLightOn(true);}
-	void ToggleAmbientLight(){ambientLight->SetIsLightOn(!ambientLight->GetLightOn());}
-	void TurnOffDirectionalLight(int _index, char* _lightName = "");
-	void TurnOnDirectionalLight(int _index, char* _lightName = "");
-	void ToggleDirectionalLight(int _index, char* _lightName = "");
-	void TurnOffPointLight(int _index, char* _lightName = "");
-	void TurnOnPointLight(int _index, char* _lightName = "");
-	void TogglePointLight(int _index, char* _lightName = "");
+	static void TurnOffAbientLight(){ambientLight->SetIsLightOn(false);}
+	static void TurnOnAmbientLight(){ambientLight->SetIsLightOn(true);}
+	static void ToggleAmbientLight(){ambientLight->SetIsLightOn(!ambientLight->GetLightOn());}
+	static void TurnOffDirectionalLight(int _index, char* _lightName = "");
+	static void TurnOnDirectionalLight(int _index, char* _lightName = "");
+	static void ToggleDirectionalLight(int _index, char* _lightName = "");
+	static void TurnOffPointLight(int _index, char* _lightName = "");
+	static void TurnOnPointLight(int _index, char* _lightName = "");
+	static void TogglePointLight(int _index, char* _lightName = "");
 	
-	AmbientLight* GetAmbientLight(){return ambientLight;}
-	DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
-	PointLight* GetPointLight(int _index, char* _lightName = "");
+	static AmbientLight* GetAmbientLight(){return ambientLight;}
+	static DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
+	static PointLight* GetPointLight(int _index, char* _lightName = "");
 };
 #endif
