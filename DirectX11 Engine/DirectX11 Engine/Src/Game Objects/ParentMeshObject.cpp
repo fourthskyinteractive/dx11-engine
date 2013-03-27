@@ -3,6 +3,7 @@
 #include "../Game/Game.h"
 #include "../Renderer/D3D11Renderer.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
+#include "Lights/LightManager.h"
 
 
 ParentMeshObject::ParentMeshObject()
@@ -34,7 +35,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 
 	shaderUsed.Initialize();
 	shaderUsed.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
-	shaderUsed.UpdatePixelShaderLightConstants(XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT4(.70f, .70f, 0.0f, 1.0f), XMFLOAT4(.15f, .15f, .15f, 1.0f));
+	shaderUsed.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 	UpdateWorldMatrix();
 
 	FBXLoader::LoadFBX(this, _filePath);

@@ -36,6 +36,7 @@ public:
 
 	static void LoadCompiledShaders();
 	static void InitializeObjects();
+	static void InitializeLights();
 
 	static Camera* camera;
 	static LightClass* lightDiffuse;
