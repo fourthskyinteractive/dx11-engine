@@ -7,6 +7,7 @@
 #include "../Utility/Model Loaders/ObjLoader.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
 #include "../Game Objects/ParentMeshObject.h"
+#include "../Game Objects/Lights/LightManager.h"
 
 //#include <D3DX11async.h>
 #include <fstream>
@@ -75,6 +76,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
+	InitializeLights();
 	InitializeObjects();
 
 	for(int i = 0; i < 1; ++i)
@@ -256,9 +258,10 @@ void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/car.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 90.0f, 90.0f), true, L"Res/Models/Soldier/tex/soldier.dds");
+}
 
-	lightDiffuse = new LightClass();
-	lightDiffuse->SetAmbientColor(0.15f, 0.15f, 0.15f, 0.15f);
-	lightDiffuse->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	lightDiffuse->SetDirection(0.0f, 0.0f, 1.0f);
+void Game::InitializeLights()
+{
+	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
+	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(0.0f, 0.0f, .75f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 }
