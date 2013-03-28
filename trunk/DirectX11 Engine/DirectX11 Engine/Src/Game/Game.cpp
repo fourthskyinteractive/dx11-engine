@@ -71,13 +71,15 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	timer.Init();
 
-	directInput = new DirectInput;
-	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
+	
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
 	InitializeObjects();
+
+	directInput = new DirectInput;
+	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 
 	for(int i = 0; i < 1; ++i)
 	{

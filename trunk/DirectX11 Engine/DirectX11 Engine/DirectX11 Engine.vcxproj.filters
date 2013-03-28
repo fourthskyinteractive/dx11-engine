@@ -211,10 +211,16 @@
     <FxCompile Include="Src\FX\MultipleTexturePixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Src\FX\DeferredVertexShader.hlsl">
+    <FxCompile Include="Src\FX\GBufferPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Src\FX\DeferredPixelShader.hlsl">
+    <FxCompile Include="Src\FX\GBufferVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredLightingVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredLightingPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
