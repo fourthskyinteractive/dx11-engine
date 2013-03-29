@@ -122,6 +122,27 @@ void ChildMeshObject::Render(LightShader* _shaderUsed)
 	_shaderUsed->Render(indexCount);
 }
 
+void ChildMeshObject::Update(float _dt)
+{
+	//TODO: NEED TO APPLY THE CAMERA ROTATE SYSTEM TO THIS BECAUSE IT MAINTAINS A GLOBAL COORDINATE SYSTEM
+// 	float degrees = 45.0f * _dt;
+// 
+// 	Rotate(degrees, XMFLOAT3(0.0f, 1.0f, 0.0f));
+
+	UpdateLocalMatrix();
+
+	UpdateWorldMatrix();
+}
+
+void ChildMeshObject::Rotate(float _degrees, XMFLOAT3 _axis)
+{
+	_degrees = XMConvertToRadians(_degrees);
+
+	rotation.x += _axis.x * _degrees;
+	rotation.y += _axis.y * _degrees;
+	rotation.z += _axis.z * _degrees;
+}
+
 void ChildMeshObject::UpdateLocalMatrix()
 {
 	XMMATRIX mScale;
@@ -130,10 +151,6 @@ void ChildMeshObject::UpdateLocalMatrix()
 
 	mScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	mTranslation = XMMatrixTranslation(position.x, position.y, position.z);
-
-	rotation.x = XMConvertToRadians(rotation.x);
-	rotation.y = XMConvertToRadians(rotation.y);
-	rotation.z = XMConvertToRadians(rotation.z);
 
 	mRotation = XMMatrixIdentity();
 	if(rotation.x != 0)

@@ -32,7 +32,6 @@ LightClass*						Game::lightDiffuse = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
-float							Game::degrees;
 ID3D11Buffer*					Game::constantBuffer;
 ConstantBuffer					Game::constantBufferData;
 
@@ -52,16 +51,11 @@ bool							Game::backfaceCulling;
 
 XMFLOAT2						Game::cameraRotation;
 
-XMFLOAT3						Game::positions[1];
-XMFLOAT3						Game::scales[1];
-XMFLOAT3						Game::rotations[1];
-
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
 	ShowCursor(false);
 	bool result;
 	backfaceCulling = true;
-	degrees = 0.0f;
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
@@ -80,14 +74,6 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-
-	for(int i = 0; i < 1; ++i)
-	{
-		positions[i] = XMFLOAT3((float)((rand()% 100) - 50), (float)((rand()% 100) - 50), (float)((rand()% 100) - 50));
-		float scale = (float)(rand() % 5);
-		scales[i] = XMFLOAT3(scale, scale, scale);
-		rotations[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	}
 
 	if(bResult)
 	{
@@ -125,13 +111,7 @@ void Game::Update()
 
 	//Get Input
 	Input(deltaTime);
-
-	degrees += (30.0f * deltaTime);
-
-	for(int i = 0; i < 1; ++i)
-	{
-		rotations[i] = XMFLOAT3(0.0f, degrees, 0.0f);
-	}
+	mesh->Update(deltaTime);
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
