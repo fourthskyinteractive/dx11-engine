@@ -26,6 +26,9 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	position = _position;
 	scale = _scale;
 	rotation = _rotation;
+	rotation.x = XMConvertToRadians(rotation.x);
+	rotation.y = XMConvertToRadians(rotation.y);
+	rotation.z = XMConvertToRadians(rotation.z);
 
 	textures = new TextureManager();
 	if( _hasOneTexture)
@@ -49,6 +52,29 @@ void ParentMeshObject::Render()
 		shaderUsed.UpdateVertexShaderConstants(children[i]->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
 		children[i]->Render(&shaderUsed);
 	}
+}
+
+void ParentMeshObject::Update(float _dt)
+{
+	float degrees = 0;
+	degrees = 45.0f * _dt;
+
+	UpdateWorldMatrix();
+
+	unsigned int childCount = children.size();
+	for(unsigned int i = 0; i < childCount; ++i)
+	{
+		children[i]->Update(_dt);
+	}
+}
+
+void ParentMeshObject::Rotate(float _degrees, XMFLOAT3 _axis)
+{
+	_degrees = XMConvertToRadians(_degrees);
+
+	rotation.x += _axis.x * _degrees;
+	rotation.y += _axis.y * _degrees;
+	rotation.z += _axis.z * _degrees;
 }
 
 void ParentMeshObject::AddChild(VertexType* _vertices, unsigned long* _indices, int _numVertices, int _numIdices)
@@ -80,10 +106,6 @@ void ParentMeshObject::UpdateWorldMatrix()
 
 	mScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	mTranslation = XMMatrixTranslation(position.x, position.y, position.z);
-
-	rotation.x = XMConvertToRadians(rotation.x);
-	rotation.y = XMConvertToRadians(rotation.y);
-	rotation.z = XMConvertToRadians(rotation.z);
 
 	mRotation = XMMatrixIdentity();
 	if(rotation.x != 0)

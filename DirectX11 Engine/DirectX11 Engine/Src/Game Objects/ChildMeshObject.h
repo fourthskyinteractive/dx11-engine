@@ -59,6 +59,8 @@ public:
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();
 	void AddTexture(WCHAR* _filePath);
+	void Update(float _dt);
+	void Rotate(float _degrees, XMFLOAT3 _axis);
 
 
 	//D3DX Buffer Initialization

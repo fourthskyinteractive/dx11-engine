@@ -53,5 +53,7 @@ public:
 	void AddChildTexture(WCHAR* _filePath, int _child);
 
 	void UpdateWorldMatrix();
+	void Update(float _dt);
+	void Rotate(float _degrees, XMFLOAT3 _axis);
 };
 #endif

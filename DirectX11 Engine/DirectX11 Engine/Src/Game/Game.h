@@ -42,16 +42,12 @@ public:
 	static LightClass* lightDiffuse;
 
 private:
-	static XMFLOAT3 positions[1];
-	static XMFLOAT3 rotations[1];
-	static XMFLOAT3 scales[1];
 
 	static ParentMeshObject* mesh;
 	static CubeObjectColor cubeObject;
 	static BaseObject cubeObj;
 
 	static Timer timer;
-	static float degrees;
 	static XMFLOAT2 cameraRotation;
 
 	static ID3D11Buffer* boxVB;
