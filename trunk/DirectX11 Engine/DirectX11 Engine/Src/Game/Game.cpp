@@ -239,11 +239,11 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/car.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 90.0f, 90.0f), true, L"Res/Models/Soldier/tex/soldier.dds");
+	mesh->Initialize("Res/Models/Graves.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
 }
 
 void Game::InitializeLights()
 {
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
-	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(0.0f, 0.0f, .75f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
+	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 }
