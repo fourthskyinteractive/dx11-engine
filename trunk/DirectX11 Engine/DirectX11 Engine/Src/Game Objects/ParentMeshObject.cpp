@@ -59,6 +59,7 @@ void ParentMeshObject::Update(float _dt)
 	float degrees = 0;
 	degrees = 45.0f * _dt;
 
+	//Rotate(degrees, XMFLOAT3(0.0f, 1.0f, 0.0f));
 	UpdateWorldMatrix();
 
 	unsigned int childCount = children.size();

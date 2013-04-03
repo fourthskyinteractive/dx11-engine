@@ -126,18 +126,18 @@ void Camera::SetLens(float _fovY, float _aspectRatio, float _zNear, float _zFar)
 
 	XMMATRIX proj;
 
-	proj = XMMatrixPerspectiveFovLH(_fovY, _aspectRatio, _zNear, _zFar);
+	proj = XMMatrixPerspectiveFovRH(_fovY, _aspectRatio, _zNear, _zFar);
 	XMStoreFloat4x4(&projection, proj);
 }
 
 void Camera::LookAt(FXMVECTOR _cameraPos, FXMVECTOR _targetPos, FXMVECTOR _worldUp)
 {
-	XMStoreFloat4x4(&view,XMMatrixLookAtLH(_cameraPos, _targetPos, _worldUp) );
+	XMStoreFloat4x4(&view,XMMatrixLookAtRH(_cameraPos, _targetPos, _worldUp) );
 }
 
 void Camera::LookAt(const XMFLOAT3& _cameraPos, const XMFLOAT3& _targetPos, const XMFLOAT3& _worldUp)
 {
-	XMStoreFloat4x4(&view,XMMatrixLookAtLH(XMLoadFloat3(&_cameraPos), XMLoadFloat3(&_targetPos), XMLoadFloat3(&_worldUp)) );
+	XMStoreFloat4x4(&view,XMMatrixLookAtRH(XMLoadFloat3(&_cameraPos), XMLoadFloat3(&_targetPos), XMLoadFloat3(&_worldUp)) );
 }
 
 XMMATRIX Camera::GetViewMatrixM() const
@@ -234,7 +234,7 @@ void Camera::UpdateViewMatrix()
 	//is no reason to normalize the cross product
 	//U = XMVector3Cross(R, L);
 
-	XMMATRIX mView = XMMatrixLookAtLH(P, L + P, U);
+	XMMATRIX mView = XMMatrixLookAtRH(P, L + P, U);
 
 	XMStoreFloat4x4(&view, mView);
 }

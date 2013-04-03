@@ -59,14 +59,14 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 	}
 
 	FbxAxisSystem sceneAxisSystem = scene->GetGlobalSettings().GetAxisSystem();
-	FbxAxisSystem axisSystem = FbxAxisSystem::DirectX;
+	FbxAxisSystem axisSystem( FbxAxisSystem::eYAxis, FbxAxisSystem::eParityOdd, FbxAxisSystem::eLeftHanded );
 
 	if(sceneAxisSystem != axisSystem)
 	{
 		axisSystem.ConvertScene(scene);
 	}
 
-	TriangulateRecursive(scene->GetRootNode());
+	//TriangulateRecursive(scene->GetRootNode());
 
 	FbxArray<FbxMesh*> meshes;
 	FillMeshArray(scene, meshes);
@@ -113,7 +113,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			int index = 0;
 			FbxVector4 fbxNorm(0, 0, 0, 0);
 			FbxVector2 fbxUV(0, 0);
-
+			bool texCoordFound = false;
 			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0);
 			vertices[index].position.x = (float)fbxVerts[index][0];
 			vertices[index].position.y = (float)fbxVerts[index][1];
@@ -123,7 +123,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];
 			vertices[index].normal.z = (float)fbxNorm[2];
-			meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
 			vertices[index].texture.y = (float)fbxUV[1];
 
@@ -136,7 +136,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];
 			vertices[index].normal.z = (float)fbxNorm[2];
-			meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
 			vertices[index].texture.y = (float)fbxUV[1];
 
@@ -149,7 +149,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];
 			vertices[index].normal.z = (float)fbxNorm[2];
-			meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
 			vertices[index].texture.y = (float)fbxUV[1];
 
