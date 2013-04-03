@@ -17,7 +17,6 @@ struct PixelIn
 	float4 pos		: SV_POSITION;
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
-	int textureIndex: TEXINDEX;
 	float3 tangent	: TANGENT;
 	float3 binormal	: binormal;
 };

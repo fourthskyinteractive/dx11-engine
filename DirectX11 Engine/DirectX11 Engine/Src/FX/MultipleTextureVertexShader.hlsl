@@ -18,7 +18,6 @@ struct VertexOut
 	float4 pos		: SV_POSITION;
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
-	int textureIndex: TEXINDEX;
 	float3 tangent	: TANGENT;
 	float3 binormal	: BINORMAL;
 };
@@ -27,7 +26,6 @@ struct VertexOut
 VertexOut VS(VertexIn vIn)
 {
 	VertexOut vOut;
-	vOut.textureIndex = (int)vIn.pos.w;
 	vIn.pos.w = 1.0f;
 	float4 pos = vIn.pos;
 

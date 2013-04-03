@@ -136,11 +136,11 @@ void Game::Input(float _deltaTime)
 	}
 	if(directInput->IsKeyPressed(DIK_A))
 	{
-		camera->Strafe(-5.0f * _deltaTime); 
+		camera->Strafe(5.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_D))
 	{
-		camera->Strafe(5.0f * _deltaTime); 
+		camera->Strafe(-5.0f * _deltaTime); 
 	}
 
 	if(directInput->IsKeyPressed(DIK_B))
@@ -157,7 +157,7 @@ void Game::Input(float _deltaTime)
 
 		if(deltaX != 0)
 		{
-			camera->Yaw((deltaX * rotationScale) * _deltaTime);
+			camera->Yaw((-deltaX * rotationScale) * _deltaTime);
 		}
 
 		if(deltaY != 0)
@@ -239,7 +239,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/Graves.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
+	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
 }
 
 void Game::InitializeLights()
