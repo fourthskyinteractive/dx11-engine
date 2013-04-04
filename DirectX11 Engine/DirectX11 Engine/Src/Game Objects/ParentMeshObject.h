@@ -4,6 +4,7 @@
 
 #include "../Game/Definitions.h"
 #include "../Renderer/Shader Classes/LightShader.h"
+#include "../Renderer/Shader Classes/DepthBuffer.h"
 #include "../Renderer/TextureManager.h"
 
 
@@ -24,7 +25,7 @@ private:
 	XMFLOAT3	rotation;
 	XMFLOAT3	scale;
 
-	LightShader shaderUsed;
+	DepthBuffer shaderUsed;
 
 	TextureManager* textures;
 	vector<ChildMeshObject*> children;

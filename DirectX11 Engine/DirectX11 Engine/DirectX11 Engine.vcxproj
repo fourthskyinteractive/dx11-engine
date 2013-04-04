@@ -83,9 +83,7 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
-    <ClCompile Include="Src\Game Objects\Lights\LightClass.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
-    <ClCompile Include="Src\Game Objects\Mesh.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
@@ -93,6 +91,7 @@
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\ColorShader.cpp" />
+    <ClCompile Include="Src\Renderer\Shader Classes\DepthBuffer.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
@@ -109,16 +108,15 @@
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h" />
     <ClInclude Include="Src\Game Objects\Lights\DirectionalLight.h" />
-    <ClInclude Include="Src\Game Objects\Lights\LightClass.h" />
     <ClInclude Include="Src\Game Objects\Lights\LightManager.h" />
     <ClInclude Include="Src\Game Objects\Lights\PointLight.h" />
-    <ClInclude Include="Src\Game Objects\Mesh.h" />
     <ClInclude Include="Src\Game Objects\ParentMeshObject.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
     <ClInclude Include="Src\Input\DirectInput.h" />
     <ClInclude Include="Src\Renderer\D3D11Renderer.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\ColorShader.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\DepthBuffer.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
@@ -137,6 +135,19 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Src\FX\DeferredLightingVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DepthPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DepthVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

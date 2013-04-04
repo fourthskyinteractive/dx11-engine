@@ -96,17 +96,11 @@
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp">
       <Filter>Renderer\Shader Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game Objects\Lights\LightClass.cpp">
-      <Filter>Game Objects\Lights</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp">
       <Filter>Misc\Model Loaders</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utility\Model Loaders\FBXLoader.cpp">
       <Filter>Misc\Model Loaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game Objects\Mesh.cpp">
-      <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp">
       <Filter>Game Objects</Filter>
@@ -116,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp">
       <Filter>Game Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\DepthBuffer.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,17 +158,11 @@
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h">
       <Filter>Renderer\Shader Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game Objects\Lights\LightClass.h">
-      <Filter>Game Objects\Lights</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h">
       <Filter>Misc\Model Loaders</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\Model Loaders\FBXLoader.h">
       <Filter>Misc\Model Loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game Objects\Mesh.h">
-      <Filter>Game Objects</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\ParentMeshObject.h">
       <Filter>Game Objects</Filter>
@@ -190,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\Lights\LightManager.h">
       <Filter>Game Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\DepthBuffer.h">
+      <Filter>Renderer\Shader Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +215,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\DeferredLightingPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DepthVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DepthPixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

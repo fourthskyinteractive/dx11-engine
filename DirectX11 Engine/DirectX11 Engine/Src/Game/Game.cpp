@@ -28,7 +28,6 @@ Timer							Game::timer;
 BaseObject						Game::cubeObj;
 CubeObjectColor					Game::cubeObject;
 ParentMeshObject*				Game::mesh = NULL;
-LightClass*						Game::lightDiffuse = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -60,13 +59,13 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.y = 0;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), .01f, 10000.0f);
+	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 1.0f, 10000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
 
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -178,11 +177,6 @@ void Game::Input(float _deltaTime)
 void Game::Exit()
 {
 	D3D11Renderer::Shutdown();
-	if(lightDiffuse)
-	{
-		delete lightDiffuse;
-		lightDiffuse = 0;
-	}
 	if(mesh)
 	{
 		delete mesh;
@@ -234,12 +228,14 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/TexturePixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTextureVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTexturePixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DepthVertexShader.cso", VERTEX_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DepthPixelShader.cso", PIXEL_SHADER);
 }
 
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 17.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
+	mesh->Initialize("Res/Models/corki.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/corki.dds");
 }
 
 void Game::InitializeLights()
