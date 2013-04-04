@@ -66,7 +66,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	timer.Init();
 
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -149,7 +149,7 @@ void Game::Input(float _deltaTime)
 		backfaceCulling = !backfaceCulling;
 	}
 
-	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
+	if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
 		float rotationScale = 5.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
