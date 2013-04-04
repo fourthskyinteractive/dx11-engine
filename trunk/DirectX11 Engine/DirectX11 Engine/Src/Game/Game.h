@@ -14,7 +14,6 @@
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/CubeObjectColor.h"
 #include "../Game Objects/Mesh.h"
-#include "../Game Objects/Lights/LightClass.h"
 #include "../Game Objects/ParentMeshObject.h"
 
 class Game
@@ -39,7 +38,6 @@ public:
 	static void InitializeLights();
 
 	static Camera* camera;
-	static LightClass* lightDiffuse;
 
 private:
 

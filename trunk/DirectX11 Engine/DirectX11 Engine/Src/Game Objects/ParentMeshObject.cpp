@@ -37,8 +37,8 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	}
 
 	shaderUsed.Initialize();
-	shaderUsed.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
-	shaderUsed.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
+	//shaderUsed.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	//shaderUsed.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 	UpdateWorldMatrix();
 
 	FBXLoader::LoadFBX(this, _filePath);

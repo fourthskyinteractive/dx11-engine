@@ -113,7 +113,7 @@ void ChildMeshObject::AddTexture(WCHAR* _filePath)
 	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
 }
 
-void ChildMeshObject::Render(LightShader* _shaderUsed)
+void ChildMeshObject::Render(DepthBuffer* _shaderUsed)
 {
 	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
 	
