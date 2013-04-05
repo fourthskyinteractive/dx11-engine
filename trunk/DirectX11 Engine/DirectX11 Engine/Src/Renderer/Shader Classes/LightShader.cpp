@@ -1,6 +1,8 @@
 #include "LightShader.h"
 #include "../ShaderManager.h"
 #include "../D3D11Renderer.h"
+#include "../../Game Objects/ChildMeshObject.h"
+#include "../../Game/Game.h"
 
 LightShader::LightShader()
 {
@@ -8,6 +10,7 @@ LightShader::LightShader()
 	sampleState = NULL;
 	constantBuffer = NULL;
 	lightBuffer = NULL;
+	SetBufferType(LIGHT_BUFFER);
 }
 
 LightShader::LightShader(const LightShader& _lightShader)
@@ -25,6 +28,7 @@ bool LightShader::Initialize()
 	bool result;
 
 	result = InitializeShader(MULTIPLE_TEXTURE_VERTEX_SHADER, MULTIPLE_TEXTURE_PIXEL_SHADER);
+
 	if(!result)
 	{
 		return false;
@@ -46,7 +50,12 @@ bool LightShader::Render(int _indexCount)
 	return true;
 }
 
-bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)
+void LightShader::Update(ChildMeshObject* _obj)
+{
+	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+}
+
+bool LightShader::InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex)
 {
 	vertexShaderIndex = _vertexShaderIndex;
 	pixelShaderIndex = _pixelShaderIndex;
@@ -166,16 +175,6 @@ bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 		return false;
 	}
 
-	//Set the vertex input layout
-	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
-
-	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
-
-	//Set the sampler state in the pixel shader
-	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
-
 	return true;
 }
 
@@ -204,6 +203,19 @@ void LightShader::ShutdownShader()
 		inputLayout->Release();
 		inputLayout = 0;
 	}
+}
+
+void LightShader::SetShader()
+{
+	//Set the vertex input layout
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
+
+	//Set the vertex and pixel shaders that will be used to render this triangle
+	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+
+	//Set the sampler state in the pixel shader
+	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
 bool LightShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)

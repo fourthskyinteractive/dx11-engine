@@ -36,21 +36,30 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 		AddTexture(_textureFilePath);
 	}
 
-	shaderUsed.Initialize();
-	//shaderUsed.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
-	//shaderUsed.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
+	depthShader.Initialize();
+	lightShader.Initialize();
+	lightShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	lightShader.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
+
+	SetShaderUsed(&lightShader);
+
 	UpdateWorldMatrix();
 
 	FBXLoader::LoadFBX(this, _filePath);
 }
 
+void ParentMeshObject::SetShaderUsed(BaseShader* _shaderUsed)
+{
+	shaderUsed = _shaderUsed;
+	shaderUsed->SetShader();
+}
 
 void ParentMeshObject::Render()
 {
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
-		shaderUsed.UpdateVertexShaderConstants(children[i]->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
-		children[i]->Render(&shaderUsed);
+		shaderUsed->Update(children[i]);
+		children[i]->Render(shaderUsed);
 	}
 }
 
@@ -66,6 +75,22 @@ void ParentMeshObject::Update(float _dt)
 	for(unsigned int i = 0; i < childCount; ++i)
 	{
 		children[i]->Update(_dt);
+	}
+}
+
+void ParentMeshObject::SwitchRenderMode(int _renderMode)
+{
+	if(_renderMode == DEPTH_BUFFER)
+	{
+		SetShaderUsed(&depthShader);
+	}
+	else if(_renderMode == LIGHT_BUFFER)
+	{
+		SetShaderUsed(&lightShader);
+	}
+	else if(_renderMode == DIFFUSE_BUFFER)
+	{
+
 	}
 }
 

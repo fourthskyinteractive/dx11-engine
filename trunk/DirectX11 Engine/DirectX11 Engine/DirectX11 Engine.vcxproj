@@ -91,7 +91,7 @@
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\ColorShader.cpp" />
-    <ClCompile Include="Src\Renderer\Shader Classes\DepthBuffer.cpp" />
+    <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
@@ -115,8 +115,9 @@
     <ClInclude Include="Src\Game\Game.h" />
     <ClInclude Include="Src\Input\DirectInput.h" />
     <ClInclude Include="Src\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\BaseShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\ColorShader.h" />
-    <ClInclude Include="Src\Renderer\Shader Classes\DepthBuffer.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />

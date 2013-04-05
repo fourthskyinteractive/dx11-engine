@@ -8,6 +8,7 @@
 #include "../Utility/Model Loaders/FBXLoader.h"
 #include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/Lights/LightManager.h"
+#include "../Renderer/Shader Classes/BaseShader.h"
 
 //#include <D3DX11async.h>
 #include <fstream>
@@ -148,7 +149,16 @@ void Game::Input(float _deltaTime)
 		backfaceCulling = !backfaceCulling;
 	}
 
-	if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
+	if(directInput->IsKeyPressed(DIK_K))
+	{
+		mesh->SwitchRenderMode(DEPTH_BUFFER);
+	}
+	if(directInput->IsKeyPressed(DIK_L))
+	{
+		mesh->SwitchRenderMode(LIGHT_BUFFER);
+	}
+
+	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
 	{
 		float rotationScale = 5.0f;
 		float deltaX = (float)currMouseX - (float)prevMouseX;
@@ -235,7 +245,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/corki.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/corki.dds");
+	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
 }
 
 void Game::InitializeLights()

@@ -1,24 +1,27 @@
-#include "DepthBuffer.h"
+#include "DepthShader.h"
 #include "../ShaderManager.h"
 #include "../D3D11Renderer.h"
+#include "../../Game/Game.h"
+#include "../../Game Objects/ChildMeshObject.h"
 
-DepthBuffer::DepthBuffer()
+DepthShader::DepthShader()
 {
 	inputLayout = NULL;
 	constantBuffer = NULL;
+	SetBufferType(DEPTH_BUFFER);
 }
 
-DepthBuffer::DepthBuffer(const DepthBuffer& _depthBuffer)
+DepthShader::DepthShader(const DepthShader& _depthBuffer)
 {
 
 }
 
-DepthBuffer::~DepthBuffer()
+DepthShader::~DepthShader()
 {
 
 }
 
-bool DepthBuffer::Initialize()
+bool DepthShader::Initialize()
 {
 	bool result;
 
@@ -31,12 +34,12 @@ bool DepthBuffer::Initialize()
 	return true;
 }
 
-void DepthBuffer::Shutdown()
+void DepthShader::Shutdown()
 {
 	ShutdownShader();
 }
 
-bool DepthBuffer::Render(int _indexCount)
+bool DepthShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
 	RenderShader(_indexCount);
@@ -44,7 +47,12 @@ bool DepthBuffer::Render(int _indexCount)
 	return true;
 }
 
-bool DepthBuffer::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)
+void DepthShader::Update(ChildMeshObject* _obj)
+{
+	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+}
+
+bool DepthShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)
 {
 	vertexShaderIndex = _vertexShaderIndex;
 	pixelShaderIndex = _pixelShaderIndex;
@@ -84,17 +92,10 @@ bool DepthBuffer::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 		return false;
 	}
 
-	//Set the vertex input layout
-	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
-
-	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
-
 	return true;
 }
 
-void DepthBuffer::ShutdownShader()
+void DepthShader::ShutdownShader()
 {
 	if(constantBuffer)
 	{
@@ -109,7 +110,17 @@ void DepthBuffer::ShutdownShader()
 	}
 }
 
-bool DepthBuffer::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)
+void DepthShader::SetShader()
+{
+	//Set the vertex input layout
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
+
+	//Set the vertex and pixel shaders that will be used to render this triangle
+	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+}
+
+bool DepthShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)
 {
 	HRESULT hr;
 
@@ -139,7 +150,7 @@ bool DepthBuffer::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X
 	return true;
 }
 
-void DepthBuffer::RenderShader(int _indexCount)
+void DepthShader::RenderShader(int _indexCount)
 {
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }
