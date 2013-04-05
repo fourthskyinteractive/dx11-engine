@@ -7,9 +7,10 @@
 #include "../Game/Definitions.h"
 #include "../Renderer/TextureManager.h"
 #include "../Renderer/Shader Classes/LightShader.h"
-#include "../Renderer/Shader Classes/DepthBuffer.h"
+#include "../Renderer/Shader Classes/DepthShader.h"
 
 class ParentMeshObject;
+class DepthShader;
 
 class ChildMeshObject
 {
@@ -56,7 +57,7 @@ public:
 
 	void Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 	void SetShaderBuffers();
-	void Render(DepthBuffer* _shaderUsed);	
+	void Render(BaseShader* _shaderUsed);	
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();
 	void AddTexture(WCHAR* _filePath);

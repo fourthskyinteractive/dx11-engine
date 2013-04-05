@@ -4,7 +4,7 @@
 
 #include "../Game/Definitions.h"
 #include "../Renderer/Shader Classes/LightShader.h"
-#include "../Renderer/Shader Classes/DepthBuffer.h"
+#include "../Renderer/Shader Classes/DepthShader.h"
 #include "../Renderer/TextureManager.h"
 
 
@@ -25,7 +25,9 @@ private:
 	XMFLOAT3	rotation;
 	XMFLOAT3	scale;
 
-	DepthBuffer shaderUsed;
+	BaseShader* shaderUsed;
+	DepthShader depthShader;
+	LightShader lightShader;
 
 	TextureManager* textures;
 	vector<ChildMeshObject*> children;
@@ -52,6 +54,8 @@ public:
 	void Render();
 	void AddTexture(WCHAR* _filePath);
 	void AddChildTexture(WCHAR* _filePath, int _child);
+	void SwitchRenderMode(int _renderMode);
+	void SetShaderUsed(BaseShader* _shaderUsed);
 
 	void UpdateWorldMatrix();
 	void Update(float _dt);

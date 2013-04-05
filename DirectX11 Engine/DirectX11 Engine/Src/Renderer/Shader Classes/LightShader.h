@@ -4,8 +4,9 @@
 #include <d3d11.h>
 #include <d3d11shader.h>
 #include "../../Game/Definitions.h"
+#include "BaseShader.h"
 
-class LightShader
+class LightShader : public BaseShader
 {
 private:
 
@@ -35,6 +36,8 @@ public:
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
 	bool UpdatePixelShaderLightConstants(XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
+	void Update(ChildMeshObject* _obj);
+	void SetShader();
 
 private:
 	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
