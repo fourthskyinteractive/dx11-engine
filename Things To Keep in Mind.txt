@@ -17,7 +17,7 @@ Deferred Rendering - 	To Do Deferred Rendering With Multiple RenderTargetViews
 			* Create additional RenderTargetViews to draw to.
 				-These are texture2D's that you can then send to the shader as 
 	 			 shaderResourceViews.
-			* Basically deferred rendering is rendering to multiple textures and tehn rendering
+			* Basically deferred rendering is rendering to multiple textures and then rendering
   			  them all to one quad that is the size of the screen.  When you render them all you
   			  pass them all as ShaderResourceViews and then "blend" them to get the appropirate image.
 			* You still need to get the pointer to the back buffer and remember which RenderTargetView is
