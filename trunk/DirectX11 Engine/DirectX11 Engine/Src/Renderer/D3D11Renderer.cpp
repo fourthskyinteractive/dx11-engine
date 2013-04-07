@@ -9,7 +9,7 @@ HWND						D3D11Renderer::hwnd;
 ID3D11Device*				D3D11Renderer::d3dDevice = NULL;
 ID3D11DeviceContext*		D3D11Renderer::d3dImmediateContext = NULL;
 IDXGISwapChain*				D3D11Renderer::swapChain = NULL;
-ID3D11RenderTargetView*		D3D11Renderer::renderTargetView = NULL;
+ID3D11RenderTargetView*		D3D11Renderer::renderTargetView[8];
 ID3D11Texture2D*			D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView*		D3D11Renderer::depthStencilView = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
@@ -33,6 +33,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	DXGI_ADAPTER_DESC adapterDesc;
 	int error;
 	ID3D11Texture2D* backBufferPtr;
+	ID3D11Texture2D* renderTextures[7];
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -247,15 +248,15 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	}
 
 	// Create the render target view with the back buffer pointer.
-	hr = d3dDevice->CreateRenderTargetView(backBufferPtr, NULL, &renderTargetView);
+	hr = d3dDevice->CreateRenderTargetView(backBufferPtr, NULL, &renderTargetView[0]);
 	if(FAILED(hr))
 	{
 		return false;
 	}
 
 	// Release pointer to the back buffer as we no longer need it.
-	backBufferPtr->Release();
-	backBufferPtr = 0;
+	//backBufferPtr->Release();
+	//backBufferPtr = 0;
 
 	//We will also need to set up a depth buffer description. We'll use this to create a depth buffer so that our polygons can be rendered properly in 3D space. At the same time we will attach a stencil buffer to our depth buffer. The stencil buffer can be used to achieve effects such as motion blur, volumetric shadows, and other things.
 	// Initialize the description of the depth buffer.
@@ -273,6 +274,15 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
+
+	//Make all of the other render target views
+	for(int i = 0; i < 7; ++i)
+	{
+		hr = d3dDevice->CreateTexture2D(&depthBufferDesc, NULL, &renderTextures[i]);
+		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], NULL, &renderTargetView[i + 1]);
+		renderTextures[i]->Release();
+		renderTextures[i] = 0;
+	}
 
 	//Now we create the depth/stencil buffer using that description. You will notice we use the CreateTexture2D function to make the buffers, hence the buffer is just a 2D texture. The reason for this is that once your polygons are sorted and then rasterized they just end up being colored pixels in this 2D buffer. Then this 2D buffer is drawn to the screen.
 	// Create the texture for the depth buffer using the filled out description.
@@ -337,7 +347,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	//With that created we can now call OMSetRenderTargets. This will bind the render target view and the depth stencil buffer to the output render pipeline. This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen.
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	d3dImmediateContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+	d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
 
 	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future tutorials. First thing is we'll create is a rasterizer state. This will give us control over how polygons are rendered. We can do things like make our scenes render in wireframe mode or have DirectX draw both the front and back faces of polygons. By default DirectX already has a rasterizer state set up and working the exact same as the one below but you have no control to change it unless you set up one yourself
 	// Setup the raster description which will determine how and what polygons will be drawn.
@@ -383,7 +393,13 @@ void D3D11Renderer::ClearScene(const float* _color /* = reinterpret_cast<const f
 	assert(d3dImmediateContext);
 	assert(swapChain);
 
-	d3dImmediateContext->ClearRenderTargetView(renderTargetView, _color);
+	for(int i = 0; i < 8; ++i)
+	{
+		if(renderTargetView[i])
+		{
+			d3dImmediateContext->ClearRenderTargetView(renderTargetView[i], _color);
+		}
+	}
 	d3dImmediateContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
@@ -422,10 +438,14 @@ void D3D11Renderer::Shutdown()
 	{
 		ReleaseCOM(depthStencilBuffer);
 	}
-	if(renderTargetView)
+	for(int i = 0; i < 8; ++i)
 	{
-		ReleaseCOM(renderTargetView);
+		if(renderTargetView[i])
+		{
+			ReleaseCOM(renderTargetView[i]);
+		}
 	}
+
 	if(swapChain)
 	{
 		ReleaseCOM(swapChain);
