@@ -31,6 +31,7 @@ public:
 	static ID3D11DeviceContext* d3dImmediateContext;
 	static IDXGISwapChain* swapChain;
 	static ID3D11RenderTargetView* renderTargetView[8];
+	static ID3D11ShaderResourceView* shaderResourceView[8];
 	static ID3D11Texture2D* depthStencilBuffer;
 	static ID3D11DepthStencilState* depthStencilState;
 	static ID3D11DepthStencilView* depthStencilView;
