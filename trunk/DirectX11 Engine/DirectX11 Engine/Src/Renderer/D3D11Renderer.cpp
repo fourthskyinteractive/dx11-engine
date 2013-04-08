@@ -10,6 +10,7 @@ ID3D11Device*				D3D11Renderer::d3dDevice = NULL;
 ID3D11DeviceContext*		D3D11Renderer::d3dImmediateContext = NULL;
 IDXGISwapChain*				D3D11Renderer::swapChain = NULL;
 ID3D11RenderTargetView*		D3D11Renderer::renderTargetView[8];
+ID3D11ShaderResourceView*	D3D11Renderer::shaderResourceView[8];
 ID3D11Texture2D*			D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView*		D3D11Renderer::depthStencilView = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
@@ -34,6 +35,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	int error;
 	ID3D11Texture2D* backBufferPtr;
 	ID3D11Texture2D* renderTextures[7];
+	D3D11_TEXTURE2D_DESC renderTextureDesc;
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -255,8 +258,45 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	}
 
 	// Release pointer to the back buffer as we no longer need it.
-	//backBufferPtr->Release();
-	//backBufferPtr = 0;
+	backBufferPtr->Release();
+	backBufferPtr = 0;
+
+	ZeroMemory(&renderTextureDesc, sizeof(renderTextureDesc));
+
+	// Set up the description of the depth buffer.
+	renderTextureDesc.Width = _horizontalRes;
+	renderTextureDesc.Height = _verticalRes;
+	renderTextureDesc.MipLevels = 1;
+	renderTextureDesc.ArraySize = 1;
+	renderTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	renderTextureDesc.SampleDesc.Count = 1;
+	renderTextureDesc.SampleDesc.Quality = 0;
+	renderTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	renderTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	renderTextureDesc.CPUAccessFlags = 0;
+	renderTextureDesc.MiscFlags = 0;
+
+	ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
+	renderTargetViewDesc.Format = renderTextureDesc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	ZeroMemory(&shaderResourceViewDesc, sizeof(shaderResourceViewDesc));
+	shaderResourceViewDesc.Format = renderTargetViewDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	//Make all of the other render target views
+	for(int i = 0; i < 7; ++i)
+	{
+		hr = d3dDevice->CreateTexture2D(&renderTextureDesc, NULL, &renderTextures[i]);
+		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], &renderTargetViewDesc, &renderTargetView[i + 1]);
+		hr = d3dDevice->CreateShaderResourceView(renderTextures[i], &shaderResourceViewDesc, &shaderResourceView[i + 1]);
+		renderTextures[i]->Release();
+		renderTextures[i] = 0;
+	}
 
 	//We will also need to set up a depth buffer description. We'll use this to create a depth buffer so that our polygons can be rendered properly in 3D space. At the same time we will attach a stencil buffer to our depth buffer. The stencil buffer can be used to achieve effects such as motion blur, volumetric shadows, and other things.
 	// Initialize the description of the depth buffer.
@@ -274,15 +314,6 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
-
-	//Make all of the other render target views
-	for(int i = 0; i < 7; ++i)
-	{
-		hr = d3dDevice->CreateTexture2D(&depthBufferDesc, NULL, &renderTextures[i]);
-		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], NULL, &renderTargetView[i + 1]);
-		renderTextures[i]->Release();
-		renderTextures[i] = 0;
-	}
 
 	//Now we create the depth/stencil buffer using that description. You will notice we use the CreateTexture2D function to make the buffers, hence the buffer is just a 2D texture. The reason for this is that once your polygons are sorted and then rasterized they just end up being colored pixels in this 2D buffer. Then this 2D buffer is drawn to the screen.
 	// Create the texture for the depth buffer using the filled out description.
@@ -443,6 +474,10 @@ void D3D11Renderer::Shutdown()
 		if(renderTargetView[i])
 		{
 			ReleaseCOM(renderTargetView[i]);
+		}
+		if(shaderResourceView[i])
+		{
+			ReleaseCOM(shaderResourceView[i]);
 		}
 	}
 
