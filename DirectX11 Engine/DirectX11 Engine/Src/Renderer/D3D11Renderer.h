@@ -19,7 +19,6 @@ public:
 	static void ResetDevice();
 	static void Present(int _vBlankWait, int _presentationFlags);
 	static void Shutdown();
-
 	static void BackfaceCulling(bool _backfaceCulling);
 
 	static bool vsyncEnabled;

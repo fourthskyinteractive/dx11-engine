@@ -100,7 +100,6 @@ void Game::Render()
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
 
-
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
 

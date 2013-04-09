@@ -117,6 +117,7 @@
     <ClInclude Include="Src\Renderer\D3D11Renderer.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\BaseShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\ColorShader.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\DeferredShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
