@@ -188,6 +188,9 @@
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h">
       <Filter>Renderer\Shader Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\DeferredShader.h">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\VertexShader.hlsl">
