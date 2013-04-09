@@ -7,7 +7,7 @@ struct PixelIn
 
 struct PixelOut
 {
-	float4 color		: SV_Target1;
+	float4 color		: SV_Target0;
 };
 
 PixelOut PS(PixelIn input)
