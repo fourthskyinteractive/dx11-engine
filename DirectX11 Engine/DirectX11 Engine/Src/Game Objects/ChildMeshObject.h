@@ -62,7 +62,8 @@ public:
 	void Initialize(XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation);
 	void SetShaderBuffers();
 	void SetQuadBuffers();
-	void Render(BaseShader* _shaderUsed);	
+	void Render(BaseShader* _shaderUsed);
+	void RenderDeferred(BaseShader* _shaderUsed);
 	void UpdateLocalMatrix();
 	void UpdateWorldMatrix();
 	void AddTexture(WCHAR* _filePath);

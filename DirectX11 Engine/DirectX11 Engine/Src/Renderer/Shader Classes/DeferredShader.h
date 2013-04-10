@@ -36,6 +36,7 @@ private:
 private:
 	unsigned int vertexShaderIndex;
 	unsigned int pixelShaderIndex;
+	unsigned int geometryShaderIndex;
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* constantBuffer;
 };

@@ -49,13 +49,15 @@ bool DeferredShader::Render(int _indexCount)
 
 void DeferredShader::Update(ChildMeshObject* _obj)
 {
-	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+	//UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
 }
 
 bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex, int _geometryShaderIndex)
 {
 	vertexShaderIndex = _vertexShaderIndex;
 	pixelShaderIndex = _pixelShaderIndex;
+	geometryShaderIndex = _geometryShaderIndex;
+
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout;
 
@@ -102,7 +104,7 @@ void DeferredShader::SetShader()
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	//D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 }
 
