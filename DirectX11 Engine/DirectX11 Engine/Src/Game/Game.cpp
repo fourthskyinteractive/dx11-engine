@@ -47,6 +47,7 @@ int								Game::prevMouseX;
 int								Game::prevMouseY;
 
 bool							Game::backfaceCulling;
+bool							Game::backFaceSwap = false;
 
 
 XMFLOAT2						Game::cameraRotation;
@@ -99,6 +100,17 @@ void Game::Render()
 
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
+
+	if(backFaceSwap)
+	{
+		ID3D11Resource* backBuffer;
+		ID3D11Resource* otherView;
+		D3D11Renderer::renderTargetView[0]->GetResource(&backBuffer);
+		D3D11Renderer::renderTargetView[1]->GetResource(&otherView);
+
+		D3D11Renderer::d3dImmediateContext->CopyResource(backBuffer, otherView);
+		D3D11Renderer::renderTargetView[0] = D3D11Renderer::renderTargetView[1];
+	}
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
@@ -155,6 +167,22 @@ void Game::Input(float _deltaTime)
 	if(directInput->IsKeyPressed(DIK_L))
 	{
 		mesh->SwitchRenderMode(LIGHT_BUFFER);
+	}
+	if(directInput->IsKeyPressed(DIK_M))
+	{
+		backFaceSwap = true;
+	}
+	if(directInput->IsKeyPressed(DIK_N))
+	{
+		backFaceSwap = false;
+	}
+	if(directInput->IsKeyPressed(DIK_P))
+	{
+		D3D11Renderer::TurnZBufferOff();
+	}
+	if(directInput->IsKeyPressed(DIK_O))
+	{
+		D3D11Renderer::TurnZBufferOn();
 	}
 
 	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
@@ -239,6 +267,9 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTexturePixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DepthVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DepthPixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineVertexShader.cso", VERTEX_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombinePixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineGeometryShader.cso", GEOMETRY_SHADER);
 }
 
 void Game::InitializeObjects()

@@ -13,13 +13,15 @@ ID3D11RenderTargetView*		D3D11Renderer::renderTargetView[8];
 ID3D11ShaderResourceView*	D3D11Renderer::shaderResourceView[8];
 ID3D11Texture2D*			D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView*		D3D11Renderer::depthStencilView = NULL;
+ID3D11DepthStencilView*		D3D11Renderer::orthoDepthStencilView = NULL;
+ID3D11DepthStencilState*	D3D11Renderer::depthStencilState = NULL;
+ID3D11DepthStencilState*	D3D11Renderer::orthoDepthStencilState = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateNoCulling = NULL;
 
 bool						D3D11Renderer::vsyncEnabled = false;
 int							D3D11Renderer::videoCardMemory = 0;
 char						D3D11Renderer::videoCardDescription[128];
-ID3D11DepthStencilState*	D3D11Renderer::depthStencilState = NULL;
 
 D3D_FEATURE_LEVEL			D3D11Renderer::supportedFeatureLevel;
 
@@ -268,7 +270,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	renderTextureDesc.Height = _verticalRes;
 	renderTextureDesc.MipLevels = 1;
 	renderTextureDesc.ArraySize = 1;
-	renderTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	renderTextureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	renderTextureDesc.SampleDesc.Count = 1;
 	renderTextureDesc.SampleDesc.Quality = 0;
 	renderTextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -376,6 +378,34 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		return false;
 	}
 
+	//CREATE THE 2D DEPTH STENCIL STATE
+	// Clear the second depth stencil state before setting the parameters.
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+
+	// Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
+	// that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
+	depthStencilDesc.DepthEnable = false;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Create the state using the device.
+	hr = d3dDevice->CreateDepthStencilState(&depthStencilDesc, &orthoDepthStencilState);
+	if(FAILED(hr))
+	{
+		return false;
+	}
+
 	//With that created we can now call OMSetRenderTargets. This will bind the render target view and the depth stencil buffer to the output render pipeline. This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen.
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
@@ -459,6 +489,16 @@ void D3D11Renderer::BackfaceCulling(bool _backfaceCulling)
 	}
 }
 
+void D3D11Renderer::TurnZBufferOn()
+{
+	d3dImmediateContext->OMSetDepthStencilState(depthStencilState, 1);
+}
+
+void D3D11Renderer::TurnZBufferOff()
+{
+	d3dImmediateContext->OMSetDepthStencilState(orthoDepthStencilState, 1);
+}
+		
 void D3D11Renderer::Shutdown()
 {
 	if(depthStencilView)

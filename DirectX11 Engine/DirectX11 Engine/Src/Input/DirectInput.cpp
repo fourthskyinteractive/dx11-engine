@@ -31,7 +31,7 @@ bool DirectInput::Initialize(HINSTANCE _hinstance, HWND _hwnd, int _screenWidth,
 	mouseY = 0;
 
 	//Initialize the main direct input interface
-	hr = DirectInput8Create(_hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, NULL);
+	hr = DirectInput8Create(_hinstance, 0x0800, IID_IDirectInput8, (void**)&directInput, NULL);
 	if(FAILED(hr))
 	{
 		return false;

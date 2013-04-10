@@ -9,6 +9,7 @@
 ParentMeshObject::ParentMeshObject()
 {
 	textures = NULL;
+	secondaryShader = NULL;
 }
 
 ParentMeshObject::ParentMeshObject(const ParentMeshObject& _parentMeshObject)
@@ -38,6 +39,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 
 	depthShader.Initialize();
 	lightShader.Initialize();
+	deferredShader.Initialize();
 	lightShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
 	lightShader.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 
@@ -60,6 +62,12 @@ void ParentMeshObject::Render()
 	{
 		shaderUsed->Update(children[i]);
 		children[i]->Render(shaderUsed);
+
+		if(secondaryShader != NULL)
+		{
+			secondaryShader->Update(children[i]);
+			children[i]->Render(secondaryShader);
+		}
 	}
 }
 
