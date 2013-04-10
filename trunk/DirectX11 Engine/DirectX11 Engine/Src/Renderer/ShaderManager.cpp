@@ -5,6 +5,7 @@
 
 vector<VertexShader>	ShaderManager::vertexShaders;
 vector<PixelShader>		ShaderManager::pixelShaders;
+vector<GeometryShader>	ShaderManager::geometryShaders;
 
 void ShaderManager::Initialize()
 {
@@ -47,6 +48,28 @@ int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 		vertexShaders.push_back(vertexShader);
 
 		return vertexShaders.size() - 1;
+	}
+
+	else if(_shaderType == GEOMETRY_SHADER)
+	{
+		ID3D11GeometryShader* GS;
+		hr = D3D11Renderer::d3dDevice->CreateGeometryShader(shaderBuffer->GetBufferPointer(), shaderBuffer->GetBufferSize(), NULL, &GS);
+
+		if(hr != S_OK)
+		{
+			string errorStr = "Failed to load Compiled Shader ";
+			errorStr += _filePath;
+
+			MessageBox(0, errorStr.c_str(), 0, 0);
+			return -1;
+		}
+		GeometryShader geometryShader;
+		geometryShader.buffer = shaderBuffer;
+		geometryShader.shader = GS;
+
+		geometryShaders.push_back(geometryShader);
+
+		return pixelShaders.size() - 1;
 	}
 
 	else if(_shaderType == PIXEL_SHADER)

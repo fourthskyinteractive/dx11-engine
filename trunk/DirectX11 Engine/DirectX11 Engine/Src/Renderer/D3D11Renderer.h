@@ -20,6 +20,8 @@ public:
 	static void Present(int _vBlankWait, int _presentationFlags);
 	static void Shutdown();
 	static void BackfaceCulling(bool _backfaceCulling);
+	static void TurnZBufferOn();
+	static void TurnZBufferOff();
 
 	static bool vsyncEnabled;
 	static int videoCardMemory;
@@ -34,6 +36,8 @@ public:
 	static ID3D11Texture2D* depthStencilBuffer;
 	static ID3D11DepthStencilState* depthStencilState;
 	static ID3D11DepthStencilView* depthStencilView;
+	static ID3D11DepthStencilView* orthoDepthStencilView;
+	static ID3D11DepthStencilState* orthoDepthStencilState;
 	static ID3D11RasterizerState* rasterStateNoCulling;
 	static ID3D11RasterizerState* rasterStateBackfaceCulling;
 	

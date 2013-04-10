@@ -28,7 +28,7 @@ public:
 	void Update(ChildMeshObject* _obj);
 
 private:
-	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
+	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int _geometryShaderIndex);
 	void ShutdownShader();
 	void RenderShader(int _indexCount);
 	void SetShader();

@@ -114,6 +114,9 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp">
       <Filter>Renderer\Shader Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\DeferredShader.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -227,6 +230,15 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\DepthPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredCombineVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredCombinePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredCombineGeometryShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

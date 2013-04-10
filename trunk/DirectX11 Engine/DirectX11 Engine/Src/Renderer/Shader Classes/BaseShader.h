@@ -25,7 +25,7 @@ public:
 	int GetBufferType(){return bufferType;}
 
 private:
-	virtual bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex){return true;}
+	virtual bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int geometryShaderIndex = 0){return true;}
 	virtual void ShutdownShader(){;}
 	virtual void RenderShader(int _indexCount){;}
 

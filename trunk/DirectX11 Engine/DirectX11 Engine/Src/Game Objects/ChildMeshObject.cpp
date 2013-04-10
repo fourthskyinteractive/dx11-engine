@@ -76,7 +76,6 @@ bool ChildMeshObject::InitializeBuffers(VertexType* _vertices, unsigned long* _i
 	}
 
 	//Release the arrays now that the vertex and index buffers have been created and loaded.
-	
 	delete[] _vertices;
 	_vertices = 0;
 
@@ -108,6 +107,25 @@ void ChildMeshObject::SetShaderBuffers()
 	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+void ChildMeshObject::SetQuadBuffers()
+{
+	unsigned int stride;
+	unsigned int offset;
+
+	//Set the vertex buffer stride and offset
+	stride = sizeof(Pos_Tex_Vertex);
+	offset = 0;
+
+	//Set the vertex buffer to active in the input assembler so it can be rendered
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 1, NULL, 0, 0);
+
+	//Set the index buffer to active in the input assembler so it can be rendered
+	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+
+	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
 void ChildMeshObject::AddTexture(WCHAR* _filePath)
 {
 	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
@@ -118,7 +136,7 @@ void ChildMeshObject::Render(BaseShader* _shaderUsed)
 	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
 	
 	SetShaderBuffers();
-	//TODO: Create a light manager that houses all of the lights.
+
 	_shaderUsed->Render(indexCount);
 }
 

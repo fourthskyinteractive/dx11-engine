@@ -5,6 +5,7 @@
 #include "../Game/Definitions.h"
 #include "../Renderer/Shader Classes/LightShader.h"
 #include "../Renderer/Shader Classes/DepthShader.h"
+#include "../Renderer/Shader Classes/DeferredShader.h"
 #include "../Renderer/TextureManager.h"
 
 
@@ -26,8 +27,10 @@ private:
 	XMFLOAT3	scale;
 
 	BaseShader* shaderUsed;
+	BaseShader* secondaryShader;
 	DepthShader depthShader;
 	LightShader lightShader;
+	DeferredShader deferredShader;
 
 	TextureManager* textures;
 	vector<ChildMeshObject*> children;

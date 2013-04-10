@@ -60,6 +60,7 @@ private:
 	static int currMouseX, currMouseY, prevMouseX, prevMouseY;
 
 	static bool backfaceCulling;
+	static bool backFaceSwap;
 };
 
 
