@@ -63,11 +63,11 @@ void ParentMeshObject::Render()
 		shaderUsed->Update(children[i]);
 		children[i]->Render(shaderUsed);
 
-		if(secondaryShader != NULL)
-		{
-			secondaryShader->Update(children[i]);
-			children[i]->Render(secondaryShader);
-		}
+// 		if(secondaryShader != NULL)
+// 		{
+// 			secondaryShader->Update(children[i]);
+// 			children[i]->Render(secondaryShader);
+// 		}
 	}
 }
 

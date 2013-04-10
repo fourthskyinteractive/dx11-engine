@@ -132,12 +132,17 @@ void ChildMeshObject::AddTexture(WCHAR* _filePath)
 }
 
 void ChildMeshObject::Render(BaseShader* _shaderUsed)
-{
-	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
-	
+{	
 	SetShaderBuffers();
 
 	_shaderUsed->Render(indexCount);
+}
+
+void ChildMeshObject::RenderDeferred(BaseShader* _shaderUsed)
+{
+	SetQuadBuffers();
+
+	_shaderUsed->Render(1);
 }
 
 void ChildMeshObject::Update(float _dt)
