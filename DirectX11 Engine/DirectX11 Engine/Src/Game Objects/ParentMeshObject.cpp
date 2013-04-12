@@ -61,8 +61,16 @@ void ParentMeshObject::Render()
 {
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
-		shaderUsed->Update(children[i]);
-		children[i]->Render(shaderUsed);
+		if(shaderUsed == &deferredShader)
+		{
+			shaderUsed->Update(children[i]);
+			children[i]->RenderDeferred(shaderUsed);
+		}
+		else
+		{
+			shaderUsed->Update(children[i]);
+			children[i]->Render(shaderUsed);
+		}
 
 // 		if(secondaryShader != NULL)
 // 		{
@@ -91,7 +99,7 @@ void ParentMeshObject::SwitchRenderMode(int _renderMode)
 {
 	if(_renderMode == DEPTH_BUFFER)
 	{
-		SetShaderUsed(&depthShader);
+		SetShaderUsed(&lightShader);
 	}
 	else if(_renderMode == LIGHT_BUFFER)
 	{

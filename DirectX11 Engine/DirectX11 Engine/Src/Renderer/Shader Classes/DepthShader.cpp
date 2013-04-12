@@ -117,6 +117,7 @@ void DepthShader::SetShader()
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 }
 

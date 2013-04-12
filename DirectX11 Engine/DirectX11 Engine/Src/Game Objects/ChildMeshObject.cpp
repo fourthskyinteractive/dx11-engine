@@ -117,13 +117,13 @@ void ChildMeshObject::SetQuadBuffers()
 	offset = 0;
 
 	//Set the vertex buffer to active in the input assembler so it can be rendered
-	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 1, NULL, 0, 0);
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
 
 	//Set the index buffer to active in the input assembler so it can be rendered
 	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 
 	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
-	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 }
 
 void ChildMeshObject::AddTexture(WCHAR* _filePath)
