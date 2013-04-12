@@ -25,6 +25,7 @@ public:
 	void Shutdown();
 	bool Render(int _indexCount);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
+	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
 	void Update(ChildMeshObject* _obj);
 
 private:

@@ -138,8 +138,18 @@ bool DeferredShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOA
 	return true;
 }
 
+bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray)
+{
+	if(_textureArray)
+	{
+		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_textureArray);
+		return true;
+	}
+	return false;
+}
+
 void DeferredShader::RenderShader(int _indexCount)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
-	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->DrawIndexed(1, 0, 0);
 }
