@@ -4,9 +4,9 @@ struct GSOutput
 	float2 tex : TEXCOORD;
 };
 
-[maxvertexcount(3)]
+[maxvertexcount(4)]
 void GS(
-	point float4 input[1] : SV_POSITION, 
+	point float4 input[1] : POSITION, 
 	inout TriangleStream< GSOutput > output
 )
 {
