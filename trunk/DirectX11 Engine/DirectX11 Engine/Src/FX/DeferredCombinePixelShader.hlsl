@@ -14,5 +14,5 @@ float4 PS(PixelIn input) : SV_TARGET
 {	
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
-	return float4(1.0f, 0.0f, 0.0f, 1.0f);//shaderTexture.Sample(sampleType, input.tex);;
+	return shaderTexture.Sample(sampleType, input.tex);;
 }
