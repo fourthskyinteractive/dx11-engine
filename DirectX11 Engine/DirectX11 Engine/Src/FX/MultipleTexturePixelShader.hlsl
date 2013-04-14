@@ -22,7 +22,7 @@ struct PixelIn
 };
 
 
-float4 PS(PixelIn input) : SV_TARGET
+float4 PS(PixelIn input) : SV_Target0
 {
 	float4 textureColor;
 	float4 bumpMap;

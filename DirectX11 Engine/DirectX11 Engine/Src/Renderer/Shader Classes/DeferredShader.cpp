@@ -42,6 +42,7 @@ void DeferredShader::Shutdown()
 bool DeferredShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
+	//TODO: EVERY RENDER CALL I WILL HAVE TO RESET ALL SHADER CONSTANTS AND RESOURCES FOR EACH SHADER FILE
 	RenderShader(_indexCount);
 
 	return true;
