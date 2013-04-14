@@ -296,8 +296,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		hr = d3dDevice->CreateTexture2D(&renderTextureDesc, NULL, &renderTextures[i]);
 		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], &renderTargetViewDesc, &renderTargetView[i + 1]);
 		hr = d3dDevice->CreateShaderResourceView(renderTextures[i], &shaderResourceViewDesc, &shaderResourceView[i + 1]);
-		renderTextures[i]->Release();
-		renderTextures[i] = 0;
+		//renderTextures[i]->Release();
+		//renderTextures[i] = 0;
 	}
 
 	//We will also need to set up a depth buffer description. We'll use this to create a depth buffer so that our polygons can be rendered properly in 3D space. At the same time we will attach a stencil buffer to our depth buffer. The stencil buffer can be used to achieve effects such as motion blur, volumetric shadows, and other things.

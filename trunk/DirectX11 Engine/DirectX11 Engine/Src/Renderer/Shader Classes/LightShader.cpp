@@ -45,6 +45,7 @@ void LightShader::Shutdown()
 bool LightShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
+	SetShader();
 	RenderShader(_indexCount);
 
 	return true;

@@ -40,11 +40,11 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	depthShader.Initialize();
 	lightShader.Initialize();
 	deferredShader.Initialize();
-	deferredShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	deferredShader.UpdatePixelShaderTextureConstants(D3D11Renderer::shaderResourceView[1]);
 	lightShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
 	lightShader.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 
-	SetShaderUsed(&lightShader);
+	SetShaderUsed(&depthShader);
 
 	UpdateWorldMatrix();
 
@@ -63,6 +63,9 @@ void ParentMeshObject::Render()
 	{
 		if(shaderUsed == &deferredShader)
 		{
+			lightShader.Update(children[i]);
+			children[i]->Render(&lightShader);
+
 			shaderUsed->Update(children[i]);
 			children[i]->RenderDeferred(shaderUsed);
 		}
@@ -99,7 +102,7 @@ void ParentMeshObject::SwitchRenderMode(int _renderMode)
 {
 	if(_renderMode == DEPTH_BUFFER)
 	{
-		SetShaderUsed(&lightShader);
+		SetShaderUsed(&depthShader);
 	}
 	else if(_renderMode == LIGHT_BUFFER)
 	{
