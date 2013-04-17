@@ -43,13 +43,19 @@ bool DeferredShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
 	//TODO: EVERY RENDER CALL I WILL HAVE TO RESET ALL SHADER CONSTANTS AND RESOURCES FOR EACH SHADER FILE
+	D3D11Renderer::TurnZBufferOff();
 	RenderShader(_indexCount);
-
+	D3D11Renderer::TurnZBufferOn();
 	return true;
 }
 
-void DeferredShader::Update(ChildMeshObject* _obj)
+void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture)
 {
+	if(_texture)
+	{
+		UpdatePixelShaderTextureConstants(_texture);
+	}
+	SetShader();
 	//UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
 }
 
@@ -61,6 +67,7 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout;
+	D3D11_SAMPLER_DESC samplerDesc;
 
 	polygonLayout.SemanticName = "POSITION";
 	polygonLayout.SemanticIndex = 0;
@@ -75,6 +82,27 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
+	if(FAILED(hr))
+	{
+		return false;
+	}
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	// Create the texture sampler state.
+	hr = D3D11Renderer::d3dDevice->CreateSamplerState(&samplerDesc, &sampleState);
 	if(FAILED(hr))
 	{
 		return false;
@@ -107,6 +135,7 @@ void DeferredShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
 bool DeferredShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)
@@ -143,6 +172,7 @@ bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView*
 {
 	if(_textureArray)
 	{
+		D3D11Renderer::d3dImmediateContext->GenerateMips(_textureArray);
 		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_textureArray);
 		return true;
 	}
@@ -152,5 +182,5 @@ bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView*
 void DeferredShader::RenderShader(int _indexCount)
 {
 	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
-	D3D11Renderer::d3dImmediateContext->DrawIndexed(1, 0, 0);
+	D3D11Renderer::d3dImmediateContext->Draw(1,0);
 }

@@ -47,9 +47,10 @@ bool DepthShader::Render(int _indexCount)
 	return true;
 }
 
-void DepthShader::Update(ChildMeshObject* _obj)
+void DepthShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture)
 {
 	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+	SetShader();
 }
 
 bool DepthShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)

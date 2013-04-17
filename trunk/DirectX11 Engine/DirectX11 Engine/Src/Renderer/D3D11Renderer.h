@@ -22,6 +22,7 @@ public:
 	static void BackfaceCulling(bool _backfaceCulling);
 	static void TurnZBufferOn();
 	static void TurnZBufferOff();
+	static void ContextClearState(ID3D11DeviceContext* _context);
 
 	static bool vsyncEnabled;
 	static int videoCardMemory;
@@ -31,6 +32,7 @@ public:
 	static ID3D11Device* d3dDevice;
 	static ID3D11DeviceContext* d3dImmediateContext;
 	static IDXGISwapChain* swapChain;
+	static ID3D11Texture2D* renderTextures[7];
 	static ID3D11RenderTargetView* renderTargetView[8];
 	static ID3D11ShaderResourceView* shaderResourceView[8];
 	static ID3D11Texture2D* depthStencilBuffer;
@@ -40,6 +42,7 @@ public:
 	static ID3D11DepthStencilState* orthoDepthStencilState;
 	static ID3D11RasterizerState* rasterStateNoCulling;
 	static ID3D11RasterizerState* rasterStateBackfaceCulling;
+	static D3D11_VIEWPORT viewport;
 	
 	static D3D_FEATURE_LEVEL supportedFeatureLevel;
 };

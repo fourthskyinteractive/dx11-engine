@@ -63,10 +63,12 @@ void ParentMeshObject::Render()
 	{
 		if(shaderUsed == &deferredShader)
 		{
-			lightShader.Update(children[i]);
+			lightShader.Update(children[i], textures->GetTextureArrayPointer());
 			children[i]->Render(&lightShader);
 
-			shaderUsed->Update(children[i]);
+			D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+
+			shaderUsed->Update(children[i], D3D11Renderer::shaderResourceView[1]);
 			children[i]->RenderDeferred(shaderUsed);
 		}
 		else
@@ -81,6 +83,8 @@ void ParentMeshObject::Render()
 // 			children[i]->Render(secondaryShader);
 // 		}
 	}
+
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 }
 
 void ParentMeshObject::Update(float _dt)

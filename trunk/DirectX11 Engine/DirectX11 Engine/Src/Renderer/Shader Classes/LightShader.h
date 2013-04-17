@@ -36,7 +36,7 @@ public:
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
 	bool UpdatePixelShaderLightConstants(XMFLOAT3 _lightDirection, XMFLOAT4 _diffuseColor, XMFLOAT4 _ambientColor);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
-	void Update(ChildMeshObject* _obj);
+	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL);
 	void SetShader();
 
 private:
