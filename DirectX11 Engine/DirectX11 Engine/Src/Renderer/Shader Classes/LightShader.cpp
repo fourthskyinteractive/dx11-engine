@@ -51,9 +51,14 @@ bool LightShader::Render(int _indexCount)
 	return true;
 }
 
-void LightShader::Update(ChildMeshObject* _obj)
+void LightShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture)
 {
+	if(_texture)
+	{
+		UpdatePixelShaderTextureConstants(_texture);
+	}
 	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+	SetShader();
 }
 
 bool LightShader::InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex)
@@ -290,6 +295,6 @@ bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _t
 
 void LightShader::RenderShader(int _indexCount)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }

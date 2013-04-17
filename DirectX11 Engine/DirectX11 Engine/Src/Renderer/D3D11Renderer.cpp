@@ -11,6 +11,7 @@ ID3D11DeviceContext*		D3D11Renderer::d3dImmediateContext = NULL;
 IDXGISwapChain*				D3D11Renderer::swapChain = NULL;
 ID3D11RenderTargetView*		D3D11Renderer::renderTargetView[8];
 ID3D11ShaderResourceView*	D3D11Renderer::shaderResourceView[8];
+D3D11_VIEWPORT				D3D11Renderer::viewport;
 ID3D11Texture2D*			D3D11Renderer::depthStencilBuffer = NULL;
 ID3D11DepthStencilView*		D3D11Renderer::depthStencilView = NULL;
 ID3D11DepthStencilView*		D3D11Renderer::orthoDepthStencilView = NULL;
@@ -18,6 +19,7 @@ ID3D11DepthStencilState*	D3D11Renderer::depthStencilState = NULL;
 ID3D11DepthStencilState*	D3D11Renderer::orthoDepthStencilState = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateNoCulling = NULL;
+ID3D11Texture2D*			D3D11Renderer::renderTextures[7];
 
 bool						D3D11Renderer::vsyncEnabled = false;
 int							D3D11Renderer::videoCardMemory = 0;
@@ -36,14 +38,13 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	DXGI_ADAPTER_DESC adapterDesc;
 	int error;
 	ID3D11Texture2D* backBufferPtr;
-	ID3D11Texture2D* renderTextures[7];
 	D3D11_TEXTURE2D_DESC renderTextureDesc;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
-	D3D11_VIEWPORT viewport;
+	
 
 	// Store the vsync setting.
 	vsyncEnabled = _vsync;
@@ -270,13 +271,13 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	renderTextureDesc.Height = _verticalRes;
 	renderTextureDesc.MipLevels = 1;
 	renderTextureDesc.ArraySize = 1;
-	renderTextureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	renderTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	renderTextureDesc.SampleDesc.Count = 1;
 	renderTextureDesc.SampleDesc.Quality = 0;
 	renderTextureDesc.Usage = D3D11_USAGE_DEFAULT;
 	renderTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	renderTextureDesc.CPUAccessFlags = 0;
-	renderTextureDesc.MiscFlags = 0;
+	renderTextureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 	ZeroMemory(&renderTargetViewDesc, sizeof(renderTargetViewDesc));
 	renderTargetViewDesc.Format = renderTextureDesc.Format;
@@ -408,7 +409,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	//With that created we can now call OMSetRenderTargets. This will bind the render target view and the depth stencil buffer to the output render pipeline. This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen.
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
+	//d3dImmediateContext->OMSetRenderTargets(1, renderTargetView, depthStencilView);
 
 	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future tutorials. First thing is we'll create is a rasterizer state. This will give us control over how polygons are rendered. We can do things like make our scenes render in wireframe mode or have DirectX draw both the front and back faces of polygons. By default DirectX already has a rasterizer state set up and working the exact same as the one below but you have no control to change it unless you set up one yourself
 	// Setup the raster description which will determine how and what polygons will be drawn.
@@ -464,6 +465,14 @@ void D3D11Renderer::ClearScene(const float* _color /* = reinterpret_cast<const f
 	d3dImmediateContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
+void D3D11Renderer::ContextClearState(ID3D11DeviceContext* _context)
+{
+	_context->ClearState();
+
+	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
+	d3dImmediateContext->RSSetViewports(1, &viewport);
+}
+
 void D3D11Renderer::Present(int _vBlankWait, int _presentationFlags)
 {
 	assert(d3dImmediateContext);
@@ -501,6 +510,13 @@ void D3D11Renderer::TurnZBufferOff()
 		
 void D3D11Renderer::Shutdown()
 {
+	for(int i = 0; i < 7; ++i)
+	{
+		if(renderTextures[i])
+		{
+			ReleaseCOM(renderTextures[i]);
+		}
+	}
 	if(depthStencilView)
 	{
 		ReleaseCOM(depthStencilView);

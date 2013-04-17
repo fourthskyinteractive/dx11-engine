@@ -26,7 +26,7 @@ public:
 	bool Render(int _indexCount);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
-	void Update(ChildMeshObject* _obj);
+	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL);
 
 private:
 	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int _geometryShaderIndex);
@@ -40,6 +40,7 @@ private:
 	unsigned int geometryShaderIndex;
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* constantBuffer;
+	ID3D11SamplerState* sampleState;
 };
 
 #endif

@@ -19,7 +19,7 @@ public:
 	virtual bool Initialize(){return true;}
 	virtual void Shutdown(){;}
 	virtual bool Render(int _indexCount){return true;}
-	virtual void Update(ChildMeshObject* _obj){;}
+	virtual void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL){;}
 	virtual void SetShader(){;}
 	void SetBufferType(int _bufferType){bufferType = _bufferType;}
 	int GetBufferType(){return bufferType;}
