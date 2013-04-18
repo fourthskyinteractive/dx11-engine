@@ -38,6 +38,7 @@ ConstantBuffer					Game::constantBufferData;
 XMFLOAT4X4						Game::viewMatrix;
 
 ID3D11InputLayout*				Game::inputLayout;
+HWND							Game::hwnd;
 
 Camera*							Game::camera;
 DirectInput*					Game::directInput;
@@ -54,6 +55,7 @@ XMFLOAT2						Game::cameraRotation;
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
+	hwnd = _hWnd;
 	ShowCursor(false);
 	bool result;
 	backfaceCulling = true;
@@ -100,17 +102,6 @@ void Game::Render()
 
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
-
-	if(backFaceSwap)
-	{
-		ID3D11Resource* backBuffer;
-		ID3D11Resource* otherView;
-		D3D11Renderer::renderTargetView[0]->GetResource(&backBuffer);
-		D3D11Renderer::renderTargetView[1]->GetResource(&otherView);
-
-		D3D11Renderer::d3dImmediateContext->CopyResource(backBuffer, otherView);
-		D3D11Renderer::renderTargetView[0] = D3D11Renderer::renderTargetView[1];
-	}
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }

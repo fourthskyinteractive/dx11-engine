@@ -55,8 +55,8 @@ void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _te
 	{
 		UpdatePixelShaderTextureConstants(_texture);
 	}
-	SetShader();
 	//UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+	SetShader();
 }
 
 bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex, int _geometryShaderIndex)

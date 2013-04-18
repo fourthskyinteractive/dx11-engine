@@ -59,6 +59,8 @@ void ParentMeshObject::SetShaderUsed(BaseShader* _shaderUsed)
 
 void ParentMeshObject::Render()
 {
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
 		if(shaderUsed == &deferredShader)
@@ -76,12 +78,6 @@ void ParentMeshObject::Render()
 			shaderUsed->Update(children[i]);
 			children[i]->Render(shaderUsed);
 		}
-
-// 		if(secondaryShader != NULL)
-// 		{
-// 			secondaryShader->Update(children[i]);
-// 			children[i]->Render(secondaryShader);
-// 		}
 	}
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
