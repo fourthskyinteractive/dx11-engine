@@ -38,6 +38,7 @@ public:
 	static void InitializeLights();
 
 	static Camera* camera;
+	static HWND hwnd;
 
 private:
 

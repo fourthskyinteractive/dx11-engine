@@ -3,6 +3,7 @@
 #include "../D3D11Renderer.h"
 #include "../../Game Objects/ChildMeshObject.h"
 #include "../../Game/Game.h"
+#include "../../Game Objects/Lights/LightManager.h"
 
 LightShader::LightShader()
 {
@@ -45,7 +46,6 @@ void LightShader::Shutdown()
 bool LightShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
-	SetShader();
 	RenderShader(_indexCount);
 
 	return true;
@@ -58,6 +58,7 @@ void LightShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _textu
 		UpdatePixelShaderTextureConstants(_texture);
 	}
 	UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+	UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 	SetShader();
 }
 
