@@ -39,12 +39,12 @@ void DeferredShader::Shutdown()
 	ShutdownShader();
 }
 
-bool DeferredShader::Render(int _indexCount)
+bool DeferredShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
 	//Now render the prepared buffers with the shader
 	//TODO: EVERY RENDER CALL I WILL HAVE TO RESET ALL SHADER CONSTANTS AND RESOURCES FOR EACH SHADER FILE
 	D3D11Renderer::TurnZBufferOff();
-	RenderShader(_indexCount);
+	RenderShader(_indexCount, _renderTarget);
 	D3D11Renderer::TurnZBufferOn();
 	return true;
 }
@@ -55,7 +55,7 @@ void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _te
 	{
 		UpdatePixelShaderTextureConstants(_texture);
 	}
-	//UpdateVertexShaderConstants(_obj->GetWorldMatrixF(), Game::camera->GetViewProjectionMatrixF());
+
 	SetShader();
 }
 
@@ -138,36 +138,6 @@ void DeferredShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
-bool DeferredShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)
-{
-	HRESULT hr;
-
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType constantBufferData;
-	unsigned int bufferNumber;
-
-	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
-	XMMATRIX mViewProjection = XMMatrixTranspose(XMLoadFloat4x4(&_viewProjMatrix));
-
-	XMStoreFloat4x4(&constantBufferData.world, mWorld);
-	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
-
-	hr = D3D11Renderer::d3dImmediateContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-	if(FAILED(hr))
-	{
-		return false;
-	}
-
-	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));	
-	D3D11Renderer::d3dImmediateContext->Unmap(constantBuffer, 0);
-
-	bufferNumber = 0;
-	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferNumber, 1, &constantBuffer);
-
-	return true;
-}
-
 bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray)
 {
 	if(_textureArray)
@@ -179,8 +149,8 @@ bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView*
 	return false;
 }
 
-void DeferredShader::RenderShader(int _indexCount)
+void DeferredShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->Draw(1,0);
 }

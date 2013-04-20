@@ -39,10 +39,10 @@ void DepthShader::Shutdown()
 	ShutdownShader();
 }
 
-bool DepthShader::Render(int _indexCount)
+bool DepthShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
 	//Now render the prepared buffers with the shader
-	RenderShader(_indexCount);
+	RenderShader(_indexCount, _renderTarget);
 
 	return true;
 }
@@ -152,8 +152,8 @@ bool DepthShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X
 	return true;
 }
 
-void DepthShader::RenderShader(int _indexCount)
+void DepthShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }

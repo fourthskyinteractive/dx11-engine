@@ -117,6 +117,9 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DeferredShader.cpp">
       <Filter>Renderer\Shader Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\ScreenSpaceObject.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="Src\Renderer\Shader Classes\DeferredShader.h">
       <Filter>Renderer\Shader Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\ScreenSpaceObject.h">
+      <Filter>Game Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,15 +27,14 @@ private:
 	XMFLOAT3	scale;
 
 	BaseShader* shaderUsed;
-	BaseShader* secondaryShader;
 	DepthShader depthShader;
 	LightShader lightShader;
-	DeferredShader deferredShader;
 
-	TextureManager* textures;
 	vector<ChildMeshObject*> children;
 
 public:
+	TextureManager* textures;
+
 	ParentMeshObject();
 	ParentMeshObject(const ParentMeshObject& _parentMeshObject);
 	~ParentMeshObject();

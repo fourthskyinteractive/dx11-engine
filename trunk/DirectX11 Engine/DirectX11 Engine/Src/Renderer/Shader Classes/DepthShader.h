@@ -23,14 +23,14 @@ public:
 
 	bool Initialize();
 	void Shutdown();
-	bool Render(int _indexCount);
+	bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL);
 
 private:
 	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
 	void ShutdownShader();
-	void RenderShader(int _indexCount);
+	void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget);
 	void SetShader();
 
 private:

@@ -18,7 +18,7 @@ public:
 
 	virtual bool Initialize(){return true;}
 	virtual void Shutdown(){;}
-	virtual bool Render(int _indexCount){return true;}
+	virtual bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget){return true;}
 	virtual void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL){;}
 	virtual void SetShader(){;}
 	void SetBufferType(int _bufferType){bufferType = _bufferType;}
@@ -27,7 +27,7 @@ public:
 private:
 	virtual bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int geometryShaderIndex = 0){return true;}
 	virtual void ShutdownShader(){;}
-	virtual void RenderShader(int _indexCount){;}
+	virtual void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget){;}
 
 	int bufferType;
 };

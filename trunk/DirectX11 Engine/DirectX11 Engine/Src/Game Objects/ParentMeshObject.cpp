@@ -9,7 +9,6 @@
 ParentMeshObject::ParentMeshObject()
 {
 	textures = NULL;
-	secondaryShader = NULL;
 }
 
 ParentMeshObject::ParentMeshObject(const ParentMeshObject& _parentMeshObject)
@@ -39,12 +38,10 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 
 	depthShader.Initialize();
 	lightShader.Initialize();
-	deferredShader.Initialize();
-	deferredShader.UpdatePixelShaderTextureConstants(D3D11Renderer::shaderResourceView[1]);
 	lightShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
 	lightShader.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
 
-	SetShaderUsed(&depthShader);
+	SetShaderUsed(&lightShader);
 
 	UpdateWorldMatrix();
 
@@ -59,28 +56,11 @@ void ParentMeshObject::SetShaderUsed(BaseShader* _shaderUsed)
 
 void ParentMeshObject::Render()
 {
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
-		if(shaderUsed == &deferredShader)
-		{
-			lightShader.Update(children[i], textures->GetTextureArrayPointer());
-			children[i]->Render(&lightShader);
-
-			D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-
-			shaderUsed->Update(children[i], D3D11Renderer::shaderResourceView[1]);
-			children[i]->RenderDeferred(shaderUsed);
-		}
-		else
-		{
-			shaderUsed->Update(children[i]);
-			children[i]->Render(shaderUsed);
-		}
+		lightShader.Update(children[i], textures->GetTextureArrayPointer());
+		children[i]->Render(&lightShader, D3D11Renderer::renderTargetView[RENDER_GEOMETRYBUFFER]);
 	}
-
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 }
 
 void ParentMeshObject::Update(float _dt)
@@ -104,13 +84,9 @@ void ParentMeshObject::SwitchRenderMode(int _renderMode)
 	{
 		SetShaderUsed(&depthShader);
 	}
-	else if(_renderMode == LIGHT_BUFFER)
-	{
-		SetShaderUsed(&deferredShader);
-	}
 	else if(_renderMode == DIFFUSE_BUFFER)
 	{
-
+		SetShaderUsed(&lightShader);
 	}
 }
 
