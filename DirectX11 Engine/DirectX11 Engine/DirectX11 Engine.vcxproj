@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2014.1\include;..\..\DirectX11 Helper Project\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2014.1\lib\vs2012\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\Includes;..\..\DirectX11 Helper Project\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Libraries;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,6 +85,7 @@
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
+    <ClCompile Include="Src\Game Objects\ScreenSpaceObject.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
     <ClCompile Include="Src\Input\DirectInput.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Src\Game Objects\Lights\LightManager.h" />
     <ClInclude Include="Src\Game Objects\Lights\PointLight.h" />
     <ClInclude Include="Src\Game Objects\ParentMeshObject.h" />
+    <ClInclude Include="Src\Game Objects\ScreenSpaceObject.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
     <ClInclude Include="Src\Input\DirectInput.h" />

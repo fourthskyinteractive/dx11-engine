@@ -43,10 +43,10 @@ void LightShader::Shutdown()
 	ShutdownShader();
 }
 
-bool LightShader::Render(int _indexCount)
+bool LightShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
 	//Now render the prepared buffers with the shader
-	RenderShader(_indexCount);
+	RenderShader(_indexCount, _renderTarget);
 
 	return true;
 }
@@ -294,8 +294,8 @@ bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _t
 	return false;
 }
 
-void LightShader::RenderShader(int _indexCount)
+void LightShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }

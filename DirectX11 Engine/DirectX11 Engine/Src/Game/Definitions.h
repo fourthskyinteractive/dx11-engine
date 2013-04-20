@@ -8,6 +8,8 @@ using namespace DirectX;
 #include <string>
 using std::string;
 
+enum RENDERTARGETS{RENDER_BACKBUFFER, RENDER_GEOMETRYBUFFER, RENDER_LIGHTBUFFER, RENDER_DEPTHBUFFER};
+
 static const int MOUSE_LEFT = 0;
 static const int MOUSE_RIGHT = 1;
 

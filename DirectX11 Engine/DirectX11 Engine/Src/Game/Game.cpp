@@ -26,9 +26,8 @@ using std::stringstream;
 bool							Game::isRunning;
 Timer							Game::timer;
 
-BaseObject						Game::cubeObj;
-CubeObjectColor					Game::cubeObject;
 ParentMeshObject*				Game::mesh = NULL;
+ScreenSpaceObject*				Game::screenSpaceQuad = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -69,7 +68,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	timer.Init();
 
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -100,8 +99,12 @@ void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)));
 
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	screenSpaceQuad->Render();
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
@@ -267,6 +270,9 @@ void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
+
+	screenSpaceQuad = new ScreenSpaceObject();
+	screenSpaceQuad->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[RENDER_GEOMETRYBUFFER]);
 }
 
 void Game::InitializeLights()

@@ -15,6 +15,7 @@
 #include "../Game Objects/CubeObjectColor.h"
 #include "../Game Objects/Mesh.h"
 #include "../Game Objects/ParentMeshObject.h"
+#include "../Game Objects/ScreenSpaceObject.h"
 
 class Game
 {
@@ -43,8 +44,7 @@ public:
 private:
 
 	static ParentMeshObject* mesh;
-	static CubeObjectColor cubeObject;
-	static BaseObject cubeObj;
+	static ScreenSpaceObject* screenSpaceQuad;
 
 	static Timer timer;
 	static XMFLOAT2 cameraRotation;

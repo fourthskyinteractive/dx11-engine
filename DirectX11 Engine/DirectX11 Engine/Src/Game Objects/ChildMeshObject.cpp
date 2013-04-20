@@ -107,42 +107,16 @@ void ChildMeshObject::SetShaderBuffers()
 	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ChildMeshObject::SetQuadBuffers()
-{
-	unsigned int stride;
-	unsigned int offset;
-
-	//Set the vertex buffer stride and offset
-	stride = sizeof(Pos_Tex_Vertex);
-	offset = 0;
-
-	//Set the vertex buffer to active in the input assembler so it can be rendered
-	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
-
-	//Set the index buffer to active in the input assembler so it can be rendered
-	D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-
-	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
-	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-}
-
 void ChildMeshObject::AddTexture(WCHAR* _filePath)
 {
 	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
 }
 
-void ChildMeshObject::Render(BaseShader* _shaderUsed)
+void ChildMeshObject::Render(BaseShader* _shaderUsed, ID3D11RenderTargetView* _renderTarget)
 {	
 	SetShaderBuffers();
 
-	_shaderUsed->Render(indexCount);
-}
-
-void ChildMeshObject::RenderDeferred(BaseShader* _shaderUsed)
-{
-	SetQuadBuffers();
-
-	_shaderUsed->Render(1);
+	_shaderUsed->Render(indexCount, _renderTarget);
 }
 
 void ChildMeshObject::Update(float _dt)
