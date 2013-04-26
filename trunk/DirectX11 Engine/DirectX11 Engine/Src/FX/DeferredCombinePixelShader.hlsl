@@ -9,13 +9,20 @@ struct PixelIn
 	float2 tex		: TEXCOORD0;
 };
 
+struct PixelOut
+{
+	float4 color : SV_TARGET0;
+};
 
-float4 PS(PixelIn input) : SV_TARGET
+
+PixelOut PS(PixelIn input)
 {	
+	PixelOut pOut;
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
 	float4 color = shaderTexture.Sample(sampleType, input.tex);
-	return color;
+	pOut.color = color;
+	return pOut;
 	//color[3] = .5f;
 	//return color;
 }

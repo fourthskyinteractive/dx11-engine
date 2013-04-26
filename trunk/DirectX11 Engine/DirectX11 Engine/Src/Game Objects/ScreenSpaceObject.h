@@ -32,6 +32,7 @@ public:
 
 	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
 	void SetShaderBuffers();
+	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView);
 	void Render();
 	void Update();
 

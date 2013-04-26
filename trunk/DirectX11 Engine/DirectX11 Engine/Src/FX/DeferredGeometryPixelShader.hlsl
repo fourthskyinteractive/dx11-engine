@@ -18,12 +18,14 @@ struct PixelIn
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
 	float3 tangent	: TANGENT;
-	float3 binormal	: binormal;
+	float3 binormal	: BINORMAL;
+	float4 depthPos	: TEXCOORD1;
 };
 
 struct PixelOut
 {
-	float4 color : SV_Target1;
+	float4 deferredColor	: SV_Target1;
+	float4 depthColor		: SV_Target2;
 };
 
 
@@ -76,6 +78,28 @@ PixelOut PS(PixelIn input)
 	//Multiply the texture pixel and the final diffuse color to get the final color result
 	color = color * textureColor;
 	PixelOut pOut;
-	pOut.color = color;
+	pOut.deferredColor = color;
+
+	float depthValue;
+
+	depthValue = input.depthPos.z / input.depthPos.w;
+
+	if(depthValue < 0.9f)
+	{
+		pOut.depthColor = float4(1.0f, 0.0, 0.0, 1.0f);
+	}
+
+	if(depthValue > 0.9f)
+	{
+		pOut.depthColor = float4(0.0f, 1.0f, 0.0f, 1.0f);
+	}
+
+	if(depthValue > 0.925)
+	{
+		pOut.depthColor = float4(0.0f, 0.0f, 1.0f, 1.0f);
+	}
+
+	pOut.depthColor = float4(depthValue, depthValue, depthValue, 1.0f);
+
 	return pOut;//float4(1.0f, 0.0f, 0.0f, 1.0f);
 }

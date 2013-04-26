@@ -154,6 +154,6 @@ bool DepthShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X
 
 void DepthShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
+	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }

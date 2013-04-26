@@ -28,7 +28,7 @@ bool LightShader::Initialize()
 {
 	bool result;
 
-	result = InitializeShader(MULTIPLE_TEXTURE_VERTEX_SHADER, MULTIPLE_TEXTURE_PIXEL_SHADER);
+	result = InitializeShader(DEFERRED_GEOMETRY_VERTEX_SHADER, DEFERRED_GEOMETRY_PIXEL_SHADER);
 
 	if(!result)
 	{
@@ -296,6 +296,6 @@ bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _t
 
 void LightShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(8, D3D11Renderer::renderTargetView, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }
