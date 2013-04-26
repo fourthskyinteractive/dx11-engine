@@ -409,7 +409,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	//With that created we can now call OMSetRenderTargets. This will bind the render target view and the depth stencil buffer to the output render pipeline. This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen.
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	//d3dImmediateContext->OMSetRenderTargets(1, renderTargetView, depthStencilView);
+	d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
 
 	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future tutorials. First thing is we'll create is a rasterizer state. This will give us control over how polygons are rendered. We can do things like make our scenes render in wireframe mode or have DirectX draw both the front and back faces of polygons. By default DirectX already has a rasterizer state set up and working the exact same as the one below but you have no control to change it unless you set up one yourself
 	// Setup the raster description which will determine how and what polygons will be drawn.

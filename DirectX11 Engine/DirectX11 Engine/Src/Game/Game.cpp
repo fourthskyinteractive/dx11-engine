@@ -156,11 +156,11 @@ void Game::Input(float _deltaTime)
 
 	if(directInput->IsKeyPressed(DIK_K))
 	{
-		mesh->SwitchRenderMode(DEPTH_BUFFER);
+		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[1]);
 	}
 	if(directInput->IsKeyPressed(DIK_L))
 	{
-		mesh->SwitchRenderMode(LIGHT_BUFFER);
+		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[2]);
 	}
 	if(directInput->IsKeyPressed(DIK_M))
 	{
@@ -264,6 +264,9 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombinePixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineGeometryShader.cso", GEOMETRY_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryVertexShader.cso", VERTEX_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryPixelShader.cso", PIXEL_SHADER);
+
 }
 
 void Game::InitializeObjects()

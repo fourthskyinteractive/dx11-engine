@@ -247,5 +247,11 @@
     <FxCompile Include="Src\FX\DeferredCombineGeometryShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Src\FX\DeferredGeometryVertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredGeometryPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
