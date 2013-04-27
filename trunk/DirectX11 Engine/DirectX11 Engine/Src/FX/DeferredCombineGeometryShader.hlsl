@@ -6,7 +6,7 @@ struct GSOutput
 
 [maxvertexcount(4)]
 void GS(
-	point float4 input[1] : POSITION, 
+	point float4 input[1] : SV_POSITION, 
 	inout TriangleStream< GSOutput > output
 )
 {

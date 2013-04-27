@@ -275,7 +275,7 @@ void Game::InitializeObjects()
 	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), true, L"Res/Textures/graves.dds");
 
 	screenSpaceQuad = new ScreenSpaceObject();
-	screenSpaceQuad->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[RENDER_GEOMETRYBUFFER]);
+	screenSpaceQuad->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1]);
 }
 
 void Game::InitializeLights()
