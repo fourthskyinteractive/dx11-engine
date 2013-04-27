@@ -61,5 +61,6 @@ void ScreenSpaceObject::Update()
 
 void ScreenSpaceObject::ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView)
 {
+	texture = NULL;
 	texture = _shaderResourceView;
 }
