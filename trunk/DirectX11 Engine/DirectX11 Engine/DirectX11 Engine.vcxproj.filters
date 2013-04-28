@@ -120,6 +120,12 @@
     <ClCompile Include="Src\Game Objects\ScreenSpaceObject.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\LightObjects.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -200,6 +206,12 @@
     <ClInclude Include="Src\Game Objects\ScreenSpaceObject.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game Objects\LightObjects.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\VertexShader.hlsl">
@@ -251,6 +263,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\DeferredGeometryPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

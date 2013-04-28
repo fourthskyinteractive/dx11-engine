@@ -37,11 +37,10 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	}
 
 	depthShader.Initialize();
-	lightShader.Initialize();
-	lightShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
-	lightShader.UpdatePixelShaderLightConstants(LightManager::GetDirectionalLight(0)->GetLightDirectionF(), LightManager::GetDirectionalLight(0)->GetLightColorF(), LightManager::GetAmbientLight()->GetLightColorF());
+	objectShader.Initialize();
+	objectShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
 
-	SetShaderUsed(&lightShader);
+	SetShaderUsed(&objectShader);
 
 	UpdateWorldMatrix();
 
@@ -58,8 +57,8 @@ void ParentMeshObject::Render()
 {
 	for(unsigned int i = 0; i < children.size(); ++i)
 	{
-		lightShader.Update(children[i], textures->GetTextureArrayPointer());
-		children[i]->Render(&lightShader, D3D11Renderer::renderTargetView[RENDER_GEOMETRYBUFFER]);
+		objectShader.Update(children[i], textures->GetTextureArrayPointer());
+		children[i]->Render(&objectShader, D3D11Renderer::renderTargetView[RENDER_GEOMETRYBUFFER]);
 	}
 }
 
@@ -86,7 +85,7 @@ void ParentMeshObject::SwitchRenderMode(int _renderMode)
 	}
 	else if(_renderMode == DIFFUSE_BUFFER)
 	{
-		SetShaderUsed(&lightShader);
+		SetShaderUsed(&objectShader);
 	}
 }
 

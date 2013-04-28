@@ -27,7 +27,7 @@ private:
 
 public:
 	ScreenSpaceObject();
-	ScreenSpaceObject(const ScreenSpaceObject& _childMeshObject);
+	ScreenSpaceObject(const ScreenSpaceObject& _screenSpaceObject);
 	~ScreenSpaceObject();
 
 	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);

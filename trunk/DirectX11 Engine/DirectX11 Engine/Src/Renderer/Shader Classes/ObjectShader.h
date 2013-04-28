@@ -1,12 +1,12 @@
-#ifndef LIGHTSHADER_H
-#define LIGHTSHADER_H
+#ifndef OBJECTSHADER_H
+#define OBJECTSHADER_H
 
 #include <d3d11.h>
 #include <d3d11shader.h>
 #include "../../Game/Definitions.h"
 #include "BaseShader.h"
 
-class LightShader : public BaseShader
+class ObjectShader : public BaseShader
 {
 private:
 
@@ -17,27 +17,26 @@ private:
 	};
 
 public:
-	LightShader();
-	LightShader(const LightShader&);
-	~LightShader();
+	ObjectShader();
+	ObjectShader(const ObjectShader&);
+	~ObjectShader();
 
 	bool Initialize();
 	void Shutdown();
 	bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget);
-	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);
+	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL);
+	void SetShader();
 
 private:
-	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int _geometryShaderIndex);
+	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
 	void ShutdownShader();
 	void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget);
-	void SetShader();
 
 private:
 	unsigned int vertexShaderIndex;
 	unsigned int pixelShaderIndex;
-	unsigned int geometryShaderIndex;
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* constantBuffer;
 	ID3D11SamplerState* sampleState;

@@ -83,6 +83,7 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
+    <ClCompile Include="Src\Game Objects\LightObjects.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\ScreenSpaceObject.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DeferredShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp" />
+    <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
@@ -108,6 +110,7 @@
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
+    <ClInclude Include="Src\Game Objects\LightObjects.h" />
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h" />
     <ClInclude Include="Src\Game Objects\Lights\DirectionalLight.h" />
     <ClInclude Include="Src\Game Objects\Lights\LightManager.h" />
@@ -123,6 +126,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\DeferredShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
@@ -132,6 +136,14 @@
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">GS</EntryPointName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Src\FX\DeferredCombineGeometryShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
