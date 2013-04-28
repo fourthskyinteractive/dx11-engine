@@ -19,6 +19,7 @@ ID3D11DepthStencilState*	D3D11Renderer::depthStencilState = NULL;
 ID3D11DepthStencilState*	D3D11Renderer::orthoDepthStencilState = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
 ID3D11RasterizerState*		D3D11Renderer::rasterStateNoCulling = NULL;
+ID3D11BlendState*			D3D11Renderer::blendState = NULL;
 ID3D11Texture2D*			D3D11Renderer::renderTextures[7];
 
 bool						D3D11Renderer::vsyncEnabled = false;
@@ -243,6 +244,27 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		return false;
 	}
 
+	//CREATING THE BLEND STATE
+	D3D11_BLEND_DESC blendStateDescription;
+	// Clear the blend state description.
+	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+	//To create an alpha enabled blend state description change BlendEnable to TRUE and DestBlend to D3D11_BLEND_INV_SRC_ALPHA. The other settings are set to their default values which can be looked up in the Windows DirectX Graphics Documentation.
+
+	// Create an alpha enabled blend state description.
+	for(int i = 0; i < 8; ++i)
+	{
+		blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
+		blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ZERO;
+		blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ZERO;
+		blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+		blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ZERO;
+		blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendStateDescription.RenderTarget[i].RenderTargetWriteMask = 0x0f;
+	}
+	D3D11Renderer::d3dDevice->CreateBlendState(&blendStateDescription, &blendState);
+	d3dImmediateContext->OMSetBlendState(blendState, 0, 0xffffffff);
+
 	//Sometimes this call to create the device will fail if the primary video card is not compatible with DirectX 11. Some machines may have the primary card as a DirectX 10 video card and the secondary card as a DirectX 11 video card. Also some hybrid graphics cards work that way with the primary being the low power Intel card and the secondary being the high power Nvidia card. To get around this you will need to not use the default device and instead enumerate all the video cards in the machine and have the user choose which one to use and then specify that card when creating the device.
 	//Now that we have a swap chain we need to get a pointer to the back buffer and then attach it to the swap chain. We'll use the CreateRenderTargetView function to attach the back buffer to our swap chain.
 
@@ -409,7 +431,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	//With that created we can now call OMSetRenderTargets. This will bind the render target view and the depth stencil buffer to the output render pipeline. This way the graphics that the pipeline renders will get drawn to our back buffer that we previously created. With the graphics written to the back buffer we can then swap it to the front and display our graphics on the user's screen.
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
+	//d3dImmediateContext->OMSetRenderTargets(8, renderTargetView, depthStencilView);
 
 	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future tutorials. First thing is we'll create is a rasterizer state. This will give us control over how polygons are rendered. We can do things like make our scenes render in wireframe mode or have DirectX draw both the front and back faces of polygons. By default DirectX already has a rasterizer state set up and working the exact same as the one below but you have no control to change it unless you set up one yourself
 	// Setup the raster description which will determine how and what polygons will be drawn.
@@ -470,6 +492,7 @@ void D3D11Renderer::ContextClearState(ID3D11DeviceContext* _context)
 {
 	_context->ClearState();
 
+	d3dImmediateContext->OMSetBlendState(blendState, 0, 0xffffffff);
 	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
 	d3dImmediateContext->RSSetViewports(1, &viewport);
 	d3dImmediateContext->OMSetDepthStencilState(depthStencilState, 1);

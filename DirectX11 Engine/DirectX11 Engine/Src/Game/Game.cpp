@@ -68,7 +68,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	timer.Init();
 
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -97,7 +97,7 @@ void Game::Run()
 
 void Game::Render()
 {
-	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)));
+	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
@@ -154,14 +154,19 @@ void Game::Input(float _deltaTime)
 		backfaceCulling = !backfaceCulling;
 	}
 
-	if(directInput->IsKeyPressed(DIK_K))
+	if(directInput->IsKeyPressed(DIK_J))
 	{
 		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[1]);
 	}
-	if(directInput->IsKeyPressed(DIK_L))
+	if(directInput->IsKeyPressed(DIK_K))
 	{
 		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[2]);
 	}
+	if(directInput->IsKeyPressed(DIK_L))
+	{
+		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[3]);
+	}
+
 	if(directInput->IsKeyPressed(DIK_M))
 	{
 		backFaceSwap = true;
@@ -266,6 +271,7 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineGeometryShader.cso", GEOMETRY_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryPixelShader.cso", PIXEL_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/BillboardGeometryShader.cso", GEOMETRY_SHADER);
 
 }
 

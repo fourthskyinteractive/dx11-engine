@@ -9,8 +9,6 @@ struct VertexIn
 	float4 pos		: POSITION;
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
-	float3 tangent	: TANGENT;
-	float3 binormal	: BINORMAL;
 };
 
 struct VertexOut
@@ -18,8 +16,6 @@ struct VertexOut
 	float4 pos		: SV_POSITION;
 	float2 tex		: TEXCOORD0;
 	float3 normal	: NORMAL;
-	float3 tangent	: TANGENT;
-	float3 binormal	: BINORMAL;
 	float4 depthPos	: TEXCOORD1;
 };
 
@@ -39,14 +35,6 @@ VertexOut VS(VertexIn vIn)
 	vOut.normal = mul(vIn.normal, (float3x3)worldMatrix);
 
 	vOut.normal = normalize(vOut.normal);
-
-	 // Calculate the tangent vector against the world matrix only and then normalize the final value.
-    vOut.tangent = mul(vIn.tangent, (float3x3)worldMatrix);
-    vOut.tangent = normalize(vOut.tangent);
-
-    // Calculate the binormal vector against the world matrix only and then normalize the final value.
-    vOut.binormal = mul(vIn.binormal, (float3x3)worldMatrix);
-    vOut.binormal = normalize(vOut.binormal);
 
 	vIn.pos.w = 1.0f;
 

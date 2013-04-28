@@ -42,6 +42,7 @@ public:
 	static ID3D11DepthStencilState* orthoDepthStencilState;
 	static ID3D11RasterizerState* rasterStateNoCulling;
 	static ID3D11RasterizerState* rasterStateBackfaceCulling;
+	static ID3D11BlendState* blendState;
 	static D3D11_VIEWPORT viewport;
 	
 	static D3D_FEATURE_LEVEL supportedFeatureLevel;

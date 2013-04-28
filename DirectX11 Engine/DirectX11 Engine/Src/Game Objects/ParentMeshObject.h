@@ -3,7 +3,7 @@
 
 
 #include "../Game/Definitions.h"
-#include "../Renderer/Shader Classes/LightShader.h"
+#include "../Renderer/Shader Classes/ObjectShader.h"
 #include "../Renderer/Shader Classes/DepthShader.h"
 #include "../Renderer/Shader Classes/DeferredShader.h"
 #include "../Renderer/TextureManager.h"
@@ -28,7 +28,7 @@ private:
 
 	BaseShader* shaderUsed;
 	DepthShader depthShader;
-	LightShader lightShader;
+	ObjectShader objectShader;
 
 	vector<ChildMeshObject*> children;
 
