@@ -16,6 +16,7 @@
 #include "../Game Objects/Mesh.h"
 #include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/ScreenSpaceObject.h"
+#include "../Game Objects/LightObjects.h"
 
 class Game
 {

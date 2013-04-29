@@ -13,9 +13,9 @@ struct PixelIn
 
 struct PixelOut
 {
-	float4 deferredColor	: SV_Target1;
-	float4 depthColor		: SV_Target2;
-	float4 normalColor		: SV_Target3;
+	float4 deferredColor	: SV_Target0;
+	float4 depthColor		: SV_Target1;
+	float4 normalColor		: SV_Target2;
 };
 
 

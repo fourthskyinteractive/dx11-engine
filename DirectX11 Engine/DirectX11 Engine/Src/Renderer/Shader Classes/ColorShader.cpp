@@ -23,7 +23,7 @@ bool ColorShader::Initialize()
 {
 	bool result;
 
-	result = InitializeShader(COLOR_VERTEX_SHADER, COLOR_PIXEL_SHADER);
+	//result = InitializeShader(COLOR_VERTEX_SHADER, COLOR_PIXEL_SHADER);
 	if(!result)
 	{
 		return false;

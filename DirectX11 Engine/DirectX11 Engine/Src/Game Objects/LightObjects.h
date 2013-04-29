@@ -7,8 +7,6 @@
 #include "../Game/Definitions.h"
 #include "../Renderer/TextureManager.h"
 #include "../Renderer/Shader Classes/LightShader.h"
-#include "../Renderer/Shader Classes/DepthShader.h"
-#include "../Renderer/Shader Classes/DeferredShader.h"
 
 class ParentMeshObject;
 class DepthShader;
@@ -22,7 +20,10 @@ private:
 	static ID3D11ShaderResourceView* texture;
 	static ID3D11RenderTargetView* renderTarget;
 
-	//DeferredShader shaderUsed;
+	static LightShader shaderUsed;
+
+	static vector<XMFLOAT3*> lightVerts;
+	static vector<unsigned long*> lightIndices;
 
 public:
 	LightObjects();
@@ -30,6 +31,7 @@ public:
 	~LightObjects();
 
 	static void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
+	static void InitializeBuffers();
 	static void SetShaderBuffers();
 	static void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView);
 	static void Render();

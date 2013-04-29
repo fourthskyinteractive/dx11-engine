@@ -50,8 +50,8 @@ void BaseObject::AddTexture(WCHAR* _filename)
 void BaseObject::CreateCube(VertexStructure _vertexStructure)
 {
 	shaderVariables.vertexSize = sizeof(SimpleCubeVertex);
-	shaderVariables.vertexShader = COLOR_VERTEX_SHADER;
-	shaderVariables.pixelShader = COLOR_PIXEL_SHADER;
+	shaderVariables.vertexShader = SIMPLE_VERTEX_SHADER;
+	shaderVariables.pixelShader = SIMPLE_PIXEL_SHADER;
 
 	HRESULT hr;
 
@@ -64,8 +64,8 @@ void BaseObject::CreateCube(VertexStructure _vertexStructure)
 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(
 		basicVertexLayoutDesc,
 		ARRAYSIZE(basicVertexLayoutDesc),
-		ShaderManager::vertexShaders[COLOR_VERTEX_SHADER].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[COLOR_VERTEX_SHADER].buffer->GetBufferSize(),
+		ShaderManager::vertexShaders[SIMPLE_VERTEX_SHADER].buffer->GetBufferPointer(),
+		ShaderManager::vertexShaders[SIMPLE_VERTEX_SHADER].buffer->GetBufferSize(),
 		&shaderVariables.inputLayout);
 
 	SimpleCubeVertex cubeVertices[] =

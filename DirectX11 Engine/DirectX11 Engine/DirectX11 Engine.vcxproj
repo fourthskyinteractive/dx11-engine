@@ -99,6 +99,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
+    <ClCompile Include="Src\Utility\Geometry Makers\GeometryMaker.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
     <ClCompile Include="Src\Utility\Misc\DebugOutput.cpp" />
     <ClCompile Include="Src\Utility\Misc\Timer.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
+    <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h" />
     <ClInclude Include="Src\Utility\Misc\Timer.h" />

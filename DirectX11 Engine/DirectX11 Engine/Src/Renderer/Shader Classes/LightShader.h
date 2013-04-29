@@ -29,7 +29,7 @@ public:
 	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL);
 
 private:
-	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int _geometryShaderIndex);
+	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex);
 	void ShutdownShader();
 	void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget);
 	void SetShader();
@@ -37,10 +37,8 @@ private:
 private:
 	unsigned int vertexShaderIndex;
 	unsigned int pixelShaderIndex;
-	unsigned int geometryShaderIndex;
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* constantBuffer;
-	ID3D11SamplerState* sampleState;
 };
 
 #endif

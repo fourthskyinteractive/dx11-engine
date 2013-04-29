@@ -30,13 +30,6 @@ void ScreenSpaceObject::Initialize(ID3D11RenderTargetView* _renderTargetView, ID
 
 void ScreenSpaceObject::SetShaderBuffers()
 {
-	unsigned int stride;
-	unsigned int offset;
-
-	//Set the vertex buffer stride and offset
-	stride = sizeof(Pos_Tex_Vertex);
-	offset = 0;
-
 	//Set the vertex buffer to active in the input assembler so it can be rendered
 	//D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
 
