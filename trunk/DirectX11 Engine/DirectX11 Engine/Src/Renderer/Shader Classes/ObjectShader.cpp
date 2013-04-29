@@ -227,6 +227,6 @@ bool ObjectShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _
 
 void ObjectShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(8, D3D11Renderer::renderTargetView, D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(7, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }

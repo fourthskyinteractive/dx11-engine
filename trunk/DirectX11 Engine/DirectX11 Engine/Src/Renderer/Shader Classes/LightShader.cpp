@@ -25,7 +25,7 @@ bool LightShader::Initialize()
 {
 	bool result;
 
-	result = InitializeShader(DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, BILLBOARD_GEOMETRY_SHADER);
+	result = InitializeShader(SIMPLE_VERTEX_SHADER, SIMPLE_PIXEL_SHADER);
 	if(!result)
 	{
 		return false;
@@ -42,10 +42,7 @@ void LightShader::Shutdown()
 bool LightShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
 	//Now render the prepared buffers with the shader
-	//TODO: EVERY RENDER CALL I WILL HAVE TO RESET ALL SHADER CONSTANTS AND RESOURCES FOR EACH SHADER FILE
-	D3D11Renderer::TurnZBufferOff();
 	RenderShader(_indexCount, _renderTarget);
-	D3D11Renderer::TurnZBufferOn();
 	return true;
 }
 
@@ -59,15 +56,13 @@ void LightShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _textu
 	SetShader();
 }
 
-bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex, int _geometryShaderIndex)
+bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex)
 {
 	vertexShaderIndex = _vertexShaderIndex;
 	pixelShaderIndex = _pixelShaderIndex;
-	geometryShaderIndex = _geometryShaderIndex;
 
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout;
-	D3D11_SAMPLER_DESC samplerDesc;
 
 	polygonLayout.SemanticName = "POSITION";
 	polygonLayout.SemanticIndex = 0;
@@ -82,27 +77,6 @@ bool LightShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
-	if(FAILED(hr))
-	{
-		return false;
-	}
-
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	// Create the texture sampler state.
-	hr = D3D11Renderer::d3dDevice->CreateSamplerState(&samplerDesc, &sampleState);
 	if(FAILED(hr))
 	{
 		return false;
@@ -133,9 +107,7 @@ void LightShader::SetShader()
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
 bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray)
@@ -151,6 +123,6 @@ bool LightShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _t
 
 void LightShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
-	D3D11Renderer::d3dImmediateContext->Draw(1,0);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0,0);
 }

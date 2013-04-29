@@ -89,7 +89,6 @@ bool ChildMeshObject::InitializeBuffers(VertexType* _vertices, unsigned long* _i
 
 void ChildMeshObject::SetShaderBuffers()
 {
-
 	unsigned int stride;
 	unsigned int offset;
 

@@ -1,10 +1,9 @@
 struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
-	float4 color : COLOR;
 };
 
 float4 PS(PixelShaderInput pIn) : SV_TARGET
 {
-	return pIn.color;
+	return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }
