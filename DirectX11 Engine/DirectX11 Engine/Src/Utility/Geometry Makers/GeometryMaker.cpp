@@ -16,6 +16,29 @@ GeometryMaker::~GeometryMaker()
 
 }
 
+unsigned long GeometryMaker::FindMiddlePoint(vector<XMFLOAT3>* _verts, vector<unsigned long>* _indices, vector<unsigned long>* _middleIndices, unsigned long _point1, unsigned long _point2)
+{
+	unsigned long lesserIndex;
+	unsigned long greaterIndex;
+	if(_point1 < _point2)
+	{
+		lesserIndex = _point1;
+		greaterIndex = _point2;
+	}
+	else
+	{
+		lesserIndex = _point2;
+		greaterIndex = _point1;
+	}
+
+	for(int i = 0; i < _middleIndices->size(); ++i)
+	{
+		
+	}
+
+	return 0;
+}
+
 void GeometryMaker::CreateSphere(int _slices, float _radius, XMFLOAT3** _verts, unsigned long** _indices, int* _numVerts, int* _numIndices)
 {
 	int numVerts = _slices * _slices;

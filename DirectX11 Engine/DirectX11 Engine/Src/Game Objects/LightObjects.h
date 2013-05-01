@@ -25,6 +25,9 @@ private:
 	static vector<XMFLOAT3*> lightVerts;
 	static vector<unsigned long*> lightIndices;
 
+	static int vertexCount;
+	static int indexCount;
+
 public:
 	LightObjects();
 	LightObjects(const LightObjects& _childMeshObject);

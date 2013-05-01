@@ -100,11 +100,11 @@ void Game::Render()
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	mesh->UpdateWorldMatrix();
-	mesh->Render();
+	//mesh->UpdateWorldMatrix();
+	//mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	screenSpaceQuad->Render();
-	//LightObjects::Render();
+	//screenSpaceQuad->Render();
+	LightObjects::Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);

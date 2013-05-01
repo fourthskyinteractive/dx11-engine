@@ -15,6 +15,8 @@ ID3D11RenderTargetView*		LightObjects::renderTarget;
 LightShader					LightObjects::shaderUsed;
 vector<XMFLOAT3*>			LightObjects::lightVerts;
 vector<unsigned long*>		LightObjects::lightIndices;
+int							LightObjects::vertexCount;
+int							LightObjects::indexCount;
 
 LightObjects::LightObjects()
 {
@@ -44,10 +46,8 @@ void LightObjects::InitializeBuffers()
 {
 	XMFLOAT3* vertices = NULL;
 	unsigned long* indices = NULL;
-	int vertexCount;
-	int indexCount;
 
-	GeometryMaker::CreateSphere(50, 2.0f, &vertices, &indices, &vertexCount, &indexCount);
+	GeometryMaker::CreateSphere(5, 2.0f, &vertices, &indices, &vertexCount, &indexCount);
 
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
@@ -126,7 +126,7 @@ void LightObjects::Render()
 {	
 	SetShaderBuffers();
 	Update();
-	shaderUsed.Render(1, renderTarget);
+	shaderUsed.Render(indexCount, renderTarget);
 }
 
 void LightObjects::Update()
