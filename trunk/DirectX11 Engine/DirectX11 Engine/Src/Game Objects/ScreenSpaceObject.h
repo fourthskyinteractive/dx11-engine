@@ -19,7 +19,7 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexbuffer;
 
-	ID3D11ShaderResourceView* texture;
+	ID3D11ShaderResourceView* textures[4];
 	ID3D11RenderTargetView* renderTarget;
 	ParentMeshObject* parent;
 
@@ -32,7 +32,7 @@ public:
 
 	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
 	void SetShaderBuffers();
-	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView);
+	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[]);
 	void Render();
 	void Update();
 
