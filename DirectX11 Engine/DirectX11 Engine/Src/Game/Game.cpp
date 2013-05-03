@@ -100,11 +100,12 @@ void Game::Render()
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	//mesh->UpdateWorldMatrix();
-	//mesh->Render();
+	mesh->UpdateWorldMatrix();
+	mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	//screenSpaceQuad->Render();
-	LightObjects::Render();
+	//LightObjects::Render();
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	screenSpaceQuad->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
@@ -157,15 +158,15 @@ void Game::Input(float _deltaTime)
 
 	if(directInput->IsKeyPressed(DIK_J))
 	{
-		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[1]);
+		//screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[1]);
 	}
 	if(directInput->IsKeyPressed(DIK_K))
 	{
-		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[2]);
+		//screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[2]);
 	}
 	if(directInput->IsKeyPressed(DIK_L))
 	{
-		screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[3]);
+		//screenSpaceQuad->ChangeShaderResourceView(D3D11Renderer::shaderResourceView[3]);
 	}
 
 	if(directInput->IsKeyPressed(DIK_M))

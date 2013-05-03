@@ -49,7 +49,7 @@ bool DeferredShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarg
 	return true;
 }
 
-void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture)
+void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[])
 {
 	if(_texture)
 	{
@@ -138,15 +138,21 @@ void DeferredShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
-bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray)
+bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray[])
 {
-	if(_textureArray)
+	if(!_textureArray)
+		return false;
+
+	for(int i = 0; i < 4; ++i)
 	{
-		D3D11Renderer::d3dImmediateContext->GenerateMips(_textureArray);
-		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 1, &_textureArray);
-		return true;
+		if(_textureArray[i])
+		{
+			D3D11Renderer::d3dImmediateContext->GenerateMips(_textureArray[i]);
+			D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &_textureArray[i]);
+		}
 	}
-	return false;
+
+	return true;
 }
 
 void DeferredShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)

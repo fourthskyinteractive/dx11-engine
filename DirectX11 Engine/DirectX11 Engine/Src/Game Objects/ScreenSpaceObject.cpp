@@ -23,9 +23,13 @@ ScreenSpaceObject::~ScreenSpaceObject()
 void ScreenSpaceObject::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView)
 {
 	renderTarget = _renderTargetView;
-	texture = _shaderResourceView;
+	for(int i = 0; i < 4; ++i)
+	{
+		textures[i] = D3D11Renderer::shaderResourceView[i + 1];
+	}
+
 	shaderUsed.Initialize();
-	shaderUsed.UpdatePixelShaderTextureConstants(texture);
+	shaderUsed.UpdatePixelShaderTextureConstants(textures);
 }
 
 void ScreenSpaceObject::SetShaderBuffers()
@@ -49,11 +53,11 @@ void ScreenSpaceObject::Render()
 
 void ScreenSpaceObject::Update()
 {
-	shaderUsed.Update(NULL, texture);
+	shaderUsed.Update(NULL, textures);
 }
 
-void ScreenSpaceObject::ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView)
+void ScreenSpaceObject::ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[])
 {
-	texture = NULL;
-	texture = _shaderResourceView;
+// 	texture = NULL;
+// 	texture = _shaderResourceView;
 }

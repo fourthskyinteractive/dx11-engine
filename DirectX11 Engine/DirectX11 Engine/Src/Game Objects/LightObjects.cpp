@@ -47,7 +47,7 @@ void LightObjects::InitializeBuffers()
 	XMFLOAT3* vertices = NULL;
 	unsigned long* indices = NULL;
 
-	GeometryMaker::CreateSphere(5, 2.0f, &vertices, &indices, &vertexCount, &indexCount);
+	GeometryMaker::CreateSphere(20, 2.0f, &vertices, &indices, &vertexCount, &indexCount);
 
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;

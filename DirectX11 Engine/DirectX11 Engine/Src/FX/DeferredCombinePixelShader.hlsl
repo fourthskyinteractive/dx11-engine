@@ -1,5 +1,8 @@
 //Globals
-Texture2D shaderTexture;
+Texture2D diffuseTexture : register(t0);
+Texture2D depthTexture : register(t1);
+Texture2D normalTexture : register(t2);
+Texture2D lightTexture : register(t3);
 SamplerState sampleType;
 
 //TYPEDEFS
@@ -20,7 +23,7 @@ PixelOut PS(PixelIn input)
 	PixelOut pOut;
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
-	float4 color = shaderTexture.Sample(sampleType, input.tex);
+	float4 color = normalTexture.Sample(sampleType, input.tex);
 	pOut.color = color;
 	return pOut;
 	//color[3] = .5f;
