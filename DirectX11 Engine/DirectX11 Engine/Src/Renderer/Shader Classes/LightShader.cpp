@@ -8,7 +8,7 @@ LightShader::LightShader()
 {
 	inputLayout = NULL;
 	constantBuffer = NULL;
-	SetBufferType(DEPTH_BUFFER);
+	SetShaderToUse(LIGHT_SHADER);
 }
 
 LightShader::LightShader(const LightShader& _depthBuffer)
@@ -172,6 +172,6 @@ bool LightShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X
 
 void LightShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(7, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0,0);
 }

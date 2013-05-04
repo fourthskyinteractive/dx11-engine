@@ -21,7 +21,7 @@ ParentMeshObject::~ParentMeshObject()
 
 }
 
-void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, bool _hasOneTexture /* = false */, WCHAR* _textureFilePath /* = L"" */)
+void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, SHADER_TO_USE _shaderToUse, bool _hasOneTexture /* = false */, WCHAR* _textureFilePath /* = L"" */)
 {
 	position = _position;
 	scale = _scale;
@@ -36,11 +36,36 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 		AddTexture(_textureFilePath);
 	}
 
-	depthShader.Initialize();
+
 	objectShader.Initialize();
 	objectShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	switch(_shaderToUse)
+	{
+	case DIFFUSE_SHADER:
+		{
+			SetShaderUsed(&objectShader);
+			break;
+		}
+	case DEPTH_SHADER:
+		{
 
-	SetShaderUsed(&objectShader);
+			break;
+		}
+	case NORMAL_SHADER:
+		{
+
+			break;
+		}
+	case LIGHT_SHADER:
+		{
+
+			break;
+		}
+	default:
+		{
+
+		}
+	}
 
 	UpdateWorldMatrix();
 
@@ -79,11 +104,11 @@ void ParentMeshObject::Update(float _dt)
 
 void ParentMeshObject::SwitchRenderMode(int _renderMode)
 {
-	if(_renderMode == DEPTH_BUFFER)
+	if(_renderMode == DEPTH_SHADER)
 	{
 		SetShaderUsed(&depthShader);
 	}
-	else if(_renderMode == DIFFUSE_BUFFER)
+	else if(_renderMode == DIFFUSE_SHADER)
 	{
 		SetShaderUsed(&objectShader);
 	}

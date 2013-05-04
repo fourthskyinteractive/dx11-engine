@@ -10,7 +10,7 @@ ObjectShader::ObjectShader()
 	inputLayout = NULL;
 	sampleState = NULL;
 	constantBuffer = NULL;
-	SetBufferType(LIGHT_BUFFER);
+	SetShaderToUse(DIFFUSE_SHADER);
 }
 
 ObjectShader::ObjectShader(const ObjectShader& _ObjectShader)

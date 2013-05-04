@@ -6,14 +6,14 @@
 #include "../../Game/Definitions.h"
 //#include "../../Game Objects/ChildMeshObject.h"
 
-enum BUFFER_TYPE{BASE_BUFFER, DEPTH_BUFFER, LIGHT_BUFFER, DIFFUSE_BUFFER};
+enum SHADER_TO_USE{BASE_SHADER, DIFFUSE_SHADER, DEPTH_SHADER, NORMAL_SHADER, LIGHT_SHADER};
 
 class ChildMeshObject;
 
 class BaseShader
 {
 public:
-	BaseShader(){bufferType = BASE_BUFFER;}
+	BaseShader(){shaderToUse = BASE_SHADER;}
 	virtual ~BaseShader(){;}
 
 	virtual bool Initialize(){return true;}
@@ -21,14 +21,14 @@ public:
 	virtual bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget){return true;}
 	virtual void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture = NULL){;}
 	virtual void SetShader(){;}
-	void SetBufferType(int _bufferType){bufferType = _bufferType;}
-	int GetBufferType(){return bufferType;}
+	void SetShaderToUse(int shaderToUse){shaderToUse = shaderToUse;}
+	int GetBufferType(){return shaderToUse;}
 
 private:
 	virtual bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int geometryShaderIndex = 0){return true;}
 	virtual void ShutdownShader(){;}
 	virtual void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget){;}
 
-	int bufferType;
+	SHADER_TO_USE shaderToUse;
 };
 #endif

@@ -23,7 +23,7 @@ PixelOut PS(PixelIn input)
 	PixelOut pOut;
 	//Sample the pixel color from the texture using the sampler
 	//at this texture coordinate location
-	float4 color = normalTexture.Sample(sampleType, input.tex);
+	float4 color = diffuseTexture.Sample(sampleType, input.tex);
 	pOut.color = color;
 	return pOut;
 	//color[3] = .5f;

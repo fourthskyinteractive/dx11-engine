@@ -51,7 +51,7 @@ public:
 	void SetPosition(XMFLOAT3 _position){;}
 	void SetRotation(XMFLOAT3 _rotation){rotation = _rotation;}
 	void SetScale(XMFLOAT3 _scale){scale = _scale;}
-	void Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, bool _hasOneTexture = false, WCHAR* _textureFilePath = L"");
+	void Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, SHADER_TO_USE _shaderToUse, bool _hasOneTexture /* = false */, WCHAR* _textureFilePath /* = L"" */);
 	void AddChild(VertexType* _vertices, unsigned long* _indices, int _numVertices, int _numIdices);
 	void Render();
 	void AddTexture(WCHAR* _filePath);
