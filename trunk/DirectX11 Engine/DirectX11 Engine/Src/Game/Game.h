@@ -11,6 +11,7 @@
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Camera/Camera.h"
 #include "../Input/DirectInput.h"
+#include "../Renderer/Shader Classes/BaseShader.h"
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/CubeObjectColor.h"
 #include "../Game Objects/Mesh.h"

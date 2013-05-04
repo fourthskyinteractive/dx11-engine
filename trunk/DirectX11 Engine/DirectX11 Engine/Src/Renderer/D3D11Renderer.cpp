@@ -485,7 +485,7 @@ void D3D11Renderer::ClearScene(const float* _color /* = reinterpret_cast<const f
 		}
 	}
 	
-	d3dImmediateContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+	d3dImmediateContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH |D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void D3D11Renderer::ContextClearState(ID3D11DeviceContext* _context)

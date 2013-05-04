@@ -3,7 +3,14 @@ struct PixelShaderInput
 	float4 pos : SV_POSITION;
 };
 
-float4 PS(PixelShaderInput pIn) : SV_TARGET
+struct PixelShaderOutput
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 color	: SV_Target3;
+};
+
+PixelShaderOutput PS(PixelShaderInput pIn) : SV_TARGET
+{
+	PixelShaderOutput pOut;
+	pOut.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return pOut;
 }

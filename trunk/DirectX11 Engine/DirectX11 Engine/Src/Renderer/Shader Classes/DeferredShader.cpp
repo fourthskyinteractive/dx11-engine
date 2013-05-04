@@ -8,7 +8,7 @@ DeferredShader::DeferredShader()
 {
 	inputLayout = NULL;
 	constantBuffer = NULL;
-	SetBufferType(DEPTH_BUFFER);
+	SetShaderToUse(DEPTH_SHADER);
 }
 
 DeferredShader::DeferredShader(const DeferredShader& _depthBuffer)
