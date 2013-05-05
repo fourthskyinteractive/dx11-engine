@@ -31,7 +31,7 @@ unsigned long GeometryMaker::FindMiddlePoint(vector<XMFLOAT3>* _verts, vector<un
 		greaterIndex = _point1;
 	}
 
-	for(int i = 0; i < _middleIndices->size(); ++i)
+	for(unsigned int i = 0; i < _middleIndices->size(); ++i)
 	{
 		
 	}
