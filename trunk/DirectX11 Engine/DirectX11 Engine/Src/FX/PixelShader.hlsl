@@ -8,7 +8,7 @@ struct PixelShaderOutput
 	float4 color	: SV_Target3;
 };
 
-PixelShaderOutput PS(PixelShaderInput pIn) : SV_TARGET
+PixelShaderOutput PS(PixelShaderInput pIn)
 {
 	PixelShaderOutput pOut;
 	pOut.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
