@@ -102,7 +102,7 @@ void Game::Render()
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	//D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	//LghtObjects::Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	screenSpaceQuad->Render();
@@ -289,6 +289,7 @@ void Game::InitializeObjects()
 void Game::InitializeLights()
 {
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
-	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
+	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 10, true);
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 }

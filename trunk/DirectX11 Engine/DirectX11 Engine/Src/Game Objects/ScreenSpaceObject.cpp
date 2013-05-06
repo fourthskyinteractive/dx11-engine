@@ -47,13 +47,25 @@ void ScreenSpaceObject::SetShaderBuffers()
 void ScreenSpaceObject::Render()
 {	
 	SetShaderBuffers();
-	Update();
-	shaderUsed.Render(1, renderTarget);
+	int numPointLights = LightManager::GetNumberPointLights();
+	int numDirectionalLights = LightManager::GetNumberDirectionalLights();
+
+	for(int i = 0; i < numPointLights; ++i)
+	{
+		Update(POINT_LIGHT, i);
+		shaderUsed.Render(1, renderTarget);
+	}
+
+	for(int i = 0; i < numDirectionalLights; ++i)
+	{
+		Update(DIRCTIONAL_LIGHT, i);
+		shaderUsed.Render(1, renderTarget);
+	}
 }
 
-void ScreenSpaceObject::Update()
+void ScreenSpaceObject::Update(LIGHT_TYPE _lightType, int _lightIndex)
 {
-	shaderUsed.Update(NULL, textures);
+	shaderUsed.Update(_lightType, _lightIndex, NULL, textures);
 }
 
 void ScreenSpaceObject::ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[])
