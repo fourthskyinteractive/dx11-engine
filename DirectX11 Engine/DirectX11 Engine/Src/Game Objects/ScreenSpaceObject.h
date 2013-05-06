@@ -34,7 +34,7 @@ public:
 	void SetShaderBuffers();
 	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[]);
 	void Render();
-	void Update();
+	void Update(LIGHT_TYPE _lightType, int _lightIndex);
 
 	//D3DX Buffer Initialization
 	bool InitializeBuffers(VertexType* _vertices, unsigned long* _indices);

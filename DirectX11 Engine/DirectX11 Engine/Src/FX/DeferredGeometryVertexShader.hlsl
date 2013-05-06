@@ -7,16 +7,16 @@ cbuffer cbPerObject : register(cb0)
 struct VertexIn
 {
 	float4 pos		: POSITION;
-	float2 tex		: TEXCOORD0;
+	float2 texCoord	: TEXCOORD0;
 	float3 normal	: NORMAL;
 };
 
 struct VertexOut
 {
-	float4 pos		: SV_POSITION;
-	float2 tex		: TEXCOORD0;
-	float3 normal	: NORMAL;
-	float4 depthPos	: TEXCOORD1;
+	float4 posCS		: SV_Position;
+	float3 posWS		: POSITIONWS;
+	float2 texCoord		: TEXCOORD;
+	float3 normalWS		: NORMALWS;
 };
 
 
@@ -26,22 +26,19 @@ VertexOut VS(VertexIn vIn)
 	vIn.pos.w = 1.0f;
 	float4 pos = vIn.pos;
 
-	vOut.pos = mul(pos, worldMatrix);
-	vOut.pos = mul(vOut.pos, viewProjectionMatrix);
+	//Calculate the World Space Position
+	vOut.posWS = mul(pos, worldMatrix).xyz;
+	
+	//Calculate the Clip Space Position
+	vOut.posCS = mul(pos, worldMatrix);
+	vOut.posCS = mul(vOut.posCS, viewProjectionMatrix);
 
-	vOut.tex = vIn.tex;
+	//Copy over the texcoords
+	vOut.texCoord = vIn.texCoord;
 
 	//Calculate the normal vector against the world matrix only
-	vOut.normal = mul(vIn.normal, (float3x3)worldMatrix);
-
-	vOut.normal = normalize(vOut.normal);
-
-	vIn.pos.w = 1.0f;
-
-	vOut.pos = mul(pos, worldMatrix);
-	vOut.pos = mul(vOut.pos, viewProjectionMatrix);
-
-	vOut.depthPos = vOut.pos;
+	vOut.normalWS = mul(vIn.normal, (float3x3)worldMatrix);
+	vOut.normalWS = normalize(vOut.normalWS);
 
 	return vOut;
 }

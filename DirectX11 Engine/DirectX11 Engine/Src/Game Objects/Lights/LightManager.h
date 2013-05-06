@@ -11,6 +11,8 @@ using namespace std;
 #include "DirectionalLight.h"
 #include "PointLight.h"
 
+enum LIGHT_TYPE{POINT_LIGHT, SPOT_LIGHT, DIRCTIONAL_LIGHT, AMBIENT_LIGHT};
+
 class LightManager
 {
 private:
@@ -37,6 +39,8 @@ public:
 	static void TurnOnPointLight(int _index, char* _lightName = "");
 	static void TogglePointLight(int _index, char* _lightName = "");
 	
+	static int GetNumberPointLights(){return pointLights.size();}
+	static int GetNumberDirectionalLights(){return directionalLights.size();}
 	static AmbientLight* GetAmbientLight(){return ambientLight;}
 	static DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
 	static PointLight* GetPointLight(int _index, char* _lightName = "");

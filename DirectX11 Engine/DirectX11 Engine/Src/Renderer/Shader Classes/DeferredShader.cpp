@@ -8,6 +8,7 @@ DeferredShader::DeferredShader()
 {
 	inputLayout = NULL;
 	constantBuffer = NULL;
+	pixelConstantBuffer = NULL;
 	SetShaderToUse(DEPTH_SHADER);
 }
 
@@ -59,6 +60,18 @@ void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _te
 	SetShader();
 }
 
+void DeferredShader::Update(LIGHT_TYPE _lightType, int _lightIndex, ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[])
+{
+	if(_texture)
+	{
+		UpdatePixelShaderTextureConstants(_texture);
+	}
+
+	UpdatePixelShaderConstants(_lightType, _lightIndex);
+
+	SetShader();
+}
+
 bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex, int _geometryShaderIndex)
 {
 	vertexShaderIndex = _vertexShaderIndex;
@@ -68,6 +81,7 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout;
 	D3D11_SAMPLER_DESC samplerDesc;
+	D3D11_BUFFER_DESC matrixBufferDesc;
 
 	polygonLayout.SemanticName = "POSITION";
 	polygonLayout.SemanticIndex = 0;
@@ -108,6 +122,20 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 		return false;
 	}
 
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(CombinePixelShaderBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(&matrixBufferDesc, NULL, &pixelConstantBuffer);
+	if(FAILED(hr))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -135,7 +163,7 @@ void DeferredShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
+	//D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
 bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray[])
@@ -151,6 +179,91 @@ bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView*
 			D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &_textureArray[i]);
 		}
 	}
+
+	return true;
+}
+
+bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int lightIndex)
+{
+	HRESULT hr;
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	CombinePixelShaderBufferType constantBufferData;
+
+	unsigned int bufferNumber;
+
+	for(int i = 0; i < 4; ++i)
+	{
+		constantBufferData.lightType.x = 0.0f;
+		constantBufferData.lightType.y = 0.0f;
+		constantBufferData.lightType.z = 0.0f;
+		constantBufferData.lightType.w = 0.0f;
+	}
+
+
+
+	if(_lightType == POINT_LIGHT)
+	{
+		constantBufferData.lightType.x = 1.0f;
+
+		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetPointLight(lightIndex)->GetLightColorF().x, 
+													LightManager::GetPointLight(lightIndex)->GetLightColorF().y, 
+													LightManager::GetPointLight(lightIndex)->GetLightColorF().z);
+
+		constantBufferData.lightDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+		constantBufferData.lightPos = LightManager::GetPointLight(lightIndex)->GetLightPositionF();
+
+		constantBufferData.lightRange = XMFLOAT4(	LightManager::GetPointLight(lightIndex)->GetLightRadius(),
+													LightManager::GetPointLight(lightIndex)->GetLightRadius(),
+													LightManager::GetPointLight(lightIndex)->GetLightRadius(),
+													LightManager::GetPointLight(lightIndex)->GetLightRadius());
+		
+		constantBufferData.spotlightAngles = XMFLOAT2(0.0f, 0.0f);
+	}
+	else if(_lightType == SPOT_LIGHT)
+	{
+		constantBufferData.lightType.y = 1.0f;
+	}
+	else if(_lightType == DIRCTIONAL_LIGHT)
+	{
+		constantBufferData.lightType.z = 1.0f;
+
+		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().x, 
+													LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().y, 
+													LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().z);
+
+		constantBufferData.lightDirection = LightManager::GetDirectionalLight(lightIndex)->GetLightDirectionF();
+
+		constantBufferData.lightPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+		constantBufferData.lightRange = XMFLOAT4(0,	0, 0, 0);
+
+		constantBufferData.spotlightAngles = XMFLOAT2(0.0f, 0.0f);
+	}
+	else if(_lightType == AMBIENT_LIGHT)
+	{
+		constantBufferData.lightType.w = 1.0f;
+	}
+	else
+	{
+		return false;
+	}
+
+	constantBufferData.cameraPos = Game::camera->GetPosition();
+
+	hr = D3D11Renderer::d3dImmediateContext->Map(pixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+	if(FAILED(hr))
+	{
+		return false;
+	}
+
+	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));	
+	D3D11Renderer::d3dImmediateContext->Unmap(pixelConstantBuffer, 0);
+
+	bufferNumber = 0;
+	D3D11Renderer::d3dImmediateContext->PSSetConstantBuffers(bufferNumber, 1, &pixelConstantBuffer);
 
 	return true;
 }
