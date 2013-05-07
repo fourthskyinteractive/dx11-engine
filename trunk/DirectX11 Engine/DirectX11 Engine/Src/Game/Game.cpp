@@ -23,6 +23,8 @@ using std::cin;
 using std::stringstream;
 #endif
 
+XMFLOAT3						Game::lightPos;
+vector<ParentMeshObject*>		Game::lights;
 bool							Game::isRunning;
 Timer							Game::timer;
 
@@ -67,8 +69,9 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	timer.Init();
 
+	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -102,12 +105,17 @@ void Game::Render()
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
-	//D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	for(unsigned int i = 0; i < lights.size(); ++i)
+	{
+		lights[i]->Render();
+		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	}
 	//LghtObjects::Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	screenSpaceQuad->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-
+	
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
 
@@ -119,6 +127,11 @@ void Game::Update()
 	//Get Input
 	Input(deltaTime);
 	mesh->Update(deltaTime);
+
+	for(unsigned int i = 0; i < lights.size(); ++i)
+	{
+		lights[i]->Update(deltaTime);
+	}
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
@@ -171,11 +184,15 @@ void Game::Input(float _deltaTime)
 
 	if(directInput->IsKeyPressed(DIK_M))
 	{
-		backFaceSwap = true;
+		lightPos.y += (5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
 	}
 	if(directInput->IsKeyPressed(DIK_N))
 	{
-		backFaceSwap = false;
+		lightPos.y += (-5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
 	}
 	if(directInput->IsKeyPressed(DIK_P))
 	{
@@ -184,6 +201,31 @@ void Game::Input(float _deltaTime)
 	if(directInput->IsKeyPressed(DIK_O))
 	{
 		D3D11Renderer::TurnZBufferOn();
+	}
+
+	if(directInput->IsKeyPressed(DIK_DOWNARROW))
+	{
+		lightPos.z += (-5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
+	}
+	if(directInput->IsKeyPressed(DIK_UPARROW))
+	{
+		lightPos.z += (5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
+	}
+	if(directInput->IsKeyPressed(DIK_RIGHTARROW))
+	{
+		lightPos.x += (-5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
+	}
+	if(directInput->IsKeyPressed(DIK_LEFTARROW))
+	{
+		lightPos.x += (5.0f * _deltaTime);
+		lights[0]->SetPosition(lightPos);
+		LightManager::GetPointLight(0)->SetLightPosition(lightPos);
 	}
 
 	//if(directInput->IsMouseButtonPressed(MOUSE_LEFT))
@@ -246,10 +288,9 @@ void Game::CalculateFrameStats()
 	{
 		float framesPerSec = frameCount / elapsedTime;
 
+		string FPS;
 		char MyInfo[16];
 		sprintf_s(MyInfo, "%f", framesPerSec);
-
-		string FPS;
 		FPS += MyInfo;
 		SetWindowText(D3D11Renderer::hwnd, FPS.c_str());
 
@@ -280,7 +321,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
+	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.05f, .05f, .05f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
 
 	screenSpaceQuad = new ScreenSpaceObject();
 	screenSpaceQuad->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1]);
@@ -288,8 +329,13 @@ void Game::InitializeObjects()
 
 void Game::InitializeLights()
 {
+	ParentMeshObject* newLight = new ParentMeshObject();
+	newLight->Initialize("Res/Models/UnitSphere.fbx", lightPos, XMFLOAT3(.5f, .5f, .5f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
+
+	lights.push_back(newLight);
+
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
-	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 10, true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, 200, true);
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 }

@@ -39,6 +39,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 
 	objectShader.Initialize();
 	objectShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
+	lightShader.Initialize();
 	switch(_shaderToUse)
 	{
 	case DIFFUSE_SHADER:
@@ -58,7 +59,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 		}
 	case LIGHT_SHADER:
 		{
-
+			SetShaderUsed(&lightShader);
 			break;
 		}
 	default:
