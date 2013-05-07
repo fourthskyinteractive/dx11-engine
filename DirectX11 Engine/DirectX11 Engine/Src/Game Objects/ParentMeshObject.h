@@ -6,6 +6,7 @@
 #include "../Renderer/Shader Classes/ObjectShader.h"
 #include "../Renderer/Shader Classes/DepthShader.h"
 #include "../Renderer/Shader Classes/DeferredShader.h"
+#include "../Renderer/Shader Classes/LightShader.h"
 #include "../Renderer/TextureManager.h"
 
 
@@ -29,6 +30,7 @@ private:
 	BaseShader* shaderUsed;
 	DepthShader depthShader;
 	ObjectShader objectShader;
+	LightShader lightShader;
 
 	vector<ChildMeshObject*> children;
 
@@ -48,7 +50,7 @@ public:
 
 	
 	void SetWorldMatrixF(XMFLOAT4X4 _worldMatrix){worldMatrix = _worldMatrix;}
-	void SetPosition(XMFLOAT3 _position){;}
+	void SetPosition(XMFLOAT3 _position){position = _position;}
 	void SetRotation(XMFLOAT3 _rotation){rotation = _rotation;}
 	void SetScale(XMFLOAT3 _scale){scale = _scale;}
 	void Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 _scale, XMFLOAT3 _rotation, SHADER_TO_USE _shaderToUse, bool _hasOneTexture /* = false */, WCHAR* _textureFilePath /* = L"" */);

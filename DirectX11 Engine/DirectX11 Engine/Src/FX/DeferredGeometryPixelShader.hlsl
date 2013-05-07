@@ -34,7 +34,7 @@ PixelOut PS(PixelIn input)
 	pOut.Normal = float4(normalWS, 1.0f);
 	pOut.DiffuseAlbedo = float4(diffuseAlbedo, 1.0f);
 	//Specual for white color and a power that resembles skin
-	pOut.SpecularAlbedo = float4(1.0f, 1.0f, 1.0f, 0.28f);
+	pOut.SpecularAlbedo = float4(0.0f, 0.0f, 1.0f, .25f);
 	pOut.Position = float4(input.posWS, 1.0f);
 
 // 	float4 textureColor;

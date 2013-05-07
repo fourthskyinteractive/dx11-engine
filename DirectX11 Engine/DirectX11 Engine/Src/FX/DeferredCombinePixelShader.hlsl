@@ -8,27 +8,25 @@ Texture2D positionTexture : register(t3);
 cbuffer LightandCameraParams
 {
 	//(POINT LIGHT, SPOT LIGHT, DIRECTIONAL LIGHT, AMBIENT LIGHT)
-	float3 lightColor;
 	float4 lightType;
 	float3 lightPos;
-	
+	float3 lightColor;
 	float3 lightDirection;
 	float2 spotlightAngles;
 	float4 lightRange;
 	float3 cameraPos;
-	float2 padding;
 };
 
 //TYPEDEFS
 struct PixelIn
 {
 	float4 pos		: SV_POSITION;
-	float2 tex		: TEXCOORD0;
+	//float2 tex	: TEXCOORD0;
 };
 
 struct PixelOut
 {
-	float4 color : SV_TARGET0;
+	float4 color : SV_Target0;
 };
 
 
@@ -55,42 +53,67 @@ float3 CalculateLighting(in float3 normal,
 						 in float3 specularAlbedo,
 						 in float specularPower)
 {
-	float3 L = 0;
-	float attenuation = 1.0f;
+	float cutoff = 0.005;
 
-	//If point light or spot light
- 	if(lightType.x == 1.0f || lightType.y == 1.0f)
-	{
- 		L = lightPos - position;
-		float dist = length(L);
-		attenuation = max(0, 1.0f - (dist / lightRange.x));
-		L /= dist;
-	}
-	//If directional light
-	else
-	{
-		L = -lightDirection;
-	}
-	//If spot light
-	if(lightType.y == 1.0f)
-	{
-		float3 L2 = lightDirection;
-		float rho = dot(-L, L2);
-		attenuation *= saturate((rho - spotlightAngles.y) /
-								(spotlightAngles.x - spotlightAngles.y));
-	}
+	float3 LV = float4(float4(lightPos, 1.0f) - float4(position, 1.0f)).xyz;
 
-	float nDotL = saturate(dot(normal, L));
-	float3 diffuse = nDotL * lightColor * diffuseAlbedo;
+	float dist = length(LV);
 
-	//Calculate the speculat term
-	float3 V = cameraPos - position;
-	float3 H = normalize(L + V);
-	float3 specular = pow(saturate(dot(normal, H)), specularPower)
-							* lightColor * specularAlbedo.xyz * nDotL;
+	float edgeDist = max(dist - lightRange.x, 0);
 
-	//Final value is the sum of the albedo and diffuse with attenuation applied.
-	return(diffuse * specular) * attenuation;
+	LV /= dist;
+	float denom = edgeDist / lightRange.x + 1;
+	float att = 1 / (denom * denom);
+	att = (att - cutoff) / (1 - cutoff);
+	att = max(att, 0);
+
+	float diffuse = max(dot(LV, normal), 0);
+
+	float3 Half = normalize(LV + normalize(cameraPos - position));
+	float specular = pow(saturate(dot(Half, normal)), 10);
+
+	return (lightColor * diffuse * att) + ((lightColor * 1.0f) * specular * 0.2);
+
+// 	float3 L = 0;
+// 	float attenuation = 1.0f;
+// 
+// 	//If point light or spot light
+//  	if(lightType.x == 1.0f || lightType.y == 1.0f)
+// 	{
+//  		L = lightPos - position;
+// 		float dist = length(L);
+// 		attenuation = max(0, 1.0f - (dist / lightRange.x));
+// 		L /= dist;
+// 	}
+// 	//If directional light
+// 	else if(lightType.z == 1.0f)
+// 	{
+// 		L = -lightDirection;
+// 	}
+// 	else
+// 	{
+// 
+// 	}
+// 	//If spot light
+// 	if(lightType.y == 1.0f)
+// 	{
+// 		float3 L2 = lightDirection;
+// 		float rho = dot(-L, L2);
+// 		attenuation *= saturate((rho - spotlightAngles.y) /
+// 								(spotlightAngles.x - spotlightAngles.y));
+// 	}
+// 
+// 	float nDotL = saturate(dot(normal, L));
+// 	float3 diffuse = nDotL * lightColor * diffuseAlbedo;
+// 
+// 	//Calculate the speculat term
+// 	float3 V = cameraPos - position;
+// 	float3 H = normalize(L + V);
+// 	float3 specular = pow(saturate(dot(normal, H)), specularPower)
+// 							* lightColor * specularAlbedo.xyz * nDotL;
+// 
+// 	//Final value is the sum of the albedo and diffuse with attenuation applied.
+// 	return(diffuse + specular) * attenuation;
 }
 
 
@@ -110,7 +133,9 @@ PixelOut PS(PixelIn input)
 
 	float3 lighting = CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 
-	pOut.color = float4(lightColor, 1.0f);//float4(lighting, 1.0f);
+	lighting *= diffuseAlbedo;
+
+	pOut.color = float4(lighting, 1.0f) ;
 
 	return pOut;
 }

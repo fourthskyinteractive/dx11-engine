@@ -38,7 +38,7 @@ VertexOut VS(VertexIn vIn)
 
 	//Calculate the normal vector against the world matrix only
 	vOut.normalWS = mul(vIn.normal, (float3x3)worldMatrix);
-	vOut.normalWS = normalize(vOut.normalWS);
+	//vOut.normalWS = normalize(vOut.normalWS);
 
 	return vOut;
 }

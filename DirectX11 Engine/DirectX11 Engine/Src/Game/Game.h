@@ -45,6 +45,8 @@ public:
 
 private:
 
+	static XMFLOAT3 lightPos;
+	static vector<ParentMeshObject*> lights;
 	static ParentMeshObject* mesh;
 	static ScreenSpaceObject* screenSpaceQuad;
 
