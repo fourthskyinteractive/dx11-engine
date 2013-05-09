@@ -145,7 +145,7 @@ PixelOut PS(PixelIn input)
 
 	lighting *= diffuseAlbedo;
 
-	pOut.color = float4(lighting, 0.5f) ;
+	pOut.color = float4(lighting, 1.0f) ;
 
 	return pOut;
 }

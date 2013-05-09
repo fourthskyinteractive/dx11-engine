@@ -65,7 +65,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 5.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
@@ -108,13 +108,15 @@ void Game::Render()
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	for(unsigned int i = 0; i < lights.size(); ++i)
-	{
-		lights[i]->Render();
-		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	}
+// 	for(unsigned int i = 0; i < lights.size(); ++i)
+// 	{
+// 		D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
+// 		lights[i]->Render();
+// 		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+// 	}
 	//LghtObjects::Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
 	screenSpaceQuad->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	
@@ -325,7 +327,7 @@ void Game::LoadCompiledShaders()
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.005f, .005f, .005f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
+	mesh->Initialize("Res/Models/fullchessboard.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(2.0f, 2.0f, 2.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
 
 	screenSpaceQuad = new ScreenSpaceObject();
 	screenSpaceQuad->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1]);
@@ -334,14 +336,14 @@ void Game::InitializeObjects()
 void Game::InitializeLights()
 {
 	ParentMeshObject* newLight = new ParentMeshObject();
-	newLight->Initialize("Res/Models/UnitSphere.fbx", lightPos, XMFLOAT3(.5f, .5f, .5f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
+	newLight->Initialize("Res/Models/UnitSphere.fbx", lightPos, XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
 
 	lights.push_back(newLight);
 
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
-	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
-	//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, 10000, true);
-	//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, 120, true);
+	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), lightPos, 20, true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 }
