@@ -73,7 +73,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -107,14 +107,6 @@ void Game::Render()
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
 	mesh->Render();
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-// 	for(unsigned int i = 0; i < lights.size(); ++i)
-// 	{
-// 		D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
-// 		lights[i]->Render();
-// 		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-// 	}
-	//LghtObjects::Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
 	screenSpaceQuad->Render();
