@@ -253,17 +253,32 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	// Create an alpha enabled blend state description.
 	for(int i = 0; i < 8; ++i)
 	{
-		blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
-		blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ZERO;
-		blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ZERO;
-		blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-		blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ZERO;
-		blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
-		blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-		blendStateDescription.RenderTarget[i].RenderTargetWriteMask = 0x0f;
+		if(i == 0)
+		{
+			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
+			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		}
+		else
+		{
+			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
+			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		}
 	}
 	D3D11Renderer::d3dDevice->CreateBlendState(&blendStateDescription, &blendState);
-	d3dImmediateContext->OMSetBlendState(blendState, 0, 0xffffffff);
+	float blendFactor[4] = {2.0f, 2.0f, 2.0f, 2.0f};
+	d3dImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
 
 	//Sometimes this call to create the device will fail if the primary video card is not compatible with DirectX 11. Some machines may have the primary card as a DirectX 10 video card and the secondary card as a DirectX 11 video card. Also some hybrid graphics cards work that way with the primary being the low power Intel card and the secondary being the high power Nvidia card. To get around this you will need to not use the default device and instead enumerate all the video cards in the machine and have the user choose which one to use and then specify that card when creating the device.
 	//Now that we have a swap chain we need to get a pointer to the back buffer and then attach it to the swap chain. We'll use the CreateRenderTargetView function to attach the back buffer to our swap chain.
@@ -293,7 +308,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	renderTextureDesc.Height = _verticalRes;
 	renderTextureDesc.MipLevels = 1;
 	renderTextureDesc.ArraySize = 1;
-	renderTextureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	renderTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	renderTextureDesc.SampleDesc.Count = 1;
 	renderTextureDesc.SampleDesc.Quality = 0;
 	renderTextureDesc.Usage = D3D11_USAGE_DEFAULT;
