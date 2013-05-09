@@ -26,7 +26,7 @@ int ShaderManager::AddShader(char* _filePath, SHADER_TYPE _shaderType)
 
 	D3DReadFileToBlob(wcString, &shaderBuffer);
 	HRESULT hr;
-
+	
 	if(_shaderType == VERTEX_SHADER)
 	{
 		ID3D11VertexShader* VS;

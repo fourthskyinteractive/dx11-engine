@@ -28,13 +28,13 @@ PixelOut PS(PixelIn input)
 	float3 diffuseAlbedo = DiffuseMap.Sample(sampleType, input.texCoord).rgb;
 
 	//Normalize the normal after interpolation
-	float3 normalWS = normalize(input.normalWS);
+	float3 normalWS = input.normalWS;
 
 	//output our G-Buffer values
 	pOut.Normal = float4(normalWS, 1.0f);
-	pOut.DiffuseAlbedo = float4(diffuseAlbedo, 1.0f);
+	pOut.DiffuseAlbedo = float4(.75f, .75f, .75f, 1.0f);//float4(diffuseAlbedo, 1.0f);
 	//Specual for white color and a power that resembles skin
-	pOut.SpecularAlbedo = float4(0.0f, 0.0f, 1.0f, .25f);
+	pOut.SpecularAlbedo = float4(0.7f, 0.7f, 0.7f, 64.0f);
 	pOut.Position = float4(input.posWS, 1.0f);
 
 // 	float4 textureColor;
