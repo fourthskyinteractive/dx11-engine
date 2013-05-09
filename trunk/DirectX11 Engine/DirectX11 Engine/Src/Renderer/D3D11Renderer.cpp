@@ -251,34 +251,44 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	//To create an alpha enabled blend state description change BlendEnable to TRUE and DestBlend to D3D11_BLEND_INV_SRC_ALPHA. The other settings are set to their default values which can be looked up in the Windows DirectX Graphics Documentation.
 
 	// Create an alpha enabled blend state description.
-	for(int i = 0; i < 8; ++i)
-	{
-		if(i == 0)
-		{
-			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
-			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		}
-		else
-		{
-			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
-			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
-			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-		}
-	}
+	blendStateDescription.IndependentBlendEnable = false;
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	
+// 	for(int i = 0; i < 8; ++i)
+// 	{
+// 		if(i == 0)
+// 		{
+// 			blendStateDescription.RenderTarget[i].BlendEnable = TRUE;
+// 			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+// 			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+// 			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+// 		}
+// 		else
+// 		{
+// 			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
+// 			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+// 			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
+// 			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+// 			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+// 		}
+// 	}
 	D3D11Renderer::d3dDevice->CreateBlendState(&blendStateDescription, &blendState);
-	float blendFactor[4] = {2.0f, 2.0f, 2.0f, 2.0f};
-	d3dImmediateContext->OMSetBlendState(blendState, blendFactor, 0xffffffff);
+
+	//d3dImmediateContext->OMSetBlendState(blendState, nullptr, 0xffffffff);
 
 	//Sometimes this call to create the device will fail if the primary video card is not compatible with DirectX 11. Some machines may have the primary card as a DirectX 10 video card and the secondary card as a DirectX 11 video card. Also some hybrid graphics cards work that way with the primary being the low power Intel card and the secondary being the high power Nvidia card. To get around this you will need to not use the default device and instead enumerate all the video cards in the machine and have the user choose which one to use and then specify that card when creating the device.
 	//Now that we have a swap chain we need to get a pointer to the back buffer and then attach it to the swap chain. We'll use the CreateRenderTargetView function to attach the back buffer to our swap chain.
@@ -370,7 +380,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	// Set up the description of the stencil state.
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 	depthStencilDesc.StencilEnable = true;
 	depthStencilDesc.StencilReadMask = 0xFF;
@@ -507,7 +517,7 @@ void D3D11Renderer::ContextClearState(ID3D11DeviceContext* _context)
 {
 	_context->ClearState();
 
-	d3dImmediateContext->OMSetBlendState(blendState, 0, 0xffffffff);
+	//d3dImmediateContext->OMSetBlendState(blendState, nullptr, 0xffffffff);
 	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
 	d3dImmediateContext->RSSetViewports(1, &viewport);
 	d3dImmediateContext->OMSetDepthStencilState(depthStencilState, 1);

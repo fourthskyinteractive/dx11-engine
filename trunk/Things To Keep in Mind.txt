@@ -24,3 +24,13 @@ Deferred Rendering - 	To Do Deferred Rendering With Multiple RenderTargetViews
 			  that back buffer so when you finally output your final Texture you will have to do it to that
 			  RenderTargetView and then present which will swap that with the front buffer and render it to
 			  the screen.
+
+Blend States - 		Blend states allow you to either have a different blend state for each render target or the same
+			blend state for every render target.  If you want multiple blend states you have to set the
+			IndependentBlendEnable flag to true.  Once this is set, when you set the blend states 0-7, they
+			will coorespond to the render targets that you currently have bound.  If you have all 8 bound,
+			(Ex: OMSetRenderTargets(8, &renderTargets[0], depthStencilBuffer);) the blend state and render 
+			target will both be the same indices.  Ex: renderTarget[0] will be blended using blendState[0]. 
+			If you aren't binding all the render targets (Ex: OMSetRenderTargets(7, &renderTargets[1], depthStencilBuffer);)
+			the blendstate[0] will coorespond to the first renderTarget at the address that you bound from.
+			Ex: renderTarget[1] will be blended using blendState[0].
