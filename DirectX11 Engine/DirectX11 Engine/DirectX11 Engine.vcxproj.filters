@@ -277,5 +277,8 @@
     <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="EdgeDetectionPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

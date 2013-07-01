@@ -17,12 +17,21 @@ struct VertexOut
 	float3 posWS		: POSITIONWS;
 	float2 texCoord		: TEXCOORD;
 	float3 normalWS		: NORMALWS;
+	bool hasTexture		: COLOR;
 };
 
 
 VertexOut VS(VertexIn vIn)
 {
 	VertexOut vOut;
+	if(vIn.pos.w == 1.0f)
+	{
+		vOut.hasTexture = false;
+	}
+	else
+	{
+		vOut.hasTexture = true;
+	}
 	vIn.pos.w = 1.0f;
 	float4 pos = vIn.pos;
 

@@ -30,7 +30,7 @@ public:
 	ScreenSpaceObject(const ScreenSpaceObject& _screenSpaceObject);
 	~ScreenSpaceObject();
 
-	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
+	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView, VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader);
 	void SetShaderBuffers();
 	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[]);
 	void Render();

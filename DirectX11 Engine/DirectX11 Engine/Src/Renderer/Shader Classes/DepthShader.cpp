@@ -21,11 +21,11 @@ DepthShader::~DepthShader()
 
 }
 
-bool DepthShader::Initialize()
+bool DepthShader::Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader)
 {
 	bool result;
 
-	result = InitializeShader(DEPTH_VERTEX_SHADER, DEPTH_PIXEL_SHADER);
+	result = InitializeShader(_vertexShader, _pixelShader);
 	if(!result)
 	{
 		return false;

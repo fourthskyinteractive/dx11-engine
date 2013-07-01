@@ -8,7 +8,8 @@ struct PixelIn
 	float4 posSS		: SV_Position;
 	float3 posWS		: POSITIONWS;
 	float2 texCoord		: TEXCOORD;
-	float3 normalWS		: NORMALWS;	
+	float3 normalWS		: NORMALWS;
+	bool hasTexture		: COLOR;
 };
 
 struct PixelOut
@@ -25,16 +26,24 @@ PixelOut PS(PixelIn input)
 	PixelOut pOut;
 
 	//Sample the diffuse texture
-	float3 diffuseAlbedo = DiffuseMap.Sample(sampleType, input.texCoord).rgb;
+	if(input.hasTexture)
+	{
+		float3 diffuseAlbedo = DiffuseMap.Sample(sampleType, input.texCoord).rgb;
+			pOut.DiffuseAlbedo = float4(diffuseAlbedo, 1.0f);
+	}
+	else
+	{
+		pOut.DiffuseAlbedo = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
 
 	//Normalize the normal after interpolation
 	float3 normalWS = input.normalWS;
 
 	//output our G-Buffer values
 	pOut.Normal = float4(normalWS, 1.0f);
-	pOut.DiffuseAlbedo = float4(1.0f, 1.0f, 1.0f, 1.0f);//float4(diffuseAlbedo, 1.0f);
+	
 	//Specual for white color and a power that resembles skin
-	pOut.SpecularAlbedo = float4(0.7f, 0.7f, 0.7f, 50.0f);
+	pOut.SpecularAlbedo = float4(0.0f, 0.0f, 0.0f, 100.0f);
 	pOut.Position = float4(input.posWS, 1.0f);
 
 // 	float4 textureColor;

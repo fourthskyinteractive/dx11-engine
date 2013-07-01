@@ -21,7 +21,7 @@ ColorShader::~ColorShader()
 
 bool ColorShader::Initialize()
 {
-	bool result;
+	bool result = true;
 
 	//result = InitializeShader(COLOR_VERTEX_SHADER, COLOR_PIXEL_SHADER);
 	if(!result)

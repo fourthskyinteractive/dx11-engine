@@ -23,11 +23,11 @@ ObjectShader::~ObjectShader()
 
 }
 
-bool ObjectShader::Initialize()
+bool ObjectShader::Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader)
 {
 	bool result;
 
-	result = InitializeShader(DEFERRED_GEOMETRY_VERTEX_SHADER, DEFERRED_GEOMETRY_PIXEL_SHADER);
+	result = InitializeShader(_vertexShader, _pixelShader);
 
 	if(!result)
 	{

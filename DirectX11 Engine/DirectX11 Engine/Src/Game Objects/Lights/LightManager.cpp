@@ -157,6 +157,16 @@ void LightManager::TogglePointLight(int _index, char* _lightName /* = "" */)
 	pointLights[_index]->SetIsLightOn(!pointLights[_index]->GetLightOn());
 }
 
+AmbientLight* LightManager::GetAmbientLight()
+{
+	if(ambientLight)
+	{
+		return ambientLight;
+	}
+
+	return NULL;
+}
+
 DirectionalLight* LightManager::GetDirectionalLight(int _index, char* _lightName /* = "" */)
 {
 	int numDirectionalLights = directionalLights.size();

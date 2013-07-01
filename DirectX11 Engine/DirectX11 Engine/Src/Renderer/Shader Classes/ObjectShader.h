@@ -21,7 +21,7 @@ public:
 	ObjectShader(const ObjectShader&);
 	~ObjectShader();
 
-	bool Initialize();
+	bool Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader);
 	void Shutdown();
 	bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget);
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray);

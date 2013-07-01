@@ -61,7 +61,7 @@ float3 CalcLighting(in float3 normal,
 									/ (spotlightAngles.x - spotlightAngles.y));
 #endif
 
-	float nDotL = saturate(dot(normal, L));
+	float nDotL = saturate(dot(L, normal));
 	float3 diffuse = nDotL * lightColor * diffuseAlbedo;
 
 	float3 V = cameraPos - position;
