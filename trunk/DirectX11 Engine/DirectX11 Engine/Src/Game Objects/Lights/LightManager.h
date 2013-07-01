@@ -41,7 +41,7 @@ public:
 	
 	static int GetNumberPointLights(){return pointLights.size();}
 	static int GetNumberDirectionalLights(){return directionalLights.size();}
-	static AmbientLight* GetAmbientLight(){return ambientLight;}
+	static AmbientLight* GetAmbientLight();
 	static DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
 	static PointLight* GetPointLight(int _index, char* _lightName = "");
 };

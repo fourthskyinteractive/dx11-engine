@@ -33,11 +33,12 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	textures = new TextureManager();
 	if( _hasOneTexture)
 	{
-		AddTexture(_textureFilePath);
+		if(_textureFilePath)
+			AddTexture(_textureFilePath);
 	}
 
 
-	objectShader.Initialize();
+	objectShader.Initialize(DEFERRED_GEOMETRY_VERTEX_SHADER, DEFERRED_GEOMETRY_PIXEL_SHADER, NO_GEOMETRY_SHADER);
 	objectShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
 	lightShader.Initialize();
 	switch(_shaderToUse)
@@ -69,8 +70,12 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	}
 
 	UpdateWorldMatrix();
-
-	FBXLoader::LoadFBX(this, _filePath);
+	bool hasTexture = true;
+	if(textures->NumberOfTextures() == 0)
+	{
+		hasTexture = false;
+	}
+	FBXLoader::LoadFBX(this, _filePath, hasTexture);
 }
 
 void ParentMeshObject::SetShaderUsed(BaseShader* _shaderUsed)

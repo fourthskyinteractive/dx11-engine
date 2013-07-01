@@ -12,7 +12,7 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
-bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
+bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _hasTexture)
 {
 	FbxManager* fbxManager = FbxManager::Create();
 	if(!fbxManager)
@@ -91,6 +91,13 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 
 	int ptrMove = 0;
 
+	float wValue = 0.0f;
+
+	if(!_hasTexture)
+	{
+		wValue = 1.0f;
+	}
+
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
 		int vertexCount = 0;
@@ -118,7 +125,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].position.x = (float)fbxVerts[index][0];
 			vertices[index].position.y = (float)fbxVerts[index][1];
 			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = 0;
+			vertices[index].position.w = wValue;
 			meshes[i]->GetPolygonVertexNormal(j, 0, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];
@@ -131,7 +138,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].position.x = (float)fbxVerts[index][0];
 			vertices[index].position.y = (float)fbxVerts[index][1];
 			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = 0;
+			vertices[index].position.w = wValue;
 			meshes[i]->GetPolygonVertexNormal(j, 1, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];
@@ -144,7 +151,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath)
 			vertices[index].position.x = (float)fbxVerts[index][0];
 			vertices[index].position.y = (float)fbxVerts[index][1];
 			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = 0;
+			vertices[index].position.w = wValue;
 			meshes[i]->GetPolygonVertexNormal(j, 2, fbxNorm);
 			vertices[index].normal.x = (float)fbxNorm[0];
 			vertices[index].normal.y = (float)fbxNorm[1];

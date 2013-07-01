@@ -45,9 +45,11 @@ public:
 private:
 
 	static XMFLOAT3 lightPos;
-	static vector<ParentMeshObject*> lights;
+	static ParentMeshObject* pointLight;
+	static vector<XMFLOAT3> pointLightPos;
 	static ParentMeshObject* mesh;
-	static ScreenSpaceObject* screenSpaceQuad;
+	static ScreenSpaceObject* lightPass;
+	static ScreenSpaceObject* edgeDetectionPass;
 
 	static Timer timer;
 	static XMFLOAT2 cameraRotation;

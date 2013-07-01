@@ -43,7 +43,8 @@ void GetGBufferAttributes(in float2 screenPos, out float3 normal,
 	diffuseAlbedo = diffuseAlbedoTexture.Load(sampleIndices).xyz;
 	float4 spec = specularAlbedoTexture.Load(sampleIndices);
 
-	specularAlbedo = spec.xyz;
+	//specularAlbedo = (lightColor * 0.5f);
+	specularAlbedo = ((lightColor * diffuseAlbedo) *  0.5f);;
 	specularPower = spec.w;
 }
 
@@ -77,15 +78,13 @@ float3 CalculateLighting(in float3 normal,
 	float3 L = 0;
 	float attenuation = 1.0f;
 
-	//If point light or spot light
-#if POINTLIGHT || SPOTLIGHT
+	//Ambient Light
+	if(lightType.w == 1.0f)
 	{
-		L = lightPos - position;
-		float dist = length(L);
-		attenuation = max(0, 1.0f - (dist / lightRange.x));
-		L /= dist;
+		return lightColor;
 	}
-#endif
+
+	//If point light or spot light
  	if(lightType.x == 1.0f || lightType.y == 1.0f)
 	{
  		L = lightPos - position;
@@ -128,7 +127,7 @@ float3 CalculateLighting(in float3 normal,
 
 
 PixelOut PS(PixelIn input)
-{	
+{
 	PixelOut pOut;
 	
 	float3 normal;
@@ -145,7 +144,7 @@ PixelOut PS(PixelIn input)
 
 	lighting *= diffuseAlbedo;
 
-	pOut.color = float4(lighting, 1.0f) ;
+	pOut.color = float4(lighting, 1.0f);
 
 	return pOut;
 }

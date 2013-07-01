@@ -22,11 +22,11 @@ DeferredShader::~DeferredShader()
 
 }
 
-bool DeferredShader::Initialize()
+bool DeferredShader::Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader)
 {
 	bool result;
 
-	result = InitializeShader(DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
+	result = InitializeShader(_vertexShader, _pixelShader, _geometryShader);
 	if(!result)
 	{
 		return false;
@@ -244,6 +244,9 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 	else if(_lightType == AMBIENT_LIGHT)
 	{
 		constantBufferData.lightType.w = 1.0f;
+		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetAmbientLight()->GetLightColorF().x, 
+													LightManager::GetAmbientLight()->GetLightColorF().y, 
+													LightManager::GetAmbientLight()->GetLightColorF().z);
 	}
 	else
 	{

@@ -186,7 +186,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 	UINT m4xMsaaQuality;
 	d3dDevice->CheckMultisampleQualityLevels(
-		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality);
+		DXGI_FORMAT_R8G8B8A8_UNORM, 2, &m4xMsaaQuality);
 
 	assert(m4xMsaaQuality > 0);
 
@@ -194,7 +194,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	//ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
 	sd.BufferDesc.Width						= _horizontalRes;
 	sd.BufferDesc.Height					= _verticalRes;
-	sd.BufferDesc.RefreshRate.Numerator		= 60;
+	sd.BufferDesc.RefreshRate.Numerator		= 30;
 	sd.BufferDesc.RefreshRate.Denominator	= 1;
 	sd.BufferDesc.Format					= DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -483,13 +483,14 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 
 
 	//The viewport also needs to be setup so that Direct3D can map clip space coordinates to the render target space. Set this to be the entire size of the window.
+
 	// Setup the viewport for rendering.
 	viewport.Width = (float)_horizontalRes;
 	viewport.Height = (float)_verticalRes;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
+	viewport.TopLeftY = 0.0f;	
 
 	// Create the viewport.
 	d3dImmediateContext->RSSetViewports(1, &viewport);
@@ -516,6 +517,10 @@ void D3D11Renderer::ClearScene(const float* _color /* = reinterpret_cast<const f
 void D3D11Renderer::ContextClearState(ID3D11DeviceContext* _context)
 {
 	_context->ClearState();
+
+// 	swapChain->Release();
+// 
+// 	swapChain->ResizeBuffers(1, 800, 600, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
 	//d3dImmediateContext->OMSetBlendState(blendState, nullptr, 0xffffffff);
 	d3dImmediateContext->RSSetState(rasterStateBackfaceCulling);
