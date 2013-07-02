@@ -40,17 +40,17 @@ void DeferredShader::Shutdown()
 	ShutdownShader();
 }
 
-bool DeferredShader::Render(int _indexCount, ID3D11RenderTargetView* _renderTarget)
+bool DeferredShader::Render(int _indexCount)
 {
 	//Now render the prepared buffers with the shader
 	//TODO: EVERY RENDER CALL I WILL HAVE TO RESET ALL SHADER CONSTANTS AND RESOURCES FOR EACH SHADER FILE
 	D3D11Renderer::TurnZBufferOff();
-	RenderShader(_indexCount, _renderTarget);
+	RenderShader(_indexCount);
 	D3D11Renderer::TurnZBufferOn();
 	return true;
 }
 
-void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[])
+void DeferredShader::UpdatePerFrame(ID3D11RenderTargetView* _renderTarget, ID3D11ShaderResourceView* _texture[])
 {
 	if(_texture)
 	{
@@ -58,18 +58,13 @@ void DeferredShader::Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _te
 	}
 
 	SetShader();
+
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 }
 
-void DeferredShader::Update(LIGHT_TYPE _lightType, int _lightIndex, ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[])
+void DeferredShader::UpdatePerLight(LIGHT_TYPE _lightType, int _lightIndex)
 {
-	if(_texture)
-	{
-		UpdatePixelShaderTextureConstants(_texture);
-	}
-
 	UpdatePixelShaderConstants(_lightType, _lightIndex);
-
-	SetShader();
 }
 
 bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex, int _geometryShaderIndex)
@@ -171,14 +166,7 @@ bool DeferredShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView*
 	if(!_textureArray)
 		return false;
 
-	for(int i = 0; i < 4; ++i)
-	{
-		if(_textureArray[i])
-		{
-			D3D11Renderer::d3dImmediateContext->GenerateMips(_textureArray[i]);
-			D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &_textureArray[i]);
-		}
-	}
+	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(0, 4, &_textureArray[0]);
 
 	return true;
 }
@@ -192,13 +180,10 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 
 	unsigned int bufferNumber;
 
-	for(int i = 0; i < 4; ++i)
-	{
-		constantBufferData.lightType.x = 0.0f;
-		constantBufferData.lightType.y = 0.0f;
-		constantBufferData.lightType.z = 0.0f;
-		constantBufferData.lightType.w = 0.0f;
-	}
+	constantBufferData.lightType.x = 0.0f;
+	constantBufferData.lightType.y = 0.0f;
+	constantBufferData.lightType.z = 0.0f;
+	constantBufferData.lightType.w = 0.0f;
 
 
 
@@ -271,8 +256,7 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 	return true;
 }
 
-void DeferredShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
+void DeferredShader::RenderShader(int _indexCount)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &_renderTarget, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->Draw(1,0);
 }

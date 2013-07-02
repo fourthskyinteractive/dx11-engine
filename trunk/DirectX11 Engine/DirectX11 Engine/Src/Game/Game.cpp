@@ -9,6 +9,7 @@
 #include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/Lights/LightManager.h"
 #include "../Renderer/Shader Classes/BaseShader.h"
+#include "../Utility/Misc/TerrainGenerator.h"
 
 #include "ScreenGrab.h"
 
@@ -81,6 +82,9 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	InitializeLights();
 	InitializeObjects();
 
+	vector<XMFLOAT3>* verts = new vector<XMFLOAT3>();
+	TerrainGenerator::CreateTerrain(100.0f, 100.0f, 100, 5, XMFLOAT3(0.0f, 0.0f, 0.0f), *verts);
+
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 
@@ -111,14 +115,14 @@ void Game::Render()
 	mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
-	for(unsigned int i = 0; i < pointLightPos.size(); ++i)
-	{
-		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-		pointLight->SetPosition(pointLightPos[i]);
-		pointLight->UpdateWorldMatrix();
-		pointLight->Update(0.0f);
-		pointLight->Render();
-	}
+// 	for(unsigned int i = 0; i < pointLightPos.size(); ++i)
+// 	{
+// 		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+// 		pointLight->SetPosition(pointLightPos[i]);
+// 		pointLight->UpdateWorldMatrix();
+// 		pointLight->Update(0.0f);
+// 		pointLight->Render();
+// 	}
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
@@ -310,13 +314,12 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryPixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/BillboardGeometryShader.cso", GEOMETRY_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/EdgeDetectionPixelShader.cso", PIXEL_SHADER);
 }
 
 void Game::InitializeObjects()
 {
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/Teapot.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
+	mesh->Initialize("Res/Models/fullchessboard.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
@@ -336,32 +339,32 @@ void Game::InitializeLights()
 	pointLight->Initialize("Res/Models/UnitSphere.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
 
 
-	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
+	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.35f, .35f, .35f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f), true);
 
 
-// 	float posX = -70.0f;
-// 	float posZ = -70.0f;
-// 	for(int i = 0; i < 1; ++i)
-// 	{
-// 		for(int j = 0; j < 1; ++j)
-// 		{
-// 			float randR = ((float) rand()) / (float) RAND_MAX;
-// 			float randG = ((float) rand()) / (float) RAND_MAX;
-// 			float randB = ((float) rand()) / (float) RAND_MAX;
-// 
-// 			LightManager::AddPointLight("Point Light", XMFLOAT4(randR, randG, randB, 1.0f), XMFLOAT3(posX, 10.0f, posZ), 20, true);
-// 
-// 			pointLightPos.push_back(XMFLOAT3(posX, 10.0f, posZ));
-// 
-// 			posZ += 14;
-// 		}
-// 		posZ = -70;
-// 		posX += 14;
-// 	}
+ 	//float posX = -70.0f;
+ 	//float posZ = -70.0f;
+	//for(int i = 0; i < 10; ++i)
+	//{
+	//	for(int j = 0; j < 10; ++j)
+	//	{
+	//		float randR = ((float) rand()) / (float) RAND_MAX;
+	//		float randG = ((float) rand()) / (float) RAND_MAX;
+	//		float randB = ((float) rand()) / (float) RAND_MAX;
+	//
+	//		LightManager::AddPointLight("Point Light", XMFLOAT4(randR, randG, randB, 1.0f), XMFLOAT3(posX, 10.0f, posZ), 20, true);
+	//
+	//		pointLightPos.push_back(XMFLOAT3(posX, 10.0f, posZ));
+	//
+	//		posZ += 14;
+	//	}
+	//	posZ = -70;
+	//	posX += 14;
+	//}
 
 	//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, .50f, 1.0f, 1.0f), lightPos, 20, true);
 	//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
