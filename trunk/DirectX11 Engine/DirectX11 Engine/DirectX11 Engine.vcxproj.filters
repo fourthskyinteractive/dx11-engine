@@ -133,7 +133,7 @@
       <Filter>Misc\Geometry Maker</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utility\Misc\TerrainGenerator.cpp">
-      <Filter>Game Objects</Filter>
+      <Filter>Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +225,7 @@
       <Filter>Misc\Geometry Maker</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utility\Misc\TerrainGenerator.h">
-      <Filter>Game Objects</Filter>
+      <Filter>Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
