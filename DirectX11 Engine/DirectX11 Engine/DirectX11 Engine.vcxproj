@@ -60,6 +60,7 @@
       <AdditionalDependencies>d3d11.lib;D3dcompiler.lib;dxgi.lib;wininet.lib;fbxsdk-2014.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
     <FxCompile>
       <EntryPointName>VS</EntryPointName>

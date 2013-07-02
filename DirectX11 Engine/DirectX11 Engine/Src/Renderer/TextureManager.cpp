@@ -43,7 +43,8 @@ ID3D11ShaderResourceView* TextureManager::GetTextureArrayPointer()
 	if(textures.size() > 0)
 	{
 		return textures[0];
-	}	
+	}
+	return NULL;
 }
 
 int TextureManager::NumberOfTextures()

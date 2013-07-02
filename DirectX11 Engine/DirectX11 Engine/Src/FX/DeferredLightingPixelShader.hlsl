@@ -66,7 +66,7 @@ float3 CalcLighting(in float3 normal,
 
 	float3 V = cameraPos - position;
 	float3 H = normalize(L + V);
-	float3 specular = pow(saturate(dot(normal, H)), specularPower) 
+	float3 specular = pow(saturate(dot(normal, H)), 64) 
 							* lightColor * specularAlbedo.xyz * nDotL;
 	return (diffuse + specular) * attenuation;
 }
