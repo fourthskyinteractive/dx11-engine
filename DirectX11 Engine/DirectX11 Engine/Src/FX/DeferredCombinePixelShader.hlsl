@@ -138,7 +138,7 @@ PixelOut PS(PixelIn input)
 
 	//Sample the G-Buffer properties from the textures
 	GetGBufferAttributes(input.pos.xy, normal, position, diffuseAlbedo,
-						specularAlbedo, specularPower);
+						specularAlbedo, specularPower);	
 
 	float3 lighting = CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 

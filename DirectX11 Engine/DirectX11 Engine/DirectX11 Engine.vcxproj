@@ -104,6 +104,7 @@
     <ClCompile Include="Src\Utility\Geometry Makers\GeometryMaker.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
     <ClCompile Include="Src\Utility\Misc\DebugOutput.cpp" />
+    <ClCompile Include="Src\Utility\Misc\TerrainGenerator.cpp" />
     <ClCompile Include="Src\Utility\Misc\Timer.cpp" />
     <ClCompile Include="Src\Utility\Model Loaders\FBXLoader.cpp" />
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp" />
@@ -135,20 +136,12 @@
     <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h" />
+    <ClInclude Include="Src\Utility\Misc\TerrainGenerator.h" />
     <ClInclude Include="Src\Utility\Misc\Timer.h" />
     <ClInclude Include="Src\Utility\Model Loaders\FBXLoader.h" />
     <ClInclude Include="Src\Utility\Model Loaders\ObjLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="EdgeDetectionPixelShader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS</EntryPointName>
-    </FxCompile>
     <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

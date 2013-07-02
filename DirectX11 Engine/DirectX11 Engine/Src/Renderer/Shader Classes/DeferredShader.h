@@ -35,17 +35,17 @@ public:
 
 	bool Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader);
 	void Shutdown();
-	bool Render(int _indexCount, ID3D11RenderTargetView* _renderTarget);
+	bool Render(int _indexCount);
 	bool UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix);
 	bool UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* _textureArray[]);
 	bool UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int lightIndex);
-	void Update(ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[] = NULL);
-	void Update(LIGHT_TYPE _lightType, int _lightIndex, ChildMeshObject* _obj, ID3D11ShaderResourceView* _texture[] = NULL);
+	void UpdatePerFrame(ID3D11RenderTargetView* _renderTarget, ID3D11ShaderResourceView* _texture[] = NULL);
+	void UpdatePerLight(LIGHT_TYPE _lightType, int _lightIndex);
 
 private:
 	bool InitializeShader(int _vertexShaderIndex, int  _pixelShaderIndex, int _geometryShaderIndex);
 	void ShutdownShader();
-	void RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget);
+	void RenderShader(int _indexCount);
 	void SetShader();
 
 private:
