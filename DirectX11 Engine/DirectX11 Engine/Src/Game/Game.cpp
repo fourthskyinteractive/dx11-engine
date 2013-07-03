@@ -35,6 +35,7 @@ Timer							Game::timer;
 ParentMeshObject*				Game::mesh = NULL;
 ScreenSpaceObject*				Game::lightPass = NULL;
 ScreenSpaceObject*				Game::edgeDetectionPass = NULL;
+Terrain*						Game::terrain = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -81,9 +82,6 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	LoadCompiledShaders();
 	InitializeLights();
 	InitializeObjects();
-
-	vector<XMFLOAT3>* verts = new vector<XMFLOAT3>();
-	TerrainGenerator::CreateTerrain(10000.0f, 10000.0f, 256, 100.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), *verts);
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
@@ -318,6 +316,8 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
+	terrain = new Terrain();
+	terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL);
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
 
