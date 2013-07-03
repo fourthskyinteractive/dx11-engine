@@ -21,7 +21,7 @@ TerrainGenerator::~TerrainGenerator()
 
 }
 
-void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfSegments, float _smoothingFactor, XMFLOAT3 _centerPoint, vector<XMFLOAT3>& _vertices)
+void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfSegments, float _smoothingFactor, XMFLOAT3 _centerPoint, vector<XMFLOAT3>& _vertices, vector<unsigned long>& _indices)
 {
 	//NUMBER OF SEGMENTS IS PER SIDE
 	
@@ -82,6 +82,8 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		slicesToMake = slicesToMake / 2;
 		smoothingFactor -= _smoothingFactor / numberOfSegments;
 	}
+
+	CreateIndexList(_indices);
 }
 
 void TerrainGenerator::DiamondStep(int _BL, int _width, float _smoothingFactor, vector<XMFLOAT3>& _vertices)
@@ -169,4 +171,34 @@ void TerrainGenerator::SquareStep(int _centerPoint, int _width, float _smoothing
 	squares.push(tempSquare);
 
 	diamonds.pop();
+}
+
+void TerrainGenerator::CreateIndexList(vector<unsigned long>& _indices)
+{
+	//Create the indices for the terrain
+	int oneRowUp = (numberOfSegments + 1);
+	int numbQuads = numberOfSegments * numberOfSegments;
+
+	int currentQuad = 0;
+	int columnCount = 0;
+	for(int i = 0; i < numbQuads; ++i)
+	{
+		if(columnCount > numberOfSegments - 1)
+		{
+			columnCount = 0;
+			currentQuad += 1;
+		}
+		//TRI 1
+		_indices.push_back(currentQuad);
+		_indices.push_back(currentQuad + oneRowUp);
+		_indices.push_back(currentQuad + oneRowUp + 1);
+
+		//TRI 2
+		_indices.push_back(currentQuad);
+		_indices.push_back(currentQuad + oneRowUp + 1);
+		_indices.push_back(currentQuad + 1);
+
+		columnCount ++;
+		currentQuad ++;
+	}
 }

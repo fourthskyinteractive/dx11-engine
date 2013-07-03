@@ -90,6 +90,7 @@
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\ScreenSpaceObject.cpp" />
+    <ClCompile Include="Src\Game Objects\Terrain.cpp" />
     <ClCompile Include="Src\Game\Definitions.cpp" />
     <ClCompile Include="Src\Game\Game.cpp" />
     <ClCompile Include="Src\Input\DirectInput.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp" />
+    <ClCompile Include="Src\Renderer\Shader Classes\TerrainShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
     <ClCompile Include="Src\Utility\Geometry Makers\GeometryMaker.cpp" />
@@ -122,6 +124,7 @@
     <ClInclude Include="Src\Game Objects\Lights\PointLight.h" />
     <ClInclude Include="Src\Game Objects\ParentMeshObject.h" />
     <ClInclude Include="Src\Game Objects\ScreenSpaceObject.h" />
+    <ClInclude Include="Src\Game Objects\Terrain.h" />
     <ClInclude Include="Src\Game\Definitions.h" />
     <ClInclude Include="Src\Game\Game.h" />
     <ClInclude Include="Src\Input\DirectInput.h" />
@@ -132,6 +135,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
     <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />

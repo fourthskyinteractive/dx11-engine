@@ -17,6 +17,7 @@
 #include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/ScreenSpaceObject.h"
 #include "../Game Objects/LightObjects.h"
+#include "../Game Objects/Terrain.h"
 
 class Game
 {
@@ -67,6 +68,8 @@ private:
 
 	static bool backfaceCulling;
 	static bool backFaceSwap;
+
+	static Terrain* terrain;
 };
 
 

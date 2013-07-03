@@ -135,6 +135,12 @@
     <ClCompile Include="Src\Utility\Misc\TerrainGenerator.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\Terrain.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\Shader Classes\TerrainShader.cpp">
+      <Filter>Renderer\Shader Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -226,6 +232,12 @@
     </ClInclude>
     <ClInclude Include="Src\Utility\Misc\TerrainGenerator.h">
       <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Terrain.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h">
+      <Filter>Renderer\Shader Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
