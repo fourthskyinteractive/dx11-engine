@@ -6,7 +6,7 @@
 
 #include "../Game/Definitions.h"
 #include "../Renderer/TextureManager.h"
-#include "../Renderer/Shader Classes/LightShader.h"
+#include "../Renderer/Shader Classes/ObjectShader.h"
 
 class ParentMeshObject;
 class DepthShader;
@@ -20,7 +20,7 @@ private:
 	static ID3D11ShaderResourceView* texture;
 	static ID3D11RenderTargetView* renderTarget;
 
-	static LightShader shaderUsed;
+	static ObjectShader shaderUsed;
 
 	static vector<XMFLOAT3*> lightVerts;
 	static vector<unsigned long*> lightIndices;

@@ -1,6 +1,15 @@
 #include "TerrainGenerator.h"
+#include "../../Game/Game.h"
 
-int		TerrainGenerator::slicesMade;
+
+
+int				TerrainGenerator::slicesMade;
+float			TerrainGenerator::width;
+float			TerrainGenerator::height;
+int				TerrainGenerator::numberOfSegments;
+float			TerrainGenerator::smoothingFactor;
+queue<Square>	TerrainGenerator::squares;
+queue<Diamond>	TerrainGenerator::diamonds;
 
 TerrainGenerator::TerrainGenerator()
 {
@@ -24,6 +33,11 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 	//|	   |	|
 	//|	   |	|		OR WHATEVER
 	//-----------
+	width = _width;
+	height = _height;
+	numberOfSegments = _numberOfSegments;
+	smoothingFactor = _smoothingFactor;
+
 
 	int numVerts = (_numberOfSegments + 1) * (_numberOfSegments + 1);
 	_vertices.resize(numVerts);
@@ -42,37 +56,117 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 	int BL = 0;
 	int BR = _numberOfSegments;
 
-	_vertices[TL].y = 20;
-	_vertices[TR].y = 20;
-	_vertices[BL].y = 20;
-	_vertices[BR].y = 20;
+	_vertices[TL].y = 0;
+	_vertices[TR].y = 0;
+	_vertices[BL].y = 0;
+	_vertices[BR].y = 0;
 
-	SquareStep(TL, TR, BL, BR, _smoothingFactor, _vertices);
+	Square firstSquare;
+	firstSquare.BL = BL;
+	firstSquare.width = BR - BL;
+	if(firstSquare.width >= 1)
+		squares.push(firstSquare);
+
+	int slicesToMake = numberOfSegments;
+	while(true)
+	{
+		if(squares.empty() && diamonds.empty())
+			break;
+		//DO THE DIAMOND PASS BY FINDING THE CENTER AND GIVING IT A VALUE
+		while(!squares.empty())
+			DiamondStep(squares.front().BL, slicesToMake, smoothingFactor, _vertices);
+
+		while(!diamonds.empty())
+			SquareStep(diamonds.front().centerPoint, slicesToMake, smoothingFactor, _vertices);
+
+		slicesToMake = slicesToMake / 2;
+		smoothingFactor -= _smoothingFactor / numberOfSegments;
+	}
 }
 
-void TerrainGenerator::SquareStep(int _TL, int _TR, int _BL, int _BR, float _smoothingFactor, vector<XMFLOAT3>& _vertices)
+void TerrainGenerator::DiamondStep(int _BL, int _width, float _smoothingFactor, vector<XMFLOAT3>& _vertices)
 {
-	slicesMade += 1;
+	if(_width < 2)
+	{
+		squares.pop();
+		return;
+	}
 
-	int centerPoint = ((_BR - _BL) / 2) + _BL;
-	centerPoint += (_BR - _BL + 1) * ((_BR - _BL) / 2);
+	int BL = _BL;
+	int BR = BL + _width;
+	int TL = BL + _width * numberOfSegments + _width;
+	int TR = BR + _width * numberOfSegments + _width;
 
-	float averageOfCorners = (_vertices[_BR].y + _vertices[_BL].y + _vertices[_TR].y + _vertices[_TL].y) / 4.0f;
-	_vertices[centerPoint].y = averageOfCorners + _smoothingFactor;
+	int centerPoint = (_width / 2) + BL;
+	centerPoint += ((numberOfSegments + 1) * (_width / 2));
+	
+	float averageOfCorners = (_vertices[BR].y + _vertices[BL].y + _vertices[TR].y + _vertices[TL].y) / 4.0f;
+	float scaling = 0.0f;
+	scaling = (float)rand()/((float)RAND_MAX/(_smoothingFactor * 2)) - _smoothingFactor;
+	_vertices[centerPoint].y = averageOfCorners + scaling;
 
-	DiamondStep(_TL, _TR, _BL, _BR, centerPoint, _smoothingFactor, _vertices);
+	Diamond tempDiamond;	
+
+	tempDiamond.centerPoint = centerPoint;
+
+	tempDiamond.width = _width;
+
+	diamonds.push(tempDiamond);
+
+	squares.pop();
 }
 
-void TerrainGenerator::DiamondStep(int _TL, int _TR, int _BL, int _BR, int _centerPoint, float _smoothingFactor, vector<XMFLOAT3>& _vertices)
+void TerrainGenerator::SquareStep(int _centerPoint, int _width, float _smoothingFactor, vector<XMFLOAT3>& _vertices)
 {
-	int halfWidth = ((_TR - _TL) / 2);
-	int TM = _TL + halfWidth;
-	int RM = _centerPoint + halfWidth;
-	int LM = _centerPoint - halfWidth;
-	int BM = _BL + halfWidth;
+	if(_width < 2)
+	{
+		diamonds.pop();
+		return;
+	}
 
-	_vertices[TM].y = (_vertices[_TL].y + _vertices[_TR].y / 2.0f) + _smoothingFactor;
-	_vertices[RM].y = (_vertices[_TR].y + _vertices[_BR].y / 2.0f) + _smoothingFactor;
-	_vertices[LM].y = (_vertices[_TL].y + _vertices[_BL].y / 2.0f) + _smoothingFactor;
-	_vertices[BM].y = (_vertices[_BL].y + _vertices[_BR].y / 2.0f) + _smoothingFactor;
+	int TM = _centerPoint + ((numberOfSegments + 1) * (_width / 2));;
+	int LM = _centerPoint - (_width / 2);
+	int RM = _centerPoint + (_width / 2);;
+	int BM = _centerPoint - ((numberOfSegments + 1) * (_width / 2));;
+
+	int BL = BM - (_width / 2);
+	int BR = BM + (_width / 2);
+	int TL = TM - (_width / 2);
+	int TR = TM + (_width / 2);
+
+	float averageOfDiamond = 0.0f;
+	float scaling = 0.0f;
+	//TM
+	averageOfDiamond = (_vertices[TL].y + _vertices[TR].y + _vertices[_centerPoint].y) / 3.0f;
+	scaling = (float)rand()/((float)RAND_MAX/(_smoothingFactor * 2)) - _smoothingFactor;
+	_vertices[TM].y = averageOfDiamond + scaling;
+	//RM
+	averageOfDiamond = (_vertices[TR].y + _vertices[BR].y + _vertices[_centerPoint].y) / 3.0f;
+	scaling = (float)rand()/((float)RAND_MAX/(_smoothingFactor * 2)) - _smoothingFactor;
+	_vertices[RM].y = averageOfDiamond + scaling;
+	//LM
+	averageOfDiamond = (_vertices[TL].y + _vertices[BL].y + _vertices[_centerPoint].y) / 3.0f;
+	scaling = (float)rand()/((float)RAND_MAX/(_smoothingFactor * 2)) - _smoothingFactor;
+	_vertices[LM].y = averageOfDiamond + scaling;
+	//BM
+	averageOfDiamond = (_vertices[BL].y + _vertices[BR].y + _vertices[_centerPoint].y) / 3.0f;
+	scaling = (float)rand()/((float)RAND_MAX/(_smoothingFactor * 2)) - _smoothingFactor;
+	_vertices[BM].y = averageOfDiamond + scaling;
+
+	Square tempSquare;
+	//Square 1
+	tempSquare.BL = LM;
+	tempSquare.width = _width;
+	squares.push(tempSquare);
+	//Square 2
+	tempSquare.BL = _centerPoint;
+	squares.push(tempSquare);
+	//Square 3
+	tempSquare.BL = BL;
+	squares.push(tempSquare);
+	//Square 4
+	tempSquare.BL = BM;
+	squares.push(tempSquare);
+
+	diamonds.pop();
 }

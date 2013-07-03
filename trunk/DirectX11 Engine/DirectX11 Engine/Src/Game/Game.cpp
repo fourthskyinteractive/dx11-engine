@@ -83,7 +83,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	InitializeObjects();
 
 	vector<XMFLOAT3>* verts = new vector<XMFLOAT3>();
-	TerrainGenerator::CreateTerrain(10.0f, 10.0f, 4, 5, XMFLOAT3(0.0f, 0.0f, 0.0f), *verts);
+	TerrainGenerator::CreateTerrain(10000.0f, 10000.0f, 256, 100.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), *verts);
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);

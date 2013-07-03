@@ -12,7 +12,7 @@ ID3D11Buffer*				LightObjects::indexbuffer;
 
 ID3D11ShaderResourceView*	LightObjects::texture;
 ID3D11RenderTargetView*		LightObjects::renderTarget;
-LightShader					LightObjects::shaderUsed;
+ObjectShader				LightObjects::shaderUsed;
 vector<XMFLOAT3*>			LightObjects::lightVerts;
 vector<unsigned long*>		LightObjects::lightIndices;
 int							LightObjects::vertexCount;
@@ -38,7 +38,7 @@ void LightObjects::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11S
 	renderTarget = _renderTargetView;
 	texture = _shaderResourceView;
 	InitializeBuffers();
-	shaderUsed.Initialize();
+	//shaderUsed.Initialize();
 	shaderUsed.UpdatePixelShaderTextureConstants(texture);
 }
 
