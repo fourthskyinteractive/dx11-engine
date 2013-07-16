@@ -25,10 +25,13 @@ Terrain::~Terrain()
 
 void Terrain::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView)
 {
+	smallest = 0;
+	largest = 0;
+
 	renderTarget = _renderTargetView;
 	texture = _shaderResourceView;
 	InitializeBuffers();
-	//shaderUsed.Initialize();
+	shaderUsed.Initialize(SIMPLE_VERTEX_SHADER, SIMPLE_PIXEL_SHADER, SIMPLE_GEOMETRY_SHADER);
 	shaderUsed.UpdatePixelShaderTextureConstants(texture);
 }
 
@@ -37,10 +40,21 @@ void Terrain::InitializeBuffers()
 	vector<XMFLOAT3> verts;
 	vector<unsigned long> indices;
 
-	TerrainGenerator::CreateTerrain(1000.0f, 1000.0f, 128, 100.0f, XMFLOAT3(0.0f, -20.0f, 0.0f), verts, indices);
+	TerrainGenerator::CreateTerrain(1000.0f, 1000.0f, 32, 30.0f, XMFLOAT3(0.0f, -20.0f, 0.0f), verts, indices);
+
+	for(unsigned int i = 0; i < verts.size(); ++i)
+	{
+		if(verts[i].y < smallest)
+			smallest = verts[i].y;
+
+		if(verts[i].y > largest)
+			largest = verts[i].y;
+	}
 
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+
+	indexCount = indices.size();
 
 	//Set up the description of the static vertex buffer
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -66,7 +80,7 @@ void Terrain::InitializeBuffers()
 
 	//Set up the description of the static index buffer
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indices.size();
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
@@ -117,6 +131,8 @@ void Terrain::Update()
 	XMMATRIX worldMatM = XMMatrixIdentity();
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
+	worldMat._41 = smallest;
+	worldMat._42 = largest;
 	shaderUsed.Update(worldMat, texture);
 }
 

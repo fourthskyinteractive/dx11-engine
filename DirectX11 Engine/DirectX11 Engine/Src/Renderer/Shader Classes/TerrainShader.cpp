@@ -27,6 +27,10 @@ bool TerrainShader::Initialize(VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixe
 {
 	bool result;
 
+	vertexShaderIndex = _vertexShader;
+	pixelShaderIndex = _pixelShader;
+	geometryShaderIndex = _geometryShader;
+
 	result = InitializeShader();
 
 	if(!result)
@@ -56,6 +60,7 @@ void TerrainShader::Update(XMFLOAT4X4 _worldMat, ID3D11ShaderResourceView* _text
 	{
 		UpdatePixelShaderTextureConstants(_texture);
 	}
+
 	UpdateVertexShaderConstants(_worldMat, Game::camera->GetViewProjectionMatrixF());
 	SetShader();
 }
@@ -225,6 +230,6 @@ bool TerrainShader::UpdatePixelShaderTextureConstants(ID3D11ShaderResourceView* 
 
 void TerrainShader::RenderShader(int _indexCount, ID3D11RenderTargetView* _renderTarget)
 {
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(7, &D3D11Renderer::renderTargetView[1], D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0], D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->DrawIndexed(_indexCount, 0, 0);
 }
