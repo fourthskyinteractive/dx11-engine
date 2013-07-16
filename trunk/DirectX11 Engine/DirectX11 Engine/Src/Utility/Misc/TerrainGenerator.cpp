@@ -33,6 +33,15 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 	//|	   |	|
 	//|	   |	|		OR WHATEVER
 	//-----------
+
+	int runThroughs = 1;
+	int number = 1;
+	while(number != _numberOfSegments)
+	{
+		number *= 2;
+		runThroughs ++;
+	}
+
 	width = _width;
 	height = _height;
 	numberOfSegments = _numberOfSegments;
@@ -68,6 +77,7 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		squares.push(firstSquare);
 
 	int slicesToMake = numberOfSegments;
+	int x = 0;
 	while(true)
 	{
 		if(squares.empty() && diamonds.empty())
@@ -76,11 +86,12 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		while(!squares.empty())
 			DiamondStep(squares.front().BL, slicesToMake, smoothingFactor, _vertices);
 
+		smoothingFactor -= _smoothingFactor / runThroughs;
+
 		while(!diamonds.empty())
 			SquareStep(diamonds.front().centerPoint, slicesToMake, smoothingFactor, _vertices);
 
 		slicesToMake = slicesToMake / 2;
-		smoothingFactor -= _smoothingFactor / numberOfSegments;
 	}
 
 	CreateIndexList(_indices);

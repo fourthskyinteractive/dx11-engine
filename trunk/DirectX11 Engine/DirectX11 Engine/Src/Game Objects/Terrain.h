@@ -28,6 +28,9 @@ private:
 	int vertexCount;
 	int indexCount;
 
+	float smallest;
+	float largest;
+
 public:
 	Terrain();
 	Terrain(const Terrain& _terrain);

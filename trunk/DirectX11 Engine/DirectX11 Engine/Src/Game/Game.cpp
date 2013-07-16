@@ -66,10 +66,14 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	ShowCursor(false);
 	bool result;
 	backfaceCulling = true;
+
+	directInput = new DirectInput;
+	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
+
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 15.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 100.0f, -500.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
@@ -77,14 +81,11 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
 	InitializeObjects();
-
-	directInput = new DirectInput;
-	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
 
 	if(bResult)
 	{
@@ -109,8 +110,8 @@ void Game::Render()
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	mesh->UpdateWorldMatrix();
-	mesh->Render();
+	//mesh->UpdateWorldMatrix();
+	//mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
 // 	for(unsigned int i = 0; i < pointLightPos.size(); ++i)
@@ -121,10 +122,11 @@ void Game::Render()
 // 		pointLight->Update(0.0f);
 // 		pointLight->Render();
 // 	}
+	terrain->Render();
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
-	lightPass->Render();
+	//lightPass->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	//edgeDetectionPass->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
@@ -156,19 +158,19 @@ void Game::Input(float _deltaTime)
 
 	if(directInput->IsKeyPressed(DIK_W))
 	{
-		camera->Walk(5.0f * _deltaTime);
+		camera->Walk(50.0f * _deltaTime);
 	}
 	if(directInput->IsKeyPressed(DIK_S))
 	{
-		camera->Walk(-5.0f * _deltaTime); 
+		camera->Walk(-50.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_A))
 	{
-		camera->Strafe(5.0f * _deltaTime); 
+		camera->Strafe(50.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_D))
 	{
-		camera->Strafe(-5.0f * _deltaTime); 
+		camera->Strafe(-50.0f * _deltaTime); 
 	}
 
 	if(directInput->IsKeyPressed(DIK_B))
@@ -260,6 +262,12 @@ void Game::Exit()
 		mesh = 0;
 	}
 
+	if(terrain)
+	{
+		delete terrain;
+		terrain = 0;
+	}
+
 	ReleaseCOM(boxVB);
 	ReleaseCOM(boxIB);
 	ReleaseCOM(inputLayout);
@@ -318,6 +326,7 @@ void Game::InitializeObjects()
 {
 	terrain = new Terrain();
 	terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL);
+
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
 
