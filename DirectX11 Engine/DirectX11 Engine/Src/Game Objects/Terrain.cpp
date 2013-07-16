@@ -13,7 +13,7 @@ Terrain::Terrain()
 
 }
 
-Terrain::Terrain(const Terrain& _childMeshObject)
+Terrain::Terrain(const Terrain& _terrain)
 {
 
 }
