@@ -30,7 +30,7 @@ private:
 
 public:
 	Terrain();
-	Terrain(const Terrain& _childMeshObject);
+	Terrain(const Terrain& _terrain);
 	~Terrain();
 
 	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
