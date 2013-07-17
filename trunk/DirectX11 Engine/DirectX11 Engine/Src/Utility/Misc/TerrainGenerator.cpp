@@ -89,7 +89,7 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		while(!diamonds.empty())
 			SquareStep(diamonds.front().centerPoint, slicesToMake, smoothingFactor, _vertices);
 
-		float removeValue = pow((loopsMade  / runThroughs), 3) * _smoothingFactor; 
+		float removeValue = pow((loopsMade  / runThroughs), 4) * _smoothingFactor; 
 		smoothingFactor = removeValue;
 
 		//smoothingFactor -= _smoothingFactor / runThroughs;
