@@ -20,6 +20,8 @@ using std::ios_base;
 #include <iostream>
 using std::cin;
 
+#include <cmath>
+
 #ifdef _DEBUG
 #include "../Utility/Misc/DebugOutput.h"
 #include<sstream>
@@ -73,7 +75,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 100.0f, -500.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 300.0f, -500.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
@@ -101,6 +103,21 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 void Game::Run()
 {
+	//y = a(1 - r)^t
+	//
+	//a = initial amount
+	//r = decay rate
+	//(1 - r) = decay factor
+	//t = time, or time since starting time
+
+	float y = 0;
+	float a = 100;
+	float r = 1.0f/8.0f;
+	static float t = 0;
+
+	y = a * pow((1 - r), t);
+
+	t ++;
 	Update();
 	Render();
 }

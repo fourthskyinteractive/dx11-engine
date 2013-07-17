@@ -40,7 +40,7 @@ void Terrain::InitializeBuffers()
 	vector<XMFLOAT3> verts;
 	vector<unsigned long> indices;
 
-	TerrainGenerator::CreateTerrain(1000.0f, 1000.0f, 32, 30.0f, XMFLOAT3(0.0f, -20.0f, 0.0f), verts, indices);
+	TerrainGenerator::CreateTerrain(1000.0f, 1000.0f, 512, 100.0f, XMFLOAT3(0.0f, -20.0f, 0.0f), verts, indices);
 
 	for(unsigned int i = 0; i < verts.size(); ++i)
 	{

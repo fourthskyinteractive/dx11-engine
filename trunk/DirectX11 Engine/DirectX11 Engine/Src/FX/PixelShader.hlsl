@@ -6,7 +6,7 @@ struct PixelShaderInput
 
 struct PixelShaderOutput
 {
-	float4 color	: SV_Target3;
+	float4 color	: SV_Target0;
 };
 
 PixelShaderOutput PS(PixelShaderInput pIn)
