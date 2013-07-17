@@ -77,7 +77,7 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		squares.push(firstSquare);
 
 	int slicesToMake = numberOfSegments;
-	int x = 0;
+	float loopsMade = 7;
 	while(true)
 	{
 		if(squares.empty() && diamonds.empty())
@@ -86,11 +86,14 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		while(!squares.empty())
 			DiamondStep(squares.front().BL, slicesToMake, smoothingFactor, _vertices);
 
-		smoothingFactor -= _smoothingFactor / runThroughs;
-
 		while(!diamonds.empty())
 			SquareStep(diamonds.front().centerPoint, slicesToMake, smoothingFactor, _vertices);
 
+		float removeValue = pow((loopsMade  / runThroughs), 3) * _smoothingFactor; 
+		smoothingFactor = removeValue;
+
+		//smoothingFactor -= _smoothingFactor / runThroughs;
+		loopsMade --;
 		slicesToMake = slicesToMake / 2;
 	}
 
