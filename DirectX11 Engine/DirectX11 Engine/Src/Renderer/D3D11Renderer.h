@@ -2,6 +2,7 @@
 #define D3D11RENDERER_H
 
 #include "../Game/Definitions.h"
+#include <atlbase.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <dxgi.h>
@@ -29,20 +30,20 @@ public:
 	static char videoCardDescription[128];
 
 	static HWND hwnd;
-	static ID3D11Device* d3dDevice;
-	static ID3D11DeviceContext* d3dImmediateContext;
-	static IDXGISwapChain* swapChain;
-	static ID3D11Texture2D* renderTextures[7];
-	static ID3D11RenderTargetView* renderTargetView[8];
-	static ID3D11ShaderResourceView* shaderResourceView[8];
-	static ID3D11Texture2D* depthStencilBuffer;
-	static ID3D11DepthStencilState* depthStencilState;
-	static ID3D11DepthStencilView* depthStencilView;
-	static ID3D11DepthStencilView* orthoDepthStencilView;
-	static ID3D11DepthStencilState* orthoDepthStencilState;
-	static ID3D11RasterizerState* rasterStateNoCulling;
-	static ID3D11RasterizerState* rasterStateBackfaceCulling;
-	static ID3D11BlendState* blendState;
+	static CComPtr<ID3D11Device> d3dDevice;
+	static CComPtr<ID3D11DeviceContext> d3dImmediateContext;
+	static CComPtr<IDXGISwapChain> swapChain;
+	static CComPtr<ID3D11Texture2D> renderTextures[7];
+	static CComPtr<ID3D11RenderTargetView> renderTargetView[8];
+	static CComPtr<ID3D11ShaderResourceView> shaderResourceView[8];
+	static CComPtr<ID3D11Texture2D> depthStencilBuffer;
+	static CComPtr<ID3D11DepthStencilState> depthStencilState;
+	static CComPtr<ID3D11DepthStencilView> depthStencilView;
+	static CComPtr<ID3D11DepthStencilView> orthoDepthStencilView;
+	static CComPtr<ID3D11DepthStencilState> orthoDepthStencilState;
+	static CComPtr<ID3D11RasterizerState> rasterStateNoCulling;
+	static CComPtr<ID3D11RasterizerState> rasterStateBackfaceCulling;
+	static CComPtr<ID3D11BlendState> blendState;
 	static D3D11_VIEWPORT viewport;
 	
 	static D3D_FEATURE_LEVEL supportedFeatureLevel;

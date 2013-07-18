@@ -30,10 +30,8 @@ public:
 	TerrainGenerator(const TerrainGenerator&){};
 	~TerrainGenerator();
 
-	static void CreateTerrain(float _width, float _height, int _numberOfSegments, float _smoothingFactor, XMFLOAT3 _centerPoint, vector<XMFLOAT3>& _vertices, vector<unsigned long>& _indices);
-	static void SquareStep(int _TL, int _TR, int _BL, int _BR, float _smoothingFactor, vector<XMFLOAT3>& _vertices);
+	static void CreateTerrain(TerrainDescription _terrainDescription, vector<XMFLOAT3>& _vertices, vector<unsigned long>& _indices);
 	static void SquareStep(int _centerPoint, int _width, float _smoothingFactor, vector<XMFLOAT3>& _vertices);
-	static void DiamondStep(int _TL, int _TR, int _BL, int _BR, int _centerPoint, float _smoothingFactor, vector<XMFLOAT3>& _vertices);
 	static void DiamondStep(int _BL, int _width, float _smoothingFactor, vector<XMFLOAT3>& _vertices);
 
 	static void CreateIndexList(vector<unsigned long>& _indices);

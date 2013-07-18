@@ -8,6 +8,7 @@ float			TerrainGenerator::width;
 float			TerrainGenerator::height;
 int				TerrainGenerator::numberOfSegments;
 float			TerrainGenerator::smoothingFactor;
+XMFLOAT3		TerrainGenerator::centerPoint;
 queue<Square>	TerrainGenerator::squares;
 queue<Diamond>	TerrainGenerator::diamonds;
 
@@ -21,7 +22,7 @@ TerrainGenerator::~TerrainGenerator()
 
 }
 
-void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfSegments, float _smoothingFactor, XMFLOAT3 _centerPoint, vector<XMFLOAT3>& _vertices, vector<unsigned long>& _indices)
+void TerrainGenerator::CreateTerrain(TerrainDescription _terrainDescription, vector<XMFLOAT3>& _vertices, vector<unsigned long>& _indices)
 {
 	//NUMBER OF SEGMENTS IS PER SIDE
 	
@@ -36,34 +37,35 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 
 	int runThroughs = 1;
 	int number = 1;
-	while(number != _numberOfSegments)
+	while(number != _terrainDescription.numberOfSegments)
 	{
 		number *= 2;
 		runThroughs ++;
 	}
 
-	width = _width;
-	height = _height;
-	numberOfSegments = _numberOfSegments;
-	smoothingFactor = _smoothingFactor;
+	width = _terrainDescription.width;
+	height = _terrainDescription.height;
+	numberOfSegments = _terrainDescription.numberOfSegments;
+	smoothingFactor = _terrainDescription.smoothingFactor;
+	centerPoint = _terrainDescription.centerPoint;
 
 
-	int numVerts = (_numberOfSegments + 1) * (_numberOfSegments + 1);
+	int numVerts = (numberOfSegments + 1) * (numberOfSegments + 1);
 	_vertices.resize(numVerts);
 
-	for(int i = 0; i < _numberOfSegments + 1; ++i)
+	for(int i = 0; i < numberOfSegments + 1; ++i)
 	{
-		for(int j = 0; j < _numberOfSegments + 1; ++j)
+		for(int j = 0; j < numberOfSegments + 1; ++j)
 		{
-			int currentVert = i * (_numberOfSegments + 1) + j;
-			_vertices[currentVert] = XMFLOAT3((_centerPoint.x - (_width / 2.0f)) + j * (_width / _numberOfSegments), _centerPoint.y, (_centerPoint.z - (_height / 2.0f)) + i * (_height / _numberOfSegments));
+			int currentVert = i * (numberOfSegments + 1) + j;
+			_vertices[currentVert] = XMFLOAT3((_terrainDescription.centerPoint.x - (width / 2.0f)) + j * (width / numberOfSegments), centerPoint.y, (centerPoint.z - (height / 2.0f)) + i * (height / numberOfSegments));
 		}
 	}
 
-	int TL = _numberOfSegments * (_numberOfSegments + 1);
-	int TR = TL + _numberOfSegments;
+	int TL = numberOfSegments * (numberOfSegments + 1);
+	int TR = TL + numberOfSegments;
 	int BL = 0;
-	int BR = _numberOfSegments;
+	int BR = numberOfSegments;
 
 	_vertices[TL].y = 0;
 	_vertices[TR].y = 0;
@@ -89,7 +91,7 @@ void TerrainGenerator::CreateTerrain(float _width, float _height, int _numberOfS
 		while(!diamonds.empty())
 			SquareStep(diamonds.front().centerPoint, slicesToMake, smoothingFactor, _vertices);
 
-		float removeValue = pow((loopsMade  / runThroughs), 4) * _smoothingFactor; 
+		float removeValue = pow((loopsMade  / runThroughs), 4) * _terrainDescription.smoothingFactor; 
 		smoothingFactor = removeValue;
 
 		//smoothingFactor -= _smoothingFactor / runThroughs;

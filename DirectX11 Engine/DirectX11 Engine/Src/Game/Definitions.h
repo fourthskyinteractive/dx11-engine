@@ -62,6 +62,15 @@ struct ScreenInformation
 	static float orthoRatio;
 };
 
+struct TerrainDescription
+{
+	float width;
+	float height;
+	int numberOfSegments;
+	float smoothingFactor;
+	XMFLOAT3 centerPoint;
+};
+
 #pragma region INPUT LAYOUT STRUCTURES
 struct VertexType
 {

@@ -5,40 +5,42 @@
 
 #include <assert.h>
 
-HWND						D3D11Renderer::hwnd;
-ID3D11Device*				D3D11Renderer::d3dDevice = NULL;
-ID3D11DeviceContext*		D3D11Renderer::d3dImmediateContext = NULL;
-IDXGISwapChain*				D3D11Renderer::swapChain = NULL;
-ID3D11RenderTargetView*		D3D11Renderer::renderTargetView[8];
-ID3D11ShaderResourceView*	D3D11Renderer::shaderResourceView[8];
-D3D11_VIEWPORT				D3D11Renderer::viewport;
-ID3D11Texture2D*			D3D11Renderer::depthStencilBuffer = NULL;
-ID3D11DepthStencilView*		D3D11Renderer::depthStencilView = NULL;
-ID3D11DepthStencilView*		D3D11Renderer::orthoDepthStencilView = NULL;
-ID3D11DepthStencilState*	D3D11Renderer::depthStencilState = NULL;
-ID3D11DepthStencilState*	D3D11Renderer::orthoDepthStencilState = NULL;
-ID3D11RasterizerState*		D3D11Renderer::rasterStateBackfaceCulling = NULL;
-ID3D11RasterizerState*		D3D11Renderer::rasterStateNoCulling = NULL;
-ID3D11BlendState*			D3D11Renderer::blendState = NULL;
-ID3D11Texture2D*			D3D11Renderer::renderTextures[7];
+HWND								D3D11Renderer::hwnd;
+CComPtr<ID3D11Device>				D3D11Renderer::d3dDevice = NULL;
+CComPtr<ID3D11DeviceContext>		D3D11Renderer::d3dImmediateContext = NULL;
+CComPtr<IDXGISwapChain>				D3D11Renderer::swapChain = NULL;
+CComPtr<ID3D11RenderTargetView>		D3D11Renderer::renderTargetView[8];
+CComPtr<ID3D11ShaderResourceView>	D3D11Renderer::shaderResourceView[8];
 
-bool						D3D11Renderer::vsyncEnabled = false;
-int							D3D11Renderer::videoCardMemory = 0;
-char						D3D11Renderer::videoCardDescription[128];
+CComPtr<ID3D11Texture2D>			D3D11Renderer::depthStencilBuffer = NULL;
+CComPtr<ID3D11DepthStencilView>		D3D11Renderer::depthStencilView = NULL;
+CComPtr<ID3D11DepthStencilView>		D3D11Renderer::orthoDepthStencilView = NULL;
+CComPtr<ID3D11DepthStencilState>	D3D11Renderer::depthStencilState = NULL;
+CComPtr<ID3D11DepthStencilState>	D3D11Renderer::orthoDepthStencilState = NULL;
+CComPtr<ID3D11RasterizerState>		D3D11Renderer::rasterStateBackfaceCulling = NULL;
+CComPtr<ID3D11RasterizerState>		D3D11Renderer::rasterStateNoCulling = NULL;
+CComPtr<ID3D11BlendState>			D3D11Renderer::blendState = NULL;
+CComPtr<ID3D11Texture2D>			D3D11Renderer::renderTextures[7];
 
-D3D_FEATURE_LEVEL			D3D11Renderer::supportedFeatureLevel;
+D3D11_VIEWPORT						D3D11Renderer::viewport;
+
+bool								D3D11Renderer::vsyncEnabled = false;
+int									D3D11Renderer::videoCardMemory = 0;
+char								D3D11Renderer::videoCardDescription[128];
+
+D3D_FEATURE_LEVEL					D3D11Renderer::supportedFeatureLevel;
 
 bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _horizontalRes, int _verticalRes, bool _msaa)
 {
 	HRESULT hr;
-	IDXGIFactory* factory;
-	IDXGIAdapter* adapter;
-	IDXGIOutput* adapterOutput;
+	CComPtr<IDXGIFactory> factory;
+	CComPtr<IDXGIAdapter> adapter;
+	CComPtr<IDXGIOutput> adapterOutput;
 	unsigned int numModes, i, numerator, denominator, stringLength;
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
 	int error;
-	ID3D11Texture2D* backBufferPtr;
+	CComPtr<ID3D11Texture2D> backBufferPtr;
 	D3D11_TEXTURE2D_DESC renderTextureDesc;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -131,17 +133,17 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	delete [] displayModeList;
 	displayModeList = 0;
 
-	// Release the adapter output.
-	adapterOutput->Release();
-	adapterOutput = 0;
-
-	// Release the adapter.
-	adapter->Release();
-	adapter = 0;
-
-	// Release the factory.
-	factory->Release();
-	factory = 0;
+// 	// Release the adapter output.
+// 	adapterOutput->Release();
+// 	adapterOutput = 0;
+// 
+// 	// Release the adapter.
+// 	adapter->Release();
+// 	adapter = 0;
+// 
+// 	// Release the factory.
+// 	factory->Release();
+// 	factory = 0;
 
 	hwnd = _hwnd;
 	UINT createDeviceFlags = 0;
@@ -218,13 +220,13 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags		= 0;
 
-	IDXGIDevice* dxgiDevice = NULL;
+	CComPtr<IDXGIDevice> dxgiDevice = NULL;
 	d3dDevice->QueryInterface(_uuidof(IDXGIDevice), (void**)&dxgiDevice);
 
-	IDXGIAdapter* dxgiAdapter = NULL;
+	CComPtr<IDXGIAdapter> dxgiAdapter = NULL;
 	dxgiDevice->GetParent(_uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
 
-	IDXGIFactory* dxgiFactory = NULL;
+	CComPtr<IDXGIFactory> dxgiFactory = NULL;
 	dxgiAdapter->GetParent(_uuidof(IDXGIFactory), (void**)&dxgiFactory);
 
 	//CREATE THE CHAIN SWAP
@@ -308,8 +310,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	}
 
 	// Release pointer to the back buffer as we no longer need it.
-	backBufferPtr->Release();
-	backBufferPtr = 0;
+// 	backBufferPtr->Release();
+// 	backBufferPtr = 0;
 
 	ZeroMemory(&renderTextureDesc, sizeof(renderTextureDesc));
 
@@ -565,43 +567,6 @@ void D3D11Renderer::TurnZBufferOff()
 		
 void D3D11Renderer::Shutdown()
 {
-	for(int i = 0; i < 7; ++i)
-	{
-		if(renderTextures[i])
-		{
-			ReleaseCOM(renderTextures[i]);
-		}
-	}
-	if(depthStencilView)
-	{
-		ReleaseCOM(depthStencilView);
-	}
-	if(depthStencilBuffer)
-	{
-		ReleaseCOM(depthStencilBuffer);
-	}
-	for(int i = 0; i < 8; ++i)
-	{
-		if(renderTargetView[i])
-		{
-			ReleaseCOM(renderTargetView[i]);
-		}
-		if(shaderResourceView[i])
-		{
-			ReleaseCOM(shaderResourceView[i]);
-		}
-	}
-
-	if(swapChain)
-	{
-		ReleaseCOM(swapChain);
-	}
-	if(d3dImmediateContext)
-	{
-		ReleaseCOM(d3dImmediateContext);
-	}
-	if(d3dDevice)
-	{
-		ReleaseCOM(d3dDevice);
-	}
+	//CComPtr's are the shizznit
+	//Nothing to see here!
 }
