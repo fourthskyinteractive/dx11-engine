@@ -22,8 +22,8 @@ private:
 
 	TerrainShader shaderUsed;
 
-	vector<XMFLOAT3*> lightVerts;
-	vector<unsigned long*> lightIndices;
+	vector<XMFLOAT3> verts;
+	vector<unsigned long> indices;
 
 	int vertexCount;
 	int indexCount;
@@ -36,7 +36,7 @@ public:
 	Terrain(const Terrain& _terrain);
 	~Terrain();
 
-	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView);
+	void Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView, TerrainDescription _terrainDescription);
 	void InitializeBuffers();
 	void SetShaderBuffers();
 	void ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView);

@@ -341,8 +341,17 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
+	1000.0f, 1000.0f, 512, 150.0f, XMFLOAT3(0.0f, -20.0f, 0.0f),
 	terrain = new Terrain();
-	terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL);
+
+	TerrainDescription terrainDescription;
+	terrainDescription.height = 1000.0f;
+	terrainDescription.width = 1000.0f;
+	terrainDescription.numberOfSegments = 512;
+	terrainDescription.smoothingFactor = 150.0f;
+	terrainDescription.centerPoint = XMFLOAT3(0.0f, -20.0f, 0.0f);
+
+	terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL, terrainDescription);
 
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");

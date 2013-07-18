@@ -23,13 +23,16 @@ Terrain::~Terrain()
 
 }
 
-void Terrain::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView)
+void Terrain::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView, TerrainDescription _terrainDescription)
 {
 	smallest = 0;
 	largest = 0;
 
 	renderTarget = _renderTargetView;
 	texture = _shaderResourceView;
+	
+	TerrainGenerator::CreateTerrain(_terrainDescription, verts, indices);
+
 	InitializeBuffers();
 	shaderUsed.Initialize(SIMPLE_VERTEX_SHADER, SIMPLE_PIXEL_SHADER, SIMPLE_GEOMETRY_SHADER);
 	shaderUsed.UpdatePixelShaderTextureConstants(texture);
@@ -37,11 +40,6 @@ void Terrain::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11Shader
 
 void Terrain::InitializeBuffers()
 {
-	vector<XMFLOAT3> verts;
-	vector<unsigned long> indices;
-
-	TerrainGenerator::CreateTerrain(1000.0f, 1000.0f, 512, 150.0f, XMFLOAT3(0.0f, -20.0f, 0.0f), verts, indices);
-
 	for(unsigned int i = 0; i < verts.size(); ++i)
 	{
 		if(verts[i].y < smallest)
