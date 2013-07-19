@@ -196,7 +196,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	//ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
 	sd.BufferDesc.Width						= _horizontalRes;
 	sd.BufferDesc.Height					= _verticalRes;
-	sd.BufferDesc.RefreshRate.Numerator		= 30;
+	sd.BufferDesc.RefreshRate.Numerator		= 60;
 	sd.BufferDesc.RefreshRate.Denominator	= 1;
 	sd.BufferDesc.Format					= DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -263,31 +263,6 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	
-// 	for(int i = 0; i < 8; ++i)
-// 	{
-// 		if(i == 0)
-// 		{
-// 			blendStateDescription.RenderTarget[i].BlendEnable = TRUE;
-// 			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-// 			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-// 			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-// 		}
-// 		else
-// 		{
-// 			blendStateDescription.RenderTarget[i].BlendEnable = FALSE;
-// 			blendStateDescription.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].DestBlend = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
-// 			blendStateDescription.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ONE;
-// 			blendStateDescription.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-// 			blendStateDescription.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-// 		}
-// 	}
 	D3D11Renderer::d3dDevice->CreateBlendState(&blendStateDescription, &blendState);
 
 	//d3dImmediateContext->OMSetBlendState(blendState, nullptr, 0xffffffff);
@@ -469,7 +444,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	rasterDesc.DepthClipEnable = true;
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.FrontCounterClockwise = true;
-	rasterDesc.MultisampleEnable = false;
+	rasterDesc.MultisampleEnable = true;
 	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
