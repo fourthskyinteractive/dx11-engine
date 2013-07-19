@@ -75,7 +75,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 300.0f, -500.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
@@ -83,7 +83,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 800, 600, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1024, 768, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -127,8 +127,8 @@ void Game::Render()
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	//mesh->UpdateWorldMatrix();
-	//mesh->Render();
+	mesh->UpdateWorldMatrix();
+	mesh->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 
 // 	for(unsigned int i = 0; i < pointLightPos.size(); ++i)
@@ -139,11 +139,11 @@ void Game::Render()
 // 		pointLight->Update(0.0f);
 // 		pointLight->Render();
 // 	}
-	terrain->Render();
+	//terrain->Render();
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
-	//lightPass->Render();
+	lightPass->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	//edgeDetectionPass->Render();
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
@@ -341,20 +341,19 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-	1000.0f, 1000.0f, 512, 150.0f, XMFLOAT3(0.0f, -20.0f, 0.0f),
-	terrain = new Terrain();
-
-	TerrainDescription terrainDescription;
-	terrainDescription.height = 1000.0f;
-	terrainDescription.width = 1000.0f;
-	terrainDescription.numberOfSegments = 512;
-	terrainDescription.smoothingFactor = 150.0f;
-	terrainDescription.centerPoint = XMFLOAT3(0.0f, -20.0f, 0.0f);
-
-	terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL, terrainDescription);
+	//terrain = new Terrain();
+	//
+	//TerrainDescription terrainDescription;
+	//terrainDescription.height = 1000.0f;
+	//terrainDescription.width = 1000.0f;
+	//terrainDescription.numberOfSegments = 512;
+	//terrainDescription.smoothingFactor = 150.0f;
+	//terrainDescription.centerPoint = XMFLOAT3(0.0f, -20.0f, 0.0f);
+	//
+	//terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL, terrainDescription);
 
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/graves.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(.10f, .10f, .10f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/graves.dds");
+	mesh->Initialize("Res/Models/BlueMinion.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/BlueMinion.dds");
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
@@ -370,11 +369,11 @@ void Game::InitializeLights()
 
 	//lights.push_back(newLight);
 
-	pointLight = new ParentMeshObject();
-	pointLight->Initialize("Res/Models/UnitSphere.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
+	//pointLight = new ParentMeshObject();
+	//pointLight->Initialize("Res/Models/UnitSphere.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
 
 
-	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.35f, .35f, .35f, 1.0f), true);
+	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f), true);
 	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), true);

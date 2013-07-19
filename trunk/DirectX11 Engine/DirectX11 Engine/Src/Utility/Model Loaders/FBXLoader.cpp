@@ -10,6 +10,7 @@ using namespace DirectX;
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <queue>
 using namespace std;
 
 bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _hasTexture)
@@ -66,7 +67,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		axisSystem.ConvertScene(scene);
 	}
 
-	//TriangulateRecursive(scene->GetRootNode());
+	TriangulateRecursive(scene->GetRootNode());
 
 	FbxArray<FbxMesh*> meshes;
 	FillMeshArray(scene, meshes);
@@ -76,11 +77,10 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 	unsigned short faceCount = 0;
 	unsigned short materialCount = 0;
 
-	
 	int numberOfVertices = 0;
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
-		numberOfVertices += meshes[i]->GetPolygonVertexCount();		
+		numberOfVertices += meshes[i]->GetPolygonVertexCount();
 	}
 	
 	
