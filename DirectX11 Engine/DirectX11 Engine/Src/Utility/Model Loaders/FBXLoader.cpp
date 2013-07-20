@@ -69,6 +69,66 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 
 	TriangulateRecursive(scene->GetRootNode());
 
+	//GETTING ANIMAION DATA
+	for(int i = 0; i < scene->GetSrcObjectCount<FbxAnimStack>(); ++i)
+	{
+		FbxAnimStack* lAnimStack = scene->GetSrcObject<FbxAnimStack>(i);
+
+		FbxString stackName = "Animation Stack Name: ";
+		stackName += lAnimStack->GetName();
+		string sStackName = stackName;
+
+// 		for(int i = 0; i < 100; ++i)
+// 		{
+// 			FbxTakeInfo* lTakeInfo = importer->GetTakeInfo(i);
+// 
+// 			FbxTime start = lTakeInfo->mLocalTimeSpan.GetStart();
+// 			FbxTime end = lTakeInfo->mLocalTimeSpan.GetStop();
+// 
+// 			int poopy = 0;
+// 		}
+
+		int numLayers = lAnimStack->GetMemberCount<FbxAnimLayer>();
+
+		for(int j = 0; j < numLayers; ++j)
+		{
+			FbxAnimLayer* lAnimLayer = lAnimStack->GetMember<FbxAnimLayer>(j);
+
+			FbxString layerName = "Animation Stack Name: ";
+			layerName += lAnimLayer->GetName();
+			string sLayerName = layerName;
+
+			queue<FbxNode*> nodes;
+
+			FbxNode* tempNode = scene->GetRootNode();
+
+			while(tempNode != NULL)
+			{
+				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+
+				if(lAnimCurve != NULL)
+				{
+					//I know something needs to be done here but I dont know what.
+				}
+
+				for(int i = 0; i < tempNode->GetChildCount(false); ++i)
+				{
+					nodes.push(tempNode->GetChild(i));
+				}
+
+				if(nodes.size() > 0)
+				{
+					tempNode = nodes.front();
+					nodes.pop();
+				}
+				else
+				{
+					tempNode = NULL;
+				}
+			}               
+		}       
+	}
+
 	FbxArray<FbxMesh*> meshes;
 	FillMeshArray(scene, meshes);
 
@@ -81,9 +141,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
 		numberOfVertices += meshes[i]->GetPolygonVertexCount();
-	}
-	
-	
+	}	
 
 	Face face;
 	vector<Face> faces;
@@ -132,7 +190,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 			vertices[index].normal.z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = (float)fbxUV[1];
+			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
 
 			face.indices[1] = index = meshes[i]->GetPolygonVertex(j, 1);
 			vertices[index].position.x = (float)fbxVerts[index][0];
@@ -145,7 +203,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 			vertices[index].normal.z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = (float)fbxUV[1];
+			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
 
 			face.indices[2] = index = meshes[i]->GetPolygonVertex(j, 2);
 			vertices[index].position.x = (float)fbxVerts[index][0];
@@ -158,7 +216,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 			vertices[index].normal.z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV);
 			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = (float)fbxUV[1];
+			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
 
 			faces.push_back(face);
 		}
