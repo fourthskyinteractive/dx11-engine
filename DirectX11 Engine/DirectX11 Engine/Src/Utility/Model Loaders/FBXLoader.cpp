@@ -69,6 +69,16 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 
 	TriangulateRecursive(scene->GetRootNode());
 
+	FbxAnimEvaluator* mySceneEvaluator = scene->GetEvaluator();
+
+	FbxTime myTime;
+
+	myTime.SetSecondDouble(1.0);
+
+	FbxNode* myMeshNode = FbxNode::Create(scene, "");
+
+	
+	static int numNodes = 0;
 	//GETTING ANIMAION DATA
 	for(int i = 0; i < scene->GetSrcObjectCount<FbxAnimStack>(); ++i)
 	{
@@ -77,16 +87,6 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		FbxString stackName = "Animation Stack Name: ";
 		stackName += lAnimStack->GetName();
 		string sStackName = stackName;
-
-// 		for(int i = 0; i < 100; ++i)
-// 		{
-// 			FbxTakeInfo* lTakeInfo = importer->GetTakeInfo(i);
-// 
-// 			FbxTime start = lTakeInfo->mLocalTimeSpan.GetStart();
-// 			FbxTime end = lTakeInfo->mLocalTimeSpan.GetStop();
-// 
-// 			int poopy = 0;
-// 		}
 
 		int numLayers = lAnimStack->GetMemberCount<FbxAnimLayer>();
 
@@ -98,22 +98,51 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 			layerName += lAnimLayer->GetName();
 			string sLayerName = layerName;
 
+			double weight = lAnimLayer->Weight;
+
 			queue<FbxNode*> nodes;
 
 			FbxNode* tempNode = scene->GetRootNode();
+			FbxString nodeName = "Animation Stack Name: ";
+			layerName += tempNode->GetName();
+			string sNodeName = layerName;
+
+			numNodes ++;
 
 			while(tempNode != NULL)
 			{
+
+				//THIS SHIT RIGHT HERE IS CLOSE NIGGEH
+				FbxString nodeName = "";
+				nodeName += tempNode->GetName();
+				string sNodeName = nodeName;
+
+				FbxNodeAttribute* nodeAttribute = tempNode->GetNodeAttribute();
+				
+				FbxNodeAttribute::EType attributeType;
+				if(nodeAttribute)
+					attributeType = nodeAttribute->GetAttributeType();
+
+				FbxMatrix globalMatrix = mySceneEvaluator->GetNodeLocalTransform(tempNode, myTime);
+				
+				FbxGeometry* nodeGeometry = tempNode->GetGeometry();
+
+				FbxGeometryWeightedMap* weightMap;
+				if(nodeGeometry)
+					 weightMap = nodeGeometry->GetSourceGeometryWeightedMap();
+
 				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
 
 				if(lAnimCurve != NULL)
 				{
-					//I know something needs to be done here but I dont know what.
+					
 				}
 
 				for(int i = 0; i < tempNode->GetChildCount(false); ++i)
 				{
 					nodes.push(tempNode->GetChild(i));
+					numNodes++;
+
 				}
 
 				if(nodes.size() > 0)
