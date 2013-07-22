@@ -120,6 +120,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 				FbxNodeAttribute* nodeAttribute = tempNode->GetNodeAttribute();
 				
 				FbxNodeAttribute::EType attributeType;
+
 				if(nodeAttribute)
 					attributeType = nodeAttribute->GetAttributeType();
 
