@@ -186,12 +186,12 @@ void BaseObject::SetWorldMatrix()
 	}
 
 	objectVariables.worldMatrix = mScale * mRotation * mTranslation;
-	objectVariables.worldMatrix = XMMatrixTranspose(objectVariables.worldMatrix);
+	objectVariables.worldMatrix = objectVariables.worldMatrix;
 }
 
 void BaseObject::SetConstantBuffer()
 {
-	XMStoreFloat4x4(&shaderVariables.constantBufferData.viewProjection, XMMatrixTranspose(Game::camera->GetViewProjectionMatrixM()));
+	XMStoreFloat4x4(&shaderVariables.constantBufferData.viewProjection, Game::camera->GetViewProjectionMatrixM());
 	XMStoreFloat4x4(&shaderVariables.constantBufferData.world, objectVariables.worldMatrix);
 }
 

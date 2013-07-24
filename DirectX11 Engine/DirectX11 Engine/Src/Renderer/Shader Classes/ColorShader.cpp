@@ -129,8 +129,8 @@ bool ColorShader::UpdateShaderConstants(XMFLOAT4X4 _worldMatrix,
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType constantBufferData;
-	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
-	XMMATRIX mViewProjection = XMMatrixTranspose(XMLoadFloat4x4(&_viewProjMatrix));
+	XMMATRIX mWorld = XMLoadFloat4x4(&_worldMatrix);
+	XMMATRIX mViewProjection = XMLoadFloat4x4(&_viewProjMatrix);
 
 	XMStoreFloat4x4(&constantBufferData.world, mWorld);
 	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);
