@@ -193,8 +193,8 @@ bool ObjectShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4
 	MatrixBufferType constantBufferData;
 	unsigned int bufferNumber;
 
-	XMMATRIX mWorld = XMMatrixTranspose(XMLoadFloat4x4(&_worldMatrix));
-	XMMATRIX mViewProjection = XMMatrixTranspose(XMLoadFloat4x4(&_viewProjMatrix));
+	XMMATRIX mWorld = XMLoadFloat4x4(&_worldMatrix);
+	XMMATRIX mViewProjection = XMLoadFloat4x4(&_viewProjMatrix);
 
 	XMStoreFloat4x4(&constantBufferData.world, mWorld);
 	XMStoreFloat4x4(&constantBufferData.viewProjection, mViewProjection);

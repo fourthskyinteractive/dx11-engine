@@ -76,7 +76,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.y = 0;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(XMConvertToRadians(55), (800.0f / 600.0f), 0.1f, 10000.0f);
+	camera->SetLens(XMConvertToRadians(55), (1024.0f / 768.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
@@ -267,7 +267,7 @@ void Game::Input(float _deltaTime)
 		isRunning = false;
 	}
 
-	XMStoreFloat4x4(&constantBufferData.viewProjection, XMMatrixTranspose(camera->GetViewProjectionMatrixM()));
+	XMStoreFloat4x4(&constantBufferData.viewProjection, camera->GetViewProjectionMatrixM());
 }
 
 void Game::Exit()
@@ -353,7 +353,7 @@ void Game::InitializeObjects()
 	//terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL, terrainDescription);
 
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/BlueMinion.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/BlueMinion.dds");
+	mesh->Initialize("Res/Models/BlueMinion.fbx", XMFLOAT3(0.0f, 0.0f, 200.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/BlueMinion.dds");
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);

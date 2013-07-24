@@ -1,3 +1,5 @@
+#pragma pack_matrix(row_major)
+
 cbuffer cbPerObject : register(cb0)
 {
 	float4x4 world;

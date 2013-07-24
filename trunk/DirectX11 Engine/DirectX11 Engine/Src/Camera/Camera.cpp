@@ -126,7 +126,7 @@ void Camera::SetLens(float _fovY, float _aspectRatio, float _zNear, float _zFar)
 
 	XMMATRIX proj;
 
-	proj = XMMatrixPerspectiveFovRH(_fovY, _aspectRatio, _zNear, _zFar);
+	proj = XMMatrixPerspectiveFovLH(_fovY, _aspectRatio, _zNear, _zFar);
 	XMStoreFloat4x4(&projection, proj);
 }
 
@@ -228,13 +228,13 @@ void Camera::UpdateViewMatrix()
 	L = XMVector3Normalize(L);
 
 	//Compute a new corrected "up" vector and normalize it
-	R = XMVector3Normalize(XMVector3Cross(L, U));
+	R = XMVector3Normalize(XMVector3Cross(U, L));
 
 	//Compute a new corrected "Up" vector, U and L are already normalized so there
 	//is no reason to normalize the cross product
-	//U = XMVector3Cross(R, L);
+	U = XMVector3Cross(L, R);
 
-	XMMATRIX mView = XMMatrixLookAtRH(P, L + P, U);
+	XMMATRIX mView = XMMatrixLookAtLH(P, P + L, U);
 
 	XMStoreFloat4x4(&view, mView);
 }
