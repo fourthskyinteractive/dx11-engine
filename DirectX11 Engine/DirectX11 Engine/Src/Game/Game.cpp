@@ -76,14 +76,14 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.y = 0;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(XMConvertToRadians(55), (1024.0f / 768.0f), 0.1f, 10000.0f);
+	camera->SetLens(XMConvertToRadians(50), (1366.0f / 768.0f), 0.1f, 10000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1024, 768, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1366, 768, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -183,17 +183,25 @@ void Game::Input(float _deltaTime)
 	}
 	if(directInput->IsKeyPressed(DIK_A))
 	{
-		camera->Strafe(50.0f * _deltaTime); 
+		camera->Strafe(-50.0f * _deltaTime); 
 	}
 	if(directInput->IsKeyPressed(DIK_D))
 	{
-		camera->Strafe(-50.0f * _deltaTime); 
+		camera->Strafe(50.0f * _deltaTime); 
 	}
 
 	if(directInput->IsKeyPressed(DIK_B))
 	{
 		D3D11Renderer::BackfaceCulling(!backfaceCulling);
 		backfaceCulling = !backfaceCulling;
+	}
+	if(directInput->IsKeyPressed(DIK_SPACE))
+	{
+		camera->Raise(50.0f * _deltaTime);
+	}
+	if(directInput->IsKeyPressed(DIK_LCONTROL))
+	{
+		camera->Raise(-50.0f * _deltaTime); 
 	}
 
 // 	if(directInput->IsKeyPressed(DIK_M))
@@ -250,7 +258,7 @@ void Game::Input(float _deltaTime)
 
 		if(deltaX != 0)
 		{
-			camera->Yaw((-deltaX * rotationScale) * _deltaTime);
+			camera->Yaw((deltaX * rotationScale) * _deltaTime);
 		}
 
 		if(deltaY != 0)
@@ -353,7 +361,7 @@ void Game::InitializeObjects()
 	//terrain->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], NULL, terrainDescription);
 
 	mesh = new ParentMeshObject();
-	mesh->Initialize("Res/Models/BlueMinion.fbx", XMFLOAT3(0.0f, 0.0f, 200.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/BlueMinion.dds");
+	mesh->Initialize("Res/Models/BlueMinion.fbx", XMFLOAT3(0.0f, 0.0f, 200.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/BlueMinion.dds");
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);

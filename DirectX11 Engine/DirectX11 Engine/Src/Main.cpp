@@ -164,7 +164,7 @@ void InitializeApplication()
 {
 	srand((unsigned int)time(0));
 	//Load from .ini all configuration data
-	int baseScreenWidth = 1024;
+	int baseScreenWidth = 1366;
 	int baseScreenHeight = 768;
 
 	char line[256];
@@ -355,7 +355,7 @@ void InitializeWindow()
 
 	RegisterClassEx(&wc);
 
-	screenWidth = 1024;
+	screenWidth = 1366;
 	screenHeight = 768;
 
 	if(fullscreen)

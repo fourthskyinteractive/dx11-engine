@@ -15,6 +15,7 @@ using namespace std;
 
 bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _hasTexture)
 {
+	int axisFlip = 0;
 	FbxManager* fbxManager = FbxManager::Create();
 	if(!fbxManager)
 	{
@@ -64,6 +65,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 
 	if(sceneAxisSystem != axisSystem)
 	{
+		axisFlip = 1;
 		axisSystem.ConvertScene(scene);
 	}
 
@@ -259,8 +261,8 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		int indicie = 0;
 		for(unsigned int i = 0; i < faces.size(); ++i)
 		{
-			indices[indicie++] = faces[i].indices[0];
-			indices[indicie++] = faces[i].indices[1];
+			indices[indicie++] = faces[i].indices[0 + axisFlip];
+			indices[indicie++] = faces[i].indices[1 - axisFlip];
 			indices[indicie++] = faces[i].indices[2];
 		}
 		faces.clear();
