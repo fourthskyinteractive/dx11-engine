@@ -12,6 +12,21 @@ public:
 	Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right);
 	~Camera();
 
+
+	/////////////////////////////////////////// NEW CAMERA CODE USING A SINGLE MATRIX/////////////////////////////////////////
+
+ 	//Camera(const XMFLOAT4X4& camMatrix);
+// 
+// 	XMMATRIX GetPositionMatrixXM() const;
+// 	XMMATRIX SetPosition(const XMMATRIX& _m);
+// 	
+// 	XMMATRIX GetRightMatrixXM() const;
+// 	XMMATRIX GetUpMatrixXM() const;
+// 	XMMATRIX GetLookMatrixXM() const;
+// 
+// 	void LookAtMatrix(XMMATRIX _CameraPos, XMMATRIX _targetPos);
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	XMVECTOR GetPositionXM() const;
 	XMFLOAT3 GetPosition() const;
 
@@ -34,7 +49,7 @@ public:
 	float GetFovY() const;	
 	float GetFovX() const;
 
-	//Get the near and far plane dimensions inview space coordinates
+	//Get the near and far plane dimensions in-view space coordinates
 	float GetNearWindowWidth() const;
 	float GetNearWindowHeight() const;
 	float GetFarWindowWidth() const;
@@ -47,6 +62,7 @@ public:
 	void LookAt(FXMVECTOR _cameraPos, FXMVECTOR _targetPos, FXMVECTOR _worldUp);
 	void LookAt(const XMFLOAT3& _cameraPos, const XMFLOAT3& _targetPos, const XMFLOAT3& _worldUp);
 
+
 	//Get View/Projection matrices
 	XMMATRIX GetViewMatrixM() const;
 	XMMATRIX GetProjectionMatrixM() const;
@@ -58,6 +74,7 @@ public:
 	//Strafe/Walk the camera a distance _d
 	void Strafe(float _d);
 	void Walk(float _d);
+	void Raise(float _d);
 
 	//Rotate the camera an _angle
 	void Pitch(float _angleDegrees);
@@ -71,10 +88,11 @@ public:
 private:
 	
 	//Camera coordinate system with coordinates relative to world space
-	XMFLOAT3 position;
-	XMFLOAT3 right;
-	XMFLOAT3 up;
-	XMFLOAT3 look;
+	//XMFLOAT3 position;
+	//XMFLOAT3 right;
+	//XMFLOAT3 up;
+	//XMFLOAT3 look;
+	//XMFLOAT4X4 view;
 
 	//Frustum Properties
 	float nearZ;
