@@ -287,7 +287,7 @@ void Camera::Raise(float _d)
 
 void Camera::Pitch(float _angleDegrees)
 {
-	XMMATRIX R = XMMatrixRotationAxis(GetRightXM(), XMConvertToRadians(_angleDegrees));
+	XMMATRIX R = XMMatrixRotationX(XMConvertToRadians(_angleDegrees));
 	
 	XMMATRIX cam;
 
@@ -325,7 +325,7 @@ void Camera::Yaw(float _angleDegrees)
 
 void Camera::Roll(float _angleDegrees)
 {
-	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&GetLook()), XMConvertToRadians(_angleDegrees));
+	XMMATRIX R = XMMatrixRotationZ(XMConvertToRadians(_angleDegrees));
 	
 	XMMATRIX cam;
 

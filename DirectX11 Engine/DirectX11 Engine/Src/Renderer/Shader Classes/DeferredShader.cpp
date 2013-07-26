@@ -191,20 +191,22 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 	{
 		constantBufferData.lightType.x = 1.0f;
 
-		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetPointLight(lightIndex)->GetLightColorF().x, 
+		constantBufferData.lightColor = XMFLOAT4(	LightManager::GetPointLight(lightIndex)->GetLightColorF().x, 
 													LightManager::GetPointLight(lightIndex)->GetLightColorF().y, 
-													LightManager::GetPointLight(lightIndex)->GetLightColorF().z);
+													LightManager::GetPointLight(lightIndex)->GetLightColorF().z, 0.0f);
 
-		constantBufferData.lightDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		constantBufferData.lightDirection = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
-		constantBufferData.lightPos = LightManager::GetPointLight(lightIndex)->GetLightPositionF();
+		constantBufferData.lightPos = XMFLOAT4(		LightManager::GetPointLight(lightIndex)->GetLightPositionF().x,
+													LightManager::GetPointLight(lightIndex)->GetLightPositionF().y,
+													LightManager::GetPointLight(lightIndex)->GetLightPositionF().z, 0.0f);
 
 		constantBufferData.lightRange = XMFLOAT4(	LightManager::GetPointLight(lightIndex)->GetLightRadius(),
 													LightManager::GetPointLight(lightIndex)->GetLightRadius(),
 													LightManager::GetPointLight(lightIndex)->GetLightRadius(),
 													LightManager::GetPointLight(lightIndex)->GetLightRadius());
 		
-		constantBufferData.spotlightAngles = XMFLOAT2(0.0f, 0.0f);
+		constantBufferData.spotlightAngles = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	else if(_lightType == SPOT_LIGHT)
 	{
@@ -214,31 +216,35 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 	{
 		constantBufferData.lightType.z = 1.0f;
 
-		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().x, 
+		constantBufferData.lightColor = XMFLOAT4(	LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().x, 
 													LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().y, 
-													LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().z);
+													LightManager::GetDirectionalLight(lightIndex)->GetLightColorF().z, 0.0f);
 
-		constantBufferData.lightDirection = LightManager::GetDirectionalLight(lightIndex)->GetLightDirectionF();
+		constantBufferData.lightDirection = XMFLOAT4(	LightManager::GetDirectionalLight(lightIndex)->GetLightDirectionF().x,
+														LightManager::GetDirectionalLight(lightIndex)->GetLightDirectionF().y,
+														LightManager::GetDirectionalLight(lightIndex)->GetLightDirectionF().z, 0.0f);
 
-		constantBufferData.lightPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		constantBufferData.lightPos = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 		constantBufferData.lightRange = XMFLOAT4(0,	0, 0, 0);
 
-		constantBufferData.spotlightAngles = XMFLOAT2(0.0f, 0.0f);
+		constantBufferData.spotlightAngles = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	else if(_lightType == AMBIENT_LIGHT)
 	{
 		constantBufferData.lightType.w = 1.0f;
-		constantBufferData.lightColor = XMFLOAT3(	LightManager::GetAmbientLight()->GetLightColorF().x, 
+		constantBufferData.lightColor = XMFLOAT4(	LightManager::GetAmbientLight()->GetLightColorF().x, 
 													LightManager::GetAmbientLight()->GetLightColorF().y, 
-													LightManager::GetAmbientLight()->GetLightColorF().z);
+													LightManager::GetAmbientLight()->GetLightColorF().z, 0.0f);
 	}
 	else
 	{
 		return false;
 	}
 
-	constantBufferData.cameraPos = Game::camera->GetPosition();
+	constantBufferData.cameraPos = XMFLOAT4(	Game::camera->GetPosition().x, 
+												Game::camera->GetPosition().y,
+												Game::camera->GetPosition().z, 0.0f);
 
 	hr = D3D11Renderer::d3dImmediateContext->Map(pixelConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 

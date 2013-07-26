@@ -19,13 +19,13 @@ private:
 
 	struct CombinePixelShaderBufferType
 	{
-		XMFLOAT4 __declspec(align(16)) lightType;
-		XMFLOAT3 __declspec(align(16)) lightPos;
-		XMFLOAT3 __declspec(align(16)) lightColor;
-		XMFLOAT3 __declspec(align(16)) lightDirection;
-		XMFLOAT2 __declspec(align(16)) spotlightAngles;
-		XMFLOAT4 __declspec(align(16)) lightRange;
-		XMFLOAT3 __declspec(align(16)) cameraPos;
+		XMFLOAT4 lightType;
+		XMFLOAT4 lightPos;
+		XMFLOAT4 lightColor;
+		XMFLOAT4 lightDirection;
+		XMFLOAT4 spotlightAngles;
+		XMFLOAT4 lightRange;
+		XMFLOAT4 cameraPos;
 	};
 
 public:
