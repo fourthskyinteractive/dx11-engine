@@ -9,12 +9,12 @@ cbuffer LightandCameraParams
 {
 	//(POINT LIGHT, SPOT LIGHT, DIRECTIONAL LIGHT, AMBIENT LIGHT)
 	float4 lightType;
-	float3 lightPos;
-	float3 lightColor;
-	float3 lightDirection;
-	float2 spotlightAngles;
+	float4 lightPos;
+	float4 lightColor;
+	float4 lightDirection;
+	float4 spotlightAngles;
 	float4 lightRange;
-	float3 cameraPos;
+	float4 cameraPos;
 };
 
 //TYPEDEFS
@@ -44,7 +44,7 @@ void GetGBufferAttributes(in float2 screenPos, out float3 normal,
 	float4 spec = specularAlbedoTexture.Load(sampleIndices);
 
 	//specularAlbedo = (lightColor * 0.5f);
-	specularAlbedo = ((lightColor * diffuseAlbedo) *  0.5f);;
+	specularAlbedo = ((lightColor.xyz * diffuseAlbedo) *  0.5f);;
 	specularPower = spec.w;
 }
 
@@ -81,13 +81,13 @@ float3 CalculateLighting(in float3 normal,
 	//Ambient Light
 	if(lightType.w == 1.0f)
 	{
-		return lightColor;
+		return lightColor.xyz;
 	}
 
 	//If point light or spot light
  	if(lightType.x == 1.0f || lightType.y == 1.0f)
 	{
- 		L = lightPos - position;
+ 		L = lightPos.xyz - position;
 		float dist = length(L);
 		attenuation = max(0, 1.0f - (dist / lightRange.x));
 		L /= dist;
@@ -95,7 +95,7 @@ float3 CalculateLighting(in float3 normal,
 	//If directional light
 	else if(lightType.z == 1.0f)
 	{
-		L = -lightDirection;
+		L = -lightDirection.xyz;
 	}
 	else
 	{
@@ -104,22 +104,22 @@ float3 CalculateLighting(in float3 normal,
 	//If spot light
 	if(lightType.y == 1.0f)
 	{
-		float3 L2 = lightDirection;
+		float3 L2 = lightDirection.xyz;
 		float rho = dot(-L, L2);
 		attenuation *= saturate((rho - spotlightAngles.y) /
 								(spotlightAngles.x - spotlightAngles.y));
 	}
 
 	float nDotL = saturate(dot(normal, L));
-	float3 diffuse = nDotL * lightColor * diffuseAlbedo;
+	float3 diffuse = nDotL * lightColor.xyz * diffuseAlbedo;
 
 	//Calculate the speculat term
-	float3 V = cameraPos - position;
+	float3 V = cameraPos.xyz - position;
 	float3 H = normalize(L + V);
 	float specNormalizationFactor = ((specularPower + 8.0f) / ( 8.0f * 3.14159265f));
 
 	float3 specular = pow(saturate(dot(normal, H)), specularPower)
-							* specNormalizationFactor * lightColor * specularAlbedo.xyz * nDotL;
+							* specNormalizationFactor * lightColor.xyz * specularAlbedo.xyz * nDotL;
 
 	//Final value is the sum of the albedo and diffuse with attenuation applied.
 	return(diffuse + specular) * attenuation;
