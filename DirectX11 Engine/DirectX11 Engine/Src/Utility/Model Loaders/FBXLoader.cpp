@@ -86,6 +86,12 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 	{
 		FbxAnimStack* lAnimStack = scene->GetSrcObject<FbxAnimStack>(i);
 
+		//WITH THIS I CAN GET THE TOTAL TIME OF THE ANIMATION!!!!!
+		//FINALLY!!!!!
+
+		double secondsTime = ((FbxTime)lAnimStack->LocalStart).GetSecondDouble();
+		secondsTime = ((FbxTime)lAnimStack->LocalStop).GetSecondDouble();
+
 		FbxString stackName = "Animation Stack Name: ";
 		stackName += lAnimStack->GetName();
 		string sStackName = stackName;
