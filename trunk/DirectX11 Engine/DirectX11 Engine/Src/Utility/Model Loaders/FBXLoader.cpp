@@ -132,6 +132,14 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 				if(nodeAttribute)
 					attributeType = nodeAttribute->GetAttributeType();
 
+				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer);			
+
+				if(lAnimCurve != NULL)
+				{
+					nodeName = "";
+					nodeName += lAnimCurve->GetName();
+					sNodeName = nodeName;
+				}
 				FbxMatrix globalMatrix = mySceneEvaluator->GetNodeLocalTransform(tempNode, myTime);
 				
 				FbxGeometry* nodeGeometry = tempNode->GetGeometry();
@@ -140,7 +148,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 				if(nodeGeometry)
 					 weightMap = nodeGeometry->GetSourceGeometryWeightedMap();
 
-				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+				//FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
 
 				if(lAnimCurve != NULL)
 				{
@@ -210,7 +218,7 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		FbxVector4* fbxVerts = new FbxVector4[vertexCount];
 		int arrayIndex = 0;
 		memcpy(fbxVerts, meshes[i]->GetControlPoints(), vertexCount * sizeof(FbxVector4));
-
+		int poopy = 0;
 		for(int j = 0; j < triangleCount; ++j)
 		{
 			int index = 0;
