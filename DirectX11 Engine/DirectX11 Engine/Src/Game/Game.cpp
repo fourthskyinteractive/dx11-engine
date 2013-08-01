@@ -103,21 +103,6 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 void Game::Run()
 {
-	//y = a(1 - r)^t
-	//
-	//a = initial amount
-	//r = decay rate
-	//(1 - r) = decay factor
-	//t = time, or time since starting time
-
-	float y = 0;
-	float a = 100;
-	float r = 1.0f/8.0f;
-	static float t = 0;
-
-	y = a * pow((1 - r), t);
-
-	t ++;
 	Update();
 	Render();
 }
@@ -125,6 +110,8 @@ void Game::Run()
 void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
+
+	D3D11Renderer::d3dImmediateContext->OMSetBlendState(NULL, 0, 0xffffffff);
 
 	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
 	mesh->UpdateWorldMatrix();
