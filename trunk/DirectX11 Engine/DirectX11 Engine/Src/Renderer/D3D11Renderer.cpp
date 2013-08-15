@@ -193,14 +193,14 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	assert(m4xMsaaQuality > 0);
 
 	DXGI_SWAP_CHAIN_DESC sd;
-	//ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
+	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
 	sd.BufferDesc.Width						= _horizontalRes;
 	sd.BufferDesc.Height					= _verticalRes;
-	sd.BufferDesc.RefreshRate.Numerator		= 60;
-	sd.BufferDesc.RefreshRate.Denominator	= 1;
+	//sd.BufferDesc.RefreshRate.Numerator		= 60;
+	//sd.BufferDesc.RefreshRate.Denominator	= 1;
 	sd.BufferDesc.Format					= DXGI_FORMAT_B8G8R8A8_UNORM;
-	sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
+	//sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	//sd.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
 
 	if(_msaa)
 	{
@@ -217,8 +217,8 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	sd.BufferCount	= 1;
 	sd.OutputWindow = hwnd;
 	sd.Windowed		= _fullscreen;
-	sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags		= 0;
+	//sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
+	//sd.Flags		= 0;
 
 	CComPtr<IDXGIDevice> dxgiDevice = NULL;
 	d3dDevice->QueryInterface(_uuidof(IDXGIDevice), (void**)&dxgiDevice);

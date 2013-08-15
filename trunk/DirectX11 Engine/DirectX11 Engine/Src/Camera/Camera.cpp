@@ -296,8 +296,6 @@ void Camera::Pitch(float _angleDegrees)
 	cam = XMMatrixMultiply(R, cam);
 
 	XMStoreFloat4x4(&view, cam);
-
-	UpdateViewMatrix();
 }
 
 void Camera::Yaw(float _angleDegrees)

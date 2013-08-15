@@ -34,3 +34,10 @@ Blend States - 		Blend states allow you to either have a different blend state f
 			If you aren't binding all the render targets (Ex: OMSetRenderTargets(7, &renderTargets[1], depthStencilBuffer);)
 			the blendstate[0] will coorespond to the first renderTarget at the address that you bound from.
 			Ex: renderTarget[1] will be blended using blendState[0].
+
+Vertex Buffer Array -	Make an array of Vertex Buffers.  When you set the vertex buffer know that you are using an array
+			and make sure that the parameter passed to that function matches the number of buffers in the array.
+
+Shader In's - 		You can pass information to the shaders via a structure or through the paramater list in its main.  Know
+			that if you pass by parameter, the shader will disreguard any information following what it expects
+			to receive. 

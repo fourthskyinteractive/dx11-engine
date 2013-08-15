@@ -50,6 +50,7 @@ private:
 	static vector<XMFLOAT3> pointLightPos;
 	static ParentMeshObject* mesh;
 	static ScreenSpaceObject* lightPass;
+	static ScreenSpaceObject* skyBox;
 	static ScreenSpaceObject* edgeDetectionPass;
 
 	static Timer timer;

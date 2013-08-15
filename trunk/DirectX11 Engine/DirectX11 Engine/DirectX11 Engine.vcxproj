@@ -101,6 +101,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp" />
+    <ClCompile Include="Src\Renderer\Shader Classes\SkyboxShader.cpp" />
     <ClCompile Include="Src\Renderer\Shader Classes\TerrainShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h" />
+    <ClInclude Include="Src\Renderer\Shader Classes\SkyboxShader.h" />
     <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
@@ -289,6 +291,18 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS</EntryPointName>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\FX\SkyboxGeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">GS</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Src\FX\SkyboxPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS</EntryPointName>
     </FxCompile>
     <FxCompile Include="Src\FX\TexturePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

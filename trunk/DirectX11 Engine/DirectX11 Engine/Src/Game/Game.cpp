@@ -37,6 +37,7 @@ Timer							Game::timer;
 ParentMeshObject*				Game::mesh = NULL;
 ScreenSpaceObject*				Game::lightPass = NULL;
 ScreenSpaceObject*				Game::edgeDetectionPass = NULL;
+ScreenSpaceObject*				Game::skyBox = NULL;
 Terrain*						Game::terrain = NULL;
 
 ID3D11Buffer*					Game::boxVB;
@@ -332,6 +333,8 @@ void Game::LoadCompiledShaders()
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryVertexShader.cso", VERTEX_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryPixelShader.cso", PIXEL_SHADER);
 	ShaderManager::AddShader("Res/Compiled Shaders/BillboardGeometryShader.cso", GEOMETRY_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/SkyboxGeometryShader.cso", GEOMETRY_SHADER);
+	ShaderManager::AddShader("Res/Compiled Shaders/SkyboxPixelShader.cso", PIXEL_SHADER);
 }
 
 void Game::InitializeObjects()
@@ -349,6 +352,9 @@ void Game::InitializeObjects()
 
 	mesh = new ParentMeshObject();
 	mesh->Initialize("Res/Models/Aatrox.fbx", XMFLOAT3(0.0f, -75.0f, 200.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 180.0f, 0.0f), DIFFUSE_SHADER, true, L"Res/Textures/Aatrox.dds");
+
+	skyBox = new ScreenSpaceObject();
+	skyBox->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, SKYBOX_PIXEL_SHADER, SKYBOX_GEOMETRY_SHADER);
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
