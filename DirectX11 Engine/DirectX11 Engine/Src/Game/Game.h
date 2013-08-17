@@ -18,6 +18,7 @@
 #include "../Game Objects/ScreenSpaceObject.h"
 #include "../Game Objects/LightObjects.h"
 #include "../Game Objects/Terrain.h"
+#include "../Game Objects/DynamicObject.h"
 
 class Game
 {
@@ -44,7 +45,8 @@ public:
 	static HWND hwnd;
 
 private:
-
+	
+	static DynamicObject testObject;
 	static XMFLOAT3 lightPos;
 	static ParentMeshObject* pointLight;
 	static vector<XMFLOAT3> pointLightPos;

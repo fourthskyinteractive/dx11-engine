@@ -86,6 +86,7 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
+    <ClCompile Include="Src\Game Objects\DynamicObject.cpp" />
     <ClCompile Include="Src\Game Objects\LightObjects.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
+    <ClInclude Include="Src\Game Objects\DynamicObject.h" />
     <ClInclude Include="Src\Game Objects\LightObjects.h" />
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h" />
     <ClInclude Include="Src\Game Objects\Lights\DirectionalLight.h" />
