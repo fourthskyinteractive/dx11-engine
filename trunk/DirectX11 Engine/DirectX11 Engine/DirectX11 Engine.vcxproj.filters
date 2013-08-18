@@ -52,6 +52,9 @@
     <Filter Include="Misc\Geometry Maker">
       <UniqueIdentifier>{84d76493-6390-423e-aea4-588a5040d046}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects\Component System">
+      <UniqueIdentifier>{803f1b4b-0acf-4b76-809b-36b3cd5f6eb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -146,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="Src\Game Objects\DynamicObject.cpp">
       <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp">
+      <Filter>Game Objects\Component System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp">
+      <Filter>Game Objects\Component System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\DynamicObject.h">
       <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h">
+      <Filter>Game Objects\Component System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h">
+      <Filter>Game Objects\Component System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

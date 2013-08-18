@@ -45,8 +45,7 @@ public:
 	static HWND hwnd;
 
 private:
-	
-	static DynamicObject testObject;
+
 	static XMFLOAT3 lightPos;
 	static ParentMeshObject* pointLight;
 	static vector<XMFLOAT3> pointLightPos;
