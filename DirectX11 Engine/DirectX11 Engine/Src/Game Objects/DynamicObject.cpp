@@ -27,9 +27,9 @@ void DynamicObject::Update(float _dt)
 
 }
 
-void DynamicObject::AddComponent(RENDERCOMPONENTS _c)
+void DynamicObject::AddComponent(RENDERCOMPONENTS _component)
 {
-	switch (_c)
+	switch (_component)
 	{
 	case VERTEX_BUFFER_COMPONENT:
 		{
@@ -64,7 +64,7 @@ void DynamicObject::AddComponent(RENDERCOMPONENTS _c)
 	}
 }
 
-void DynamicObject::RemoveComponent(RENDERCOMPONENTS _c)
+void DynamicObject::RemoveComponent(RENDERCOMPONENTS _component)
 {
 
 }

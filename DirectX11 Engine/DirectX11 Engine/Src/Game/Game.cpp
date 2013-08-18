@@ -28,7 +28,6 @@ using std::cin;
 using std::stringstream;
 #endif
 
-DynamicObject					Game::testObject;
 XMFLOAT3						Game::lightPos;
 ParentMeshObject*				Game::pointLight;
 vector<XMFLOAT3>				Game::pointLightPos;
@@ -86,17 +85,18 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1366, 768, false);
-
-	testObject.AddComponent(VERTEX_BUFFER_COMPONENT);
-
-	XMFLOAT3* testArray = new XMFLOAT3[10];
-	for(int i = 0; i < 10; ++i)
-	{
-		testArray[i] = XMFLOAT3(i, i, i);
-	}
-
-	testObject.AddToComponent(VERTEX_BUFFER_COMPONENT, POSITION_VERTEX_COMPONENT, testArray, sizeof(XMFLOAT3) * 10, "POSITION");
-	testObject.RemoveFromComponent(VERTEX_BUFFER_COMPONENT, POSITION_VERTEX_COMPONENT);
+// 
+// 	XMFLOAT3* testArray = new XMFLOAT3[10];
+// 	for(int i = 0; i < 10; ++i)
+// 	{
+// 		testArray[i] = XMFLOAT3(i, i, i);
+// 	}
+// 
+// 	unsigned int* indicies = new unsigned int[10];
+// 	for(int i = 0; i < 10; ++i)
+// 	{
+// 		indicies[i] = i;
+// 	}
 
 	LoadCompiledShaders();
 	InitializeLights();

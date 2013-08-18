@@ -85,6 +85,8 @@
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
     <ClCompile Include="Src\Game Objects\DynamicObject.cpp" />
     <ClCompile Include="Src\Game Objects\LightObjects.cpp" />
@@ -118,6 +120,8 @@
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h" />
+    <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h" />
+    <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
     <ClInclude Include="Src\Game Objects\DynamicObject.h" />
     <ClInclude Include="Src\Game Objects\LightObjects.h" />
