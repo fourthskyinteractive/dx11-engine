@@ -95,7 +95,8 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 		testArray[i] = XMFLOAT3(i, i, i);
 	}
 
-	testObject.AddToComponent(VERTEX_BUFFER_COMPONENT, POSITION_VERTEX_COMPONENT, testArray, sizeof(XMFLOAT3) * 10);
+	testObject.AddToComponent(VERTEX_BUFFER_COMPONENT, POSITION_VERTEX_COMPONENT, testArray, sizeof(XMFLOAT3) * 10, "POSITION");
+	testObject.RemoveFromComponent(VERTEX_BUFFER_COMPONENT, POSITION_VERTEX_COMPONENT);
 
 	LoadCompiledShaders();
 	InitializeLights();
