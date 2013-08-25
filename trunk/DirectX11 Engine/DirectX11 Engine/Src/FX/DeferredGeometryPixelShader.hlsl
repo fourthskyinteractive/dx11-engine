@@ -20,7 +20,6 @@ struct PixelOut
 	float4 Position			: SV_Target3;
 };
 
-
 PixelOut PS(PixelIn input)
 {
 	PixelOut pOut;
