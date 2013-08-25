@@ -189,7 +189,7 @@ bool SkyboxShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int lightIn
 		return false;
 	}
 
-	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));	
+	memcpy(mappedResource.pData, &constantBufferData, sizeof(constantBufferData));
 	D3D11Renderer::d3dImmediateContext->Unmap(constantBuffer, 0);
 
 	return true;
