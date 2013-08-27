@@ -40,4 +40,16 @@ Vertex Buffer Array -	Make an array of Vertex Buffers.  When you set the vertex 
 
 Shader In's - 		You can pass information to the shaders via a structure or through the paramater list in its main.  Know
 			that if you pass by parameter, the shader will disreguard any information following what it expects
-			to receive. 
+			to receive.
+
+Tile Based Lighting - 	Create an unordered access view and a shader resource view that both point to the same memory.
+			Send the unordered access view to the compute shader and teh shader resource view to the pixel shader.
+			Create a structured buffer for all of the lights that you have.
+			Create a structured buffer for all the tiles that you have with some sort of flag that will be set in the
+				compute shader for what lights are effecting this tile.
+			In the compute shader you determine what lights are hitting each tile and adjust the flag for lights accordingly.
+			In the pixel shader you look at the array of tiles and apply the lights to the tile when you are rendering that tile.
+			The hardest part will be trying to figure out which tile you are in when you are in the pixel shader, and figuring out
+			the cheapest way to hold all of the information in the structured buffers... ie. the list of lights and the "flag" for which
+			lights are affecting this tile.
+			
