@@ -87,6 +87,7 @@
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
     <ClCompile Include="Src\Game Objects\DynamicObject.cpp" />
     <ClCompile Include="Src\Game Objects\LightObjects.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h" />
     <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h" />
+    <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
     <ClInclude Include="Src\Game Objects\DynamicObject.h" />
     <ClInclude Include="Src\Game Objects\LightObjects.h" />
