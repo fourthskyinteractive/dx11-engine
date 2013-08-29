@@ -360,6 +360,9 @@
     <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h">
       <Filter>Game Objects\Component System\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\ComponentManager.h">
+      <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">

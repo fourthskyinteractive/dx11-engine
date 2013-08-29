@@ -15,8 +15,10 @@ VertexBufferComponent::~VertexBufferComponent()
 
 }
 
-void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENT _component, void* _data, unsigned int _size)
+void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)
 {
+	vertexBufferComponentFlag |= (1 << _component);
+
 	VBComponent* newVBComponent = new VBComponent;
 	newVBComponent->componentType = _component;
 	newVBComponent->size = _size;
@@ -40,14 +42,19 @@ void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENT _co
 	}
 }
 
-void VertexBufferComponent::RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENT _component)
+void VertexBufferComponent::RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component)
 {
-	for (vector<VBComponent*>::iterator iter = vbComponents.begin(); iter != vbComponents.end(); iter++)
+	if(vertexBufferComponentFlag & (1 << _component))
 	{
-		if((*iter)->componentType == _component)
+		vertexBufferComponentFlag &= ~(1 << _component);
+
+		for (vector<VBComponent*>::iterator iter = vbComponents.begin(); iter != vbComponents.end(); iter++)
 		{
-			vbComponents.erase(iter);
-			break;
-		}
-	}	
+			if((*iter)->componentType == _component)
+			{
+				vbComponents.erase(iter);
+				break;
+			}
+		}	
+	}
 }
