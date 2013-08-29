@@ -15,11 +15,13 @@ public:
 	RenderComponent(const RenderComponent& _component);
 	~RenderComponent();
 
-private:
-	char renderComponentFlag;
-
 	void AddRenderComponent(RENDER_COMPONENTS _component);
 	void RemoveRenderComponent(RENDER_COMPONENTS _component);
+
+private:
+	char renderComponentFlag;
+	vector<RenderComponent*> renderComponents;
+	
 };
 
 #endif

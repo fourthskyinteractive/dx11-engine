@@ -1,6 +1,9 @@
 #ifndef BASECOMPONENT_H
 #define BASECOMPONENT_H
 
+#include <vector>
+using namespace std;
+
 enum BASE_COMPONENTS{RENDER_COMPONENT};
 
 enum CONSTANTBUFFERCOMPONENT{WORLDMATRIX_CONSTANT_COMPONENT, VIEWMATRIX_CONSTANT_COMPONENT, PROJECTIONMATRIX_CONSTANT_COMPONENT};
@@ -10,7 +13,7 @@ class BaseComponent
 {
 public:
 	BaseComponent();
-	BaseComponent(const BaseComponent& _dynamicObject);
+	BaseComponent(const BaseComponent& _baseComponent);
 	~BaseComponent();
 
 	void AddBaseComponent(BASE_COMPONENTS _component);
@@ -18,6 +21,8 @@ public:
 
 private:
 	char baseCompenentFlag;
+
+	vector<BaseComponent*> baseComponents;
 };
 
 #endif
