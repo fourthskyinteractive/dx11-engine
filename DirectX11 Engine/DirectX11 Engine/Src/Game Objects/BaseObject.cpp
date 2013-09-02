@@ -16,3 +16,16 @@ BaseObject::~BaseObject()
 {
 
 }
+
+void BaseObject::AddBaseComponent(BASE_COMPONENTS _component)
+{
+	switch (_component)
+	{
+	case RENDER_COMPONENT:
+		baseComponent = new BaseComponent();
+		baseComponent->AddBaseComponent(RENDER_COMPONENT);
+		break;
+	default:
+		break;
+	}
+}

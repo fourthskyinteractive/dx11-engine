@@ -20,6 +20,8 @@
 #include "../Game Objects/Terrain.h"
 #include "../Game Objects/DynamicObject.h"
 
+#include "../Game Objects/BaseObject.h"
+
 class Game
 {
 public:
@@ -45,6 +47,7 @@ public:
 	static HWND hwnd;
 
 private:
+	static BaseObject baseObject;
 
 	static XMFLOAT3 lightPos;
 	static ParentMeshObject* pointLight;

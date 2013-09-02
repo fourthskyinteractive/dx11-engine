@@ -28,6 +28,8 @@ using std::cin;
 using std::stringstream;
 #endif
 
+BaseObject						Game::baseObject;
+
 XMFLOAT3						Game::lightPos;
 ParentMeshObject*				Game::pointLight;
 vector<XMFLOAT3>				Game::pointLightPos;
@@ -97,6 +99,8 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 // 	{
 // 		indicies[i] = i;
 // 	}
+
+	//baseObject
 
 	LoadCompiledShaders();
 	InitializeLights();
