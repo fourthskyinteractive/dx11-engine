@@ -20,7 +20,7 @@ public:
 
 private:
 	char renderComponentFlag;
-	vector<RenderComponent*> renderComponents;	
+	vector<RenderComponent*> renderComponents;
 };
 
 #endif
