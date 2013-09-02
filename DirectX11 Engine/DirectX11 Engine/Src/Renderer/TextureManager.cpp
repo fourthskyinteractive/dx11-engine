@@ -1,6 +1,7 @@
 #include "TextureManager.h"
-#include <DDSTextureLoader.h>
+#include "../Utility/DDS Texture Loader/DDSTextureLoader.h"
 using namespace DirectX;
+
 
 TextureManager::TextureManager()
 {
@@ -22,7 +23,7 @@ int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
 	HRESULT hr;
 	ID3D11ShaderResourceView* srv;
 	//Load in the texture
-	hr = CreateDDSTextureFromFile(_device, _filename, nullptr, &srv);
+	hr = DirectX::CreateDDSTextureFromFile(_device, _filename, nullptr, &srv);
 	if(FAILED(hr))
 	{
 		return -1;
