@@ -2,6 +2,7 @@
 #define BASEOBJECT_H
 
 #include "../Game Objects/Component System/BaseComponent.h"
+#include "../Game Objects/Component System/BaseComponent.h"
 
 #include <d3d11.h>
 #include <d3d11shader.h>
@@ -15,8 +16,11 @@ public:
 	BaseObject(const BaseObject&);
 	~BaseObject();
 
+	void AddBaseComponent(BASE_COMPONENTS _component);
+
 private:
-	vector<BaseComponent*> _components;
+
+	BaseComponent* baseComponent;
 };
 
 #endif

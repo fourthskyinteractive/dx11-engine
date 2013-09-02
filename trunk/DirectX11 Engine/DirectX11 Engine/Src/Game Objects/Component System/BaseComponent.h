@@ -16,7 +16,7 @@ public:
 	BaseComponent(const BaseComponent& _baseComponent);
 	~BaseComponent();
 
-	void AddBaseComponent(BASE_COMPONENTS _component);
+	void* AddBaseComponent(BASE_COMPONENTS _component, BaseComponent* _componentToAdd);
 	void RemoveBaseComponent(BASE_COMPONENTS _component);
 
 private:
