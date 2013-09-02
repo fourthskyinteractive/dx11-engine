@@ -3,7 +3,7 @@
 
 RenderComponent::RenderComponent()
 {
-
+	memset(&renderComponentFlag, 0, sizeof(char));
 }
 
 RenderComponent::RenderComponent(const RenderComponent& _component)
