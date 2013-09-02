@@ -1,6 +1,8 @@
 #ifndef BASECOMPONENT_H
 #define BASECOMPONENT_H
 
+#include "ComponentSystemDefinitions.h"
+
 #include <vector>
 using namespace std;
 
@@ -16,13 +18,13 @@ public:
 	BaseComponent(const BaseComponent& _baseComponent);
 	~BaseComponent();
 
-	void* AddBaseComponent(BASE_COMPONENTS _component, BaseComponent* _componentToAdd);
+	void AddBaseComponent(BASE_COMPONENTS _component, BaseComponent* _componentToAdd);
 	void RemoveBaseComponent(BASE_COMPONENTS _component);
 
-private:
+
 	char baseCompenentFlag;
 
-	vector<BaseComponent*> baseComponents;
+	vector<BaseComponentStruct> baseComponents;
 };
 
 #endif

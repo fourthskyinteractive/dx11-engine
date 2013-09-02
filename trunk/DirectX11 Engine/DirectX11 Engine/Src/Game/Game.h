@@ -47,7 +47,7 @@ public:
 	static HWND hwnd;
 
 private:
-	static BaseObject baseObject;
+	static BaseObject* baseObject;
 
 	static XMFLOAT3 lightPos;
 	static ParentMeshObject* pointLight;

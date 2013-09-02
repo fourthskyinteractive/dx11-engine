@@ -378,6 +378,9 @@
     <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h">
       <Filter>Misc\DDS Texture Loader\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\ComponentSystemDefinitions.h">
+      <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">

@@ -28,7 +28,7 @@ using std::cin;
 using std::stringstream;
 #endif
 
-BaseObject						Game::baseObject;
+BaseObject*						Game::baseObject;
 
 XMFLOAT3						Game::lightPos;
 ParentMeshObject*				Game::pointLight;
@@ -99,8 +99,8 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 // 	{
 // 		indicies[i] = i;
 // 	}
-
-	//baseObject
+	baseObject = new BaseObject();
+	baseObject->AddBaseComponent(RENDER_COMPONENT);
 
 	LoadCompiledShaders();
 	InitializeLights();
