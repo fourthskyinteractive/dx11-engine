@@ -143,6 +143,15 @@
     <Filter Include="Shaders\Pixel Shaders">
       <UniqueIdentifier>{e4c2506e-42fd-45fe-b1de-0a749ea6b649}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Misc\DDS Texture Loader">
+      <UniqueIdentifier>{881384f3-f74c-41c6-b9be-522525e900d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc\DDS Texture Loader\Header Files">
+      <UniqueIdentifier>{f9b0f66e-651e-4d13-8efc-bbbc00049d5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc\DDS Texture Loader\Source Files">
+      <UniqueIdentifier>{3be29190-a8ba-45a7-8468-919a2ea08be5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Game\Definitions.cpp">
@@ -246,6 +255,9 @@
     </ClCompile>
     <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp">
       <Filter>Game Objects\Component System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.cpp">
+      <Filter>Misc\DDS Texture Loader\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -362,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\Component System\ComponentManager.h">
       <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h">
+      <Filter>Misc\DDS Texture Loader\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -109,6 +109,7 @@
     <ClCompile Include="Src\Renderer\Shader Classes\TerrainShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
+    <ClCompile Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Src\Utility\Geometry Makers\GeometryMaker.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
     <ClCompile Include="Src\Utility\Misc\DebugOutput.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
+    <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h" />
     <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
     <ClInclude Include="Src\Utility\Misc\DebugOutput.h" />
@@ -342,11 +344,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Directory)Res\Compiled Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DirectX11 Helper Project\DirectXTK_Desktop_2012.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -273,9 +273,9 @@ void Game::Input(float _deltaTime)
 
 	if(directInput->IsEscapePressed())
 	{
-		ID3D11Resource* resource;
-		D3D11Renderer::shaderResourceView[4]->GetResource(&resource);
-		SaveDDSTextureToFile(D3D11Renderer::d3dImmediateContext, resource, L"PositionTexture.dds");
+// 		ID3D11Resource* resource;
+// 		D3D11Renderer::shaderResourceView[4]->GetResource(&resource);
+// 		SaveDDSTextureToFile(D3D11Renderer::d3dImmediateContext, resource, L"PositionTexture.dds");
 		isRunning = false;
 	}
 
