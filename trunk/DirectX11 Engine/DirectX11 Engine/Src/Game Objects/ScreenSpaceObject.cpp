@@ -27,15 +27,53 @@ void ScreenSpaceObject::Initialize(ID3D11RenderTargetView* _renderTargetView, ID
 	{
 		textures[i] = D3D11Renderer::shaderResourceView[i + 1];
 	}
-
+	InitializeBuffers(NULL, NULL);
 	shaderUsed.Initialize(_vertexShader, _pixelShader, _geometryShader);
 	shaderUsed.UpdatePixelShaderTextureConstants(textures);
 }
 
+bool ScreenSpaceObject::InitializeBuffers(VertexType* _vertices, unsigned long* _indices)
+{
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData;
+
+	XMFLOAT3 dummyValue = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//Set up the description of the static vertex buffer
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(XMFLOAT3);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	vertexData.pSysMem = &dummyValue;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	//Now create the vertex buffer
+
+	HRESULT hr;
+
+	hr = D3D11Renderer::d3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
+	if(FAILED(hr))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void ScreenSpaceObject::SetShaderBuffers()
 {
+	unsigned int stride;
+	unsigned int offset;
+
+	//Set the vertex buffer stride and offset
+	stride = sizeof(VertexType);
+	offset = 0;
+
 	//Set the vertex buffer to active in the input assembler so it can be rendered
-	//D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 
 	//Set the index buffer to active in the input assembler so it can be rendered
 	//D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);

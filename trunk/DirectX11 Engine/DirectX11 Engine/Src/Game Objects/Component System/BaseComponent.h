@@ -18,10 +18,14 @@ public:
 	BaseComponent(const BaseComponent& _baseComponent);
 	~BaseComponent();
 
-	void AddBaseComponent(BASE_COMPONENTS _component, BaseComponent* _componentToAdd);
-	void RemoveBaseComponent(BASE_COMPONENTS _component);
+	void AddBaseComponent(BASE_COMPONENTS _componentType, BaseComponent* _component);
+	void RemoveBaseComponent(BASE_COMPONENTS _componentType);
 
 
+	char GetBaseComponentFlag(){return baseCompenentFlag;}
+	vector<BaseComponentStruct> GetBaseComponents(){return baseComponents;}
+
+private:
 	char baseCompenentFlag;
 
 	vector<BaseComponentStruct> baseComponents;

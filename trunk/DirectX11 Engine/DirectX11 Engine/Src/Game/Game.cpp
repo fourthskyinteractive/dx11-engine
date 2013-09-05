@@ -87,20 +87,23 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
 	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1366, 768, false);
-// 
-// 	XMFLOAT3* testArray = new XMFLOAT3[10];
-// 	for(int i = 0; i < 10; ++i)
-// 	{
-// 		testArray[i] = XMFLOAT3(i, i, i);
-// 	}
-// 
-// 	unsigned int* indicies = new unsigned int[10];
-// 	for(int i = 0; i < 10; ++i)
-// 	{
-// 		indicies[i] = i;
-// 	}
+ 
+	XMFLOAT3 testArray[10];
+	for(int i = 0; i < 10; ++i)
+	{
+		testArray[i] = XMFLOAT3((float)i, (float)i, (float)i);
+	}
+
+	unsigned int* indicies = new unsigned int[10];
+	for(int i = 0; i < 10; ++i)
+	{
+		indicies[i] = i;
+	}
+
 	baseObject = new BaseObject();
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
+	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
+	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, testArray, sizeof(XMFLOAT3) * 10);
 
 	LoadCompiledShaders();
 	InitializeLights();

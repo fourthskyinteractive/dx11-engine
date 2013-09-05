@@ -29,7 +29,7 @@ public:
 private:
 	char vertexBufferComponentFlag;
 
-	vector<VBComponent*> vbComponents;
+	vector<VBComponent*> vertexBufferComponents;
 };
 
 #endif
