@@ -3,6 +3,7 @@
 
 #include "../Game Objects/Component System/BaseComponent.h"
 #include "../Game Objects/Component System/RenderComponent.h"
+#include "../Game Objects/Component System/VertexBufferComponent.h"
 
 #include <d3d11.h>
 #include <d3d11shader.h>
@@ -16,7 +17,9 @@ public:
 	BaseObject(const BaseObject&);
 	~BaseObject();
 
-	void AddBaseComponent(BASE_COMPONENTS _component);
+	void AddBaseComponent(BASE_COMPONENTS _componentType);
+	void AddRenderComponent(RENDER_COMPONENTS _componentType);
+	void AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _size);
 
 private:
 

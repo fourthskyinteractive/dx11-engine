@@ -80,7 +80,7 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 
 	polygonLayout.SemanticName = "POSITION";
 	polygonLayout.SemanticIndex = 0;
-	polygonLayout.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonLayout.InputSlot = 0;
 	polygonLayout.AlignedByteOffset = 0;
 	polygonLayout.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;

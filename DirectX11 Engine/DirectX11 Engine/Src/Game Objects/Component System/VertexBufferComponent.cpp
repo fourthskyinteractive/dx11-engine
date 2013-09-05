@@ -17,6 +17,9 @@ VertexBufferComponent::~VertexBufferComponent()
 
 void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)
 {
+
+	XMFLOAT3* test;
+	test = (XMFLOAT3*)_data;
 	vertexBufferComponentFlag |= (1 << _component);
 
 	VBComponent* newVBComponent = new VBComponent;
@@ -40,6 +43,8 @@ void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _c
 	{
 		MessageBox(NULL, "Vertex Buffer Creation Failed : VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENT _component, void* _data, unsigned int _size)", "Vertex Buffer Component Error", 0);
 	}
+
+	vertexBufferComponents.push_back(newVBComponent);
 }
 
 void VertexBufferComponent::RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component)
@@ -48,11 +53,11 @@ void VertexBufferComponent::RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENTS
 	{
 		vertexBufferComponentFlag &= ~(1 << _component);
 
-		for (vector<VBComponent*>::iterator iter = vbComponents.begin(); iter != vbComponents.end(); iter++)
+		for (vector<VBComponent*>::iterator iter = vertexBufferComponents.begin(); iter != vertexBufferComponents.end(); iter++)
 		{
 			if((*iter)->componentType == _component)
 			{
-				vbComponents.erase(iter);
+				vertexBufferComponents.erase(iter);
 				break;
 			}
 		}	
