@@ -16,7 +16,7 @@ class BaseComponent
 public:
 	BaseComponent();
 	BaseComponent(const BaseComponent& _baseComponent);
-	~BaseComponent();
+	virtual ~BaseComponent();
 
 	void AddBaseComponent(BASE_COMPONENTS _componentType, BaseComponent* _component);
 	void RemoveBaseComponent(BASE_COMPONENTS _componentType);

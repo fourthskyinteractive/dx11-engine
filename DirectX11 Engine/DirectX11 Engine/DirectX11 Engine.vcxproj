@@ -86,6 +86,8 @@
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
     <ClCompile Include="Src\Game Objects\ChildMeshObject.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\ConstantBufferComponent.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\IndexBufferComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
@@ -123,8 +125,9 @@
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
     <ClInclude Include="Src\Game Objects\ChildMeshObject.h" />
     <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h" />
-    <ClInclude Include="Src\Game Objects\Component System\ComponentManager.h" />
     <ClInclude Include="Src\Game Objects\Component System\ComponentSystemDefinitions.h" />
+    <ClInclude Include="Src\Game Objects\Component System\ConstantBufferComponent.h" />
+    <ClInclude Include="Src\Game Objects\Component System\IndexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />

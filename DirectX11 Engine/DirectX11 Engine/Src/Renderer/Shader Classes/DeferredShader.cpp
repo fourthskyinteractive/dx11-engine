@@ -126,6 +126,7 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	hr = D3D11Renderer::d3dDevice->CreateBuffer(&matrixBufferDesc, NULL, &pixelConstantBuffer);
+
 	if(FAILED(hr))
 	{
 		return false;
@@ -185,8 +186,6 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 	constantBufferData.lightType.z = 0.0f;
 	constantBufferData.lightType.w = 0.0f;
 
-
-
 	if(_lightType == POINT_LIGHT)
 	{
 		constantBufferData.lightType.x = 1.0f;
@@ -208,6 +207,7 @@ bool DeferredShader::UpdatePixelShaderConstants(LIGHT_TYPE _lightType, int light
 		
 		constantBufferData.spotlightAngles = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
+
 	else if(_lightType == SPOT_LIGHT)
 	{
 		constantBufferData.lightType.y = 1.0f;
