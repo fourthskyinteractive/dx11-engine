@@ -9,7 +9,7 @@ using namespace std;
 
 enum VERTEX_BUFFER_COMPONENTS{VERTEX_POSITION_COMPONENT, VERTEX_COLOR_COMPONENT, VERTEX_NORMAL_COMPONENT, VERTEX_TEXCOORD_COMPONENT};
 
-struct VBComponent
+struct VertexComponent
 {
 	VERTEX_BUFFER_COMPONENTS componentType;
 	unsigned int size;
@@ -29,7 +29,7 @@ public:
 private:
 	char vertexBufferComponentFlag;
 
-	vector<VBComponent*> vertexBufferComponents;
+	vector<VertexComponent*> vertexBufferComponents;
 };
 
 #endif

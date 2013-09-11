@@ -152,6 +152,15 @@
     <Filter Include="Misc\DDS Texture Loader\Source Files">
       <UniqueIdentifier>{3be29190-a8ba-45a7-8468-919a2ea08be5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects\Component System\Render Components">
+      <UniqueIdentifier>{c4e69a7b-5988-4792-acf5-0bd54d712359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Component System\Render Components\Header Files">
+      <UniqueIdentifier>{42649dc2-5cbe-4918-be7e-f2ac384cf13f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Component System\Render Components\Source Files">
+      <UniqueIdentifier>{01b47e7d-7ce4-4336-bee3-a38890dc7f4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Game\Definitions.cpp">
@@ -192,9 +201,6 @@
     </ClCompile>
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp">
       <Filter>Game Objects\Lights\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp">
-      <Filter>Game Objects\Component System\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp">
       <Filter>Game Objects\Component System\Source Files</Filter>
@@ -253,11 +259,20 @@
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp">
       <Filter>Misc\Model Loaders\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp">
-      <Filter>Game Objects\Component System\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.cpp">
       <Filter>Misc\DDS Texture Loader\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\IndexBufferComponent.cpp">
+      <Filter>Game Objects\Component System\Render Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp">
+      <Filter>Game Objects\Component System\Render Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp">
+      <Filter>Game Objects\Component System\Render Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\ConstantBufferComponent.cpp">
+      <Filter>Game Objects\Component System\Render Components\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -305,9 +320,6 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\Lights\PointLight.h">
       <Filter>Game Objects\Lights\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h">
-      <Filter>Game Objects\Component System\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h">
       <Filter>Game Objects\Component System\Header Files</Filter>
@@ -369,17 +381,23 @@
     <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h">
       <Filter>Renderer\Shader Classes\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h">
-      <Filter>Game Objects\Component System\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game Objects\Component System\ComponentManager.h">
-      <Filter>Game Objects\Component System\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h">
       <Filter>Misc\DDS Texture Loader\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\Component System\ComponentSystemDefinitions.h">
       <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h">
+      <Filter>Game Objects\Component System\Render Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\IndexBufferComponent.h">
+      <Filter>Game Objects\Component System\Render Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h">
+      <Filter>Game Objects\Component System\Render Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\ConstantBufferComponent.h">
+      <Filter>Game Objects\Component System\Render Components\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

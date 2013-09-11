@@ -2,7 +2,7 @@
 
 VertexBufferComponent::VertexBufferComponent()
 {
-
+	memset(&vertexBufferComponentFlag, 0, sizeof(char));
 }
 
 VertexBufferComponent::VertexBufferComponent(const VertexBufferComponent& _vertexBufferComponent)
@@ -12,17 +12,18 @@ VertexBufferComponent::VertexBufferComponent(const VertexBufferComponent& _verte
 
 VertexBufferComponent::~VertexBufferComponent()
 {
-
+	for(unsigned int i = 0; i < vertexBufferComponents.size(); ++i)
+	{
+		delete vertexBufferComponents[i];
+		vertexBufferComponents[i] = NULL;
+	}
 }
 
 void VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)
 {
-
-	XMFLOAT3* test;
-	test = (XMFLOAT3*)_data;
 	vertexBufferComponentFlag |= (1 << _component);
 
-	VBComponent* newVBComponent = new VBComponent;
+	VertexComponent* newVBComponent = new VertexComponent;
 	newVBComponent->componentType = _component;
 	newVBComponent->size = _size;
 
@@ -53,7 +54,7 @@ void VertexBufferComponent::RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENTS
 	{
 		vertexBufferComponentFlag &= ~(1 << _component);
 
-		for (vector<VBComponent*>::iterator iter = vertexBufferComponents.begin(); iter != vertexBufferComponents.end(); iter++)
+		for (vector<VertexComponent*>::iterator iter = vertexBufferComponents.begin(); iter != vertexBufferComponents.end(); iter++)
 		{
 			if((*iter)->componentType == _component)
 			{

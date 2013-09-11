@@ -14,7 +14,7 @@ class RenderComponent : public BaseComponent
 public:
 	RenderComponent();
 	RenderComponent(const RenderComponent& _component);
-	~RenderComponent();
+	virtual ~RenderComponent();
 
 	void AddRenderComponent(RENDER_COMPONENTS _componentType, RenderComponent* _component);
 	void RemoveRenderComponent(RENDER_COMPONENTS _componentType);

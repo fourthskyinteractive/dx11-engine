@@ -38,7 +38,6 @@ Timer							Game::timer;
 
 ParentMeshObject*				Game::mesh = NULL;
 ScreenSpaceObject*				Game::lightPass = NULL;
-ScreenSpaceObject*				Game::edgeDetectionPass = NULL;
 ScreenSpaceObject*				Game::skyBox = NULL;
 Terrain*						Game::terrain = NULL;
 
@@ -61,7 +60,6 @@ int								Game::prevMouseY;
 
 bool							Game::backfaceCulling;
 bool							Game::backFaceSwap = false;
-
 
 XMFLOAT2						Game::cameraRotation;
 
@@ -94,16 +92,29 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 		testArray[i] = XMFLOAT3((float)i, (float)i, (float)i);
 	}
 
-	unsigned int* indicies = new unsigned int[10];
+	unsigned int indicies[10];
 	for(int i = 0; i < 10; ++i)
 	{
 		indicies[i] = i;
 	}
 
+	XMMATRIX worldIdentityM;
+	XMFLOAT4X4 worldIdentity;
+	XMMatrixIsIdentity(worldIdentityM);
+	XMStoreFloat4x4(&worldIdentity, worldIdentityM);
+
 	baseObject = new BaseObject();
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
 	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
+	baseObject->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
+	baseObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
 	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, testArray, sizeof(XMFLOAT3) * 10);
+	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, indicies, sizeof(unsigned int) * 10);
+	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4));
+
+	baseObject->LookAtVertexComponent();
+	baseObject->LookAtIndexComponent();
+	baseObject->LookAtConstantComponent();
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -377,9 +388,6 @@ void Game::InitializeObjects()
 
 	lightPass = new ScreenSpaceObject();
 	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
-
-	//edgeDetectionPass = new ScreenSpaceObject();
-	//edgeDetectionPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, EDGE_DETECTION_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
 }
 
 void Game::InitializeLights()
@@ -393,34 +401,9 @@ void Game::InitializeLights()
 	//pointLight->Initialize("Res/Models/UnitSphere.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
 
 
-	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(.15f, .15f, .15f, 1.0f), true);
-	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f), true);
-	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f), true);
-	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), true);
-	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f), true);
+	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f), true);
+	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
-
- 	//float posX = -70.0f;
- 	//float posZ = -70.0f;
-	//for(int i = 0; i < 10; ++i)
-	//{
-	//	for(int j = 0; j < 10; ++j)
-	//	{
-	//		float randR = ((float) rand()) / (float) RAND_MAX;
-	//		float randG = ((float) rand()) / (float) RAND_MAX;
-	//		float randB = ((float) rand()) / (float) RAND_MAX;
-	//
-	//		LightManager::AddPointLight("Point Light", XMFLOAT4(randR, randG, randB, 1.0f), XMFLOAT3(posX, 10.0f, posZ), 20, true);
-	//
-	//		pointLightPos.push_back(XMFLOAT3(posX, 10.0f, posZ));
-	//
-	//		posZ += 14;
-	//	}
-	//	posZ = -70;
-	//	posX += 14;
-	//}
-
-	//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, .50f, 1.0f, 1.0f), lightPos, 20, true);
 	//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);

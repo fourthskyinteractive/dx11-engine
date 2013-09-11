@@ -55,7 +55,6 @@ private:
 	static ParentMeshObject* mesh;
 	static ScreenSpaceObject* lightPass;
 	static ScreenSpaceObject* skyBox;
-	static ScreenSpaceObject* edgeDetectionPass;
 
 	static Timer timer;
 	static XMFLOAT2 cameraRotation;
