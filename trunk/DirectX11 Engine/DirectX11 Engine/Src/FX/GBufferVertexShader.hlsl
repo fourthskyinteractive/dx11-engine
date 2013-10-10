@@ -1,38 +1,56 @@
 #pragma pack_matrix(row_major)
 
-cbuffer Transforms
+cbuffer worldMatrixCBuffer : register(cb0)
 {
 	matrix worldMatrix;
-	matrix viewProjectionMatrix;
 };
 
-//Input/Output structures
-struct VSIn
+cbuffer viewMatrixCBuffer : register(cb1)
 {
-	float4 position			: POSITION;
-	float2 texCoord			: TEXCOORDS0;
-	float3 normal			: NORMAL;
+	matrix viewMatrix;
 };
 
-struct VSOut
+cbuffer projectionMatrixCBuffer : register(cb2)
 {
-	float4 positionCS		: SV_POSITION;
-	float2 texCoord			: TEXCOORD;
-	float3 normalWS			: NORMALWS;
-	float3 positionWS		: POSITIONWS;
+	matrix projectionMatrix;
 };
 
-VSOut VS(in VSIn input)
+struct VertexIn
 {
-	VSOut output;
+	float4 pos		: POSITION;
+	float3 normal	: NORMAL;
+	float2 texCoord	: TEXCOORD;
+};
 
-	output.positionWS = mul(input.position, worldMatrix).xyz;
-	output.normalWS = normalize(mul(input.normal, (float3x3)worldMatrix));
+struct VertexOut
+{
+	float4 posCS		: SV_Position;
+	float3 posWS		: POSITIONWS;
+	float2 texCoord		: TEXCOORD;
+	float3 normalWS		: NORMALWS;
+};
 
-	output.positionCS = mul(input.position, worldMatrix);
-	output.positionCS = mul(output.positionCS, viewProjectionMatrix);
+VertexOut VS(VertexIn vIn)
+{
+	VertexOut vOut;
 
-	output.texCoord = input.texCoord;
+	vIn.pos.w = 1.0f;
+	float4 pos = vIn.pos;
 
-	return output;
+	//Calculate the World Space Position
+	vOut.posWS = mul(pos, worldMatrix).xyz;
+	
+	//Calculate the Clip Space Position
+	vOut.posCS = mul(pos, worldMatrix);
+	vOut.posCS = mul(vOut.posCS, viewMatrix);
+	vOut.posCS = mul(vOut.posCS, projectionMatrix);
+
+	//Copy over the texcoords
+	vOut.texCoord = vIn.texCoord;
+
+	//Calculate the normal vector against the world matrix only
+	vOut.normalWS = normalize(mul(vIn.normal, (float3x3)worldMatrix));
+	//vOut.normalWS = normalize(vOut.normalWS);
+
+	return vOut;
 }
