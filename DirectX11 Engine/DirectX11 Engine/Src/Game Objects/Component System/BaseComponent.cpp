@@ -20,7 +20,7 @@ BaseComponent::~BaseComponent()
 	}
 }
 
-void BaseComponent::AddBaseComponent(BASE_COMPONENTS _componentType, BaseComponent* _component)
+void BaseComponent::AddBaseComponent(BASE_COMPONENTS _componentType, Component* _component)
 {
 	baseCompenentFlag |= (1 << _componentType);
 

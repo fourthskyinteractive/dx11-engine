@@ -3,19 +3,20 @@
 
 
 class BaseComponent;
+class Component;
 enum BASE_COMPONENTS;
 enum RENDER_COMPONENTS;
 
 struct BaseComponentStruct
 {
 	BASE_COMPONENTS componentType;
-	BaseComponent* component;
+	Component* component;
 };
 
 struct RenderComponentStruct
 {
 	RENDER_COMPONENTS componentType;
-	BaseComponent* component;
+	Component* component;
 };
 
 #endif

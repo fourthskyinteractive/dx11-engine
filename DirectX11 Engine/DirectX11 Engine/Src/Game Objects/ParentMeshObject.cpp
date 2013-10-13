@@ -37,10 +37,10 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 			AddTexture(_textureFilePath);
 	}
 
-
-	objectShader.Initialize(DEFERRED_GEOMETRY_VERTEX_SHADER, DEFERRED_GEOMETRY_PIXEL_SHADER, NO_GEOMETRY_SHADER);
+	//TODO: Rewrite this whole file
+	//objectShader.Initialize(DEFERRED_GEOMETRY_VERTEX_SHADER, DEFERRED_GEOMETRY_PIXEL_SHADER, NO_GEOMETRY_SHADER);
 	objectShader.UpdatePixelShaderTextureConstants(textures->GetTextureArrayPointer());
-	lightShader.Initialize();
+	//lightShader.Initialize();
 	switch(_shaderToUse)
 	{
 	case DIFFUSE_SHADER:
@@ -60,7 +60,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 		}
 	case LIGHT_SHADER:
 		{
-			SetShaderUsed(&lightShader);
+			//SetShaderUsed(&lightShader);
 			break;
 		}
 	default:
@@ -75,7 +75,7 @@ void ParentMeshObject::Initialize(char* _filePath, XMFLOAT3 _position, XMFLOAT3 
 	{
 		hasTexture = false;
 	}
-	FBXLoader::LoadFBX(this, _filePath, hasTexture);
+	//FBXLoader::LoadFBX(this, _filePath, hasTexture);
 }
 
 void ParentMeshObject::SetShaderUsed(BaseShader* _shaderUsed)

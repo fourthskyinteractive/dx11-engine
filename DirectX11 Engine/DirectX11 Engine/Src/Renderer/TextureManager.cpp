@@ -2,6 +2,8 @@
 #include "../Utility/DDS Texture Loader/DDSTextureLoader.h"
 using namespace DirectX;
 
+vector<CComPtr<ID3D11ShaderResourceView>> TextureManager::textures;
+
 
 TextureManager::TextureManager()
 {
@@ -18,7 +20,7 @@ TextureManager::~TextureManager()
 	Shutdown();
 }
 
-int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
+int TextureManager::AddTexture(CComPtr<ID3D11Device> _device, WCHAR* _filename)
 {
 	HRESULT hr;
 	ID3D11ShaderResourceView* srv;
@@ -34,12 +36,19 @@ int TextureManager::AddTexture(ID3D11Device* _device, WCHAR* _filename)
 	return textures.size() - 1;
 }
 
-ID3D11ShaderResourceView* TextureManager::GetTexture(int _index)
+int TextureManager::AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView)
+{
+	textures.push_back(_shaderResourceView);
+	
+	return textures.size() - 1;
+}
+
+CComPtr<ID3D11ShaderResourceView> TextureManager::GetTexture(int _index)
 {
 	return textures[_index];
 }
 
-ID3D11ShaderResourceView* TextureManager::GetTextureArrayPointer()
+CComPtr<ID3D11ShaderResourceView> TextureManager::GetTextureArrayPointer()
 {
 	if(textures.size() > 0)
 	{
@@ -55,15 +64,6 @@ int TextureManager::NumberOfTextures()
 
 void TextureManager::Shutdown()
 {
-	for(unsigned int i =  0; i < textures.size(); ++i)
-	{
-		if(textures[i])
-		{
-			textures[i]->Release();
-			textures[i] = 0;
-		}
-	}
-
 	textures.clear();
 
 	return;

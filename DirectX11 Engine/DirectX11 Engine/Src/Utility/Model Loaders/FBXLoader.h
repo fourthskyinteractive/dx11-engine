@@ -13,7 +13,7 @@ public:
 	FBXLoader(const FBXLoader&);
 	~FBXLoader();
 
-	static bool LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _hasTexture);
+	static bool LoadFBX(char* _filePath, ModelData& _modelData);
 	static void FillMeshArray(FbxScene* _scene, FbxArray<FbxMesh*>& _meshArray);
 	static void FillMeshArrayRecursive(FbxNode* _node, FbxArray<FbxMesh*>& _meshArray);
 	static char* GetModelName(char* _filePath);

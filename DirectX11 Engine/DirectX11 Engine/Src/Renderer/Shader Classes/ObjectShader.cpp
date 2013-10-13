@@ -74,7 +74,7 @@ bool ObjectShader::InitializeShader(int _vertexShaderIndex, int  _pixelShaderInd
 	polygonLayout[0].SemanticIndex = 0;
 	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[0].InputSlot = 0;
-	polygonLayout[0].AlignedByteOffset = 0;
+	polygonLayout[0].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
@@ -103,14 +103,14 @@ bool ObjectShader::InitializeShader(int _vertexShaderIndex, int  _pixelShaderInd
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	//Create the vertex input layout
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(polygonLayout, numElements, 
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
+// 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(polygonLayout, numElements, 
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
-	if(FAILED(hr))
-	{
-		return false;
-	}
+// 	if(FAILED(hr))
+// 	{
+// 		return false;
+// 	}
 
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -177,9 +177,9 @@ void ObjectShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 
 	//Set the sampler state in the pixel shader
 	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);

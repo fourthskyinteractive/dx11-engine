@@ -106,14 +106,14 @@ bool TerrainShader::InitializeShader()
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout);
 
 	//Create the vertex input layout
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, numElements, 
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
+// 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, numElements, 
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
-	if(FAILED(hr))
-	{
-		return false;
-	}
+// 	if(FAILED(hr))
+// 	{
+// 		return false;
+// 	}
 
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -180,9 +180,9 @@ void TerrainShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 
 	//Set the sampler state in the pixel shader
 	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);

@@ -38,7 +38,7 @@ void IndexBufferComponent::AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _comp
 
 	D3D11_SUBRESOURCE_DATA vData;
 	ZeroMemory(&vData, sizeof(D3D11_SUBRESOURCE_DATA));
-	vData.pSysMem = &_data;
+	vData.pSysMem = _data;
 
 	HRESULT hr = D3D11Renderer::d3dDevice->CreateBuffer(&vBufferDesc, &vData, &newIndexComponent->buffer);
 

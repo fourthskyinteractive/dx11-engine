@@ -70,14 +70,14 @@ bool DepthShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 	polygonLayout.InstanceDataStepRate = 0;
 
 	//Create the vertex input layout
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, 1, 
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
+// 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, 1, 
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
-	if(FAILED(hr))
-	{
-		return false;
-	}
+// 	if(FAILED(hr))
+// 	{
+// 		return false;
+// 	}
 
 	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
@@ -117,9 +117,9 @@ void DepthShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->GSSetShader(NULL, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 }
 
 bool DepthShader::UpdateVertexShaderConstants(XMFLOAT4X4 _worldMatrix, XMFLOAT4X4 _viewProjMatrix)

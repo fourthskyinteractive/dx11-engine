@@ -161,6 +161,9 @@
     <Filter Include="Game Objects\Component System\Render Components\Source Files">
       <UniqueIdentifier>{01b47e7d-7ce4-4336-bee3-a38890dc7f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Compute Shaders">
+      <UniqueIdentifier>{9d325630-4bda-4dbc-8981-7a9011a33e11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Game\Definitions.cpp">
@@ -244,9 +247,6 @@
     <ClCompile Include="Src\Renderer\Shader Classes\DepthShader.cpp">
       <Filter>Renderer\Shader Classes\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\Shader Classes\LightShader.cpp">
-      <Filter>Renderer\Shader Classes\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Renderer\Shader Classes\ObjectShader.cpp">
       <Filter>Renderer\Shader Classes\Source Files</Filter>
     </ClCompile>
@@ -273,6 +273,12 @@
     </ClCompile>
     <ClCompile Include="Src\Game Objects\Component System\ConstantBufferComponent.cpp">
       <Filter>Game Objects\Component System\Render Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\Component.cpp">
+      <Filter>Game Objects\Component System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\WorldObject.cpp">
+      <Filter>Game Objects\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -369,9 +375,6 @@
     <ClInclude Include="Src\Renderer\Shader Classes\DepthShader.h">
       <Filter>Renderer\Shader Classes\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\Shader Classes\LightShader.h">
-      <Filter>Renderer\Shader Classes\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Renderer\Shader Classes\ObjectShader.h">
       <Filter>Renderer\Shader Classes\Header Files</Filter>
     </ClInclude>
@@ -399,66 +402,36 @@
     <ClInclude Include="Src\Game Objects\Component System\ConstantBufferComponent.h">
       <Filter>Game Objects\Component System\Render Components\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\Component.h">
+      <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\WorldObject.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\FX\BillboardGeometryShader.hlsl">
+    <FxCompile Include="Src\FX\DeferredLightingComputeShader.hlsl">
+      <Filter>Shaders\Compute Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\FX\DeferredLightingGeometryShader.hlsl">
       <Filter>Shaders\Geometry Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DeferredCombineGeometryShader.hlsl">
-      <Filter>Shaders\Geometry Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DeferredCombinePixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DeferredGeometryPixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\DeferredLightingPixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DepthPixelShader.hlsl">
       <Filter>Shaders\Pixel Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\GBufferPixelShader.hlsl">
       <Filter>Shaders\Pixel Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Src\FX\MultipleTexturePixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\PixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Src\FX\SkyboxPixelShader.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\TexturePixelShader.hlsl">
       <Filter>Shaders\Pixel Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Src\FX\SkyboxGeometryShader.hlsl">
       <Filter>Shaders\Geometry Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Src\FX\DeferredCombineVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DeferredGeometryVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DeferredLightingVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\DepthVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Src\FX\GBufferVertexShader.hlsl">
       <Filter>Shaders\Vertex Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Src\FX\MultipleTextureVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\TextureVertexShader.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Src\FX\VertexShader.hlsl">
+    <FxCompile Include="Src\FX\DeferredLightingVertexShader.hlsl">
       <Filter>Shaders\Vertex Shaders</Filter>
     </FxCompile>
   </ItemGroup>

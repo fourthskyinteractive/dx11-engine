@@ -16,7 +16,25 @@ LightManager::LightManager(const LightManager& _lightManager)
 
 LightManager::~LightManager()
 {
+	
+}
 
+void LightManager::Shutdown()
+{
+	//Cleaning up Point Lights
+	for(unsigned int i = 0; i < pointLights.size(); ++i)
+	{
+		SAFE_DELETE(pointLights[i]);
+	}
+
+	//Cleaning up Directional Lights
+	for(unsigned int i = 0; i < directionalLights.size(); ++i)
+	{
+		SAFE_DELETE(directionalLights[i]);
+	}
+
+	//Cleaning up the Ambient Light
+	SAFE_DELETE(ambientLight);
 }
 
 void LightManager::SetAmbientLight(char* _lightName, XMFLOAT4 _color, bool _isLightOn)

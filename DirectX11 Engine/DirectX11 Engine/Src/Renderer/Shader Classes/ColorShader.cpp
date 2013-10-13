@@ -72,11 +72,11 @@ bool ColorShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
 	//Create the vertex input layout
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(polygonLayout, 
-		numElements, 
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), 
-		&inputLayout);
+// 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(polygonLayout, 
+// 		numElements, 
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), 
+// 		&inputLayout);
 
 
 	//Setup the description of the dynamic matrix constant buffer that is in the vertex shader
@@ -99,8 +99,8 @@ bool ColorShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIndex
 
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 
 	D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(0, 1, &constantBuffer);
 
