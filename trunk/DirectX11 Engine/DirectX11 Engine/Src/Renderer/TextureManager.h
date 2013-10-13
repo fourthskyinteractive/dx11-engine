@@ -2,6 +2,7 @@
 #define TEXTUREMANAGER_H_
 
 #include <d3d11.h>
+#include <atlbase.h>
 #include <vector>
 using namespace std;
 //#include <d3dx11tex.h>
@@ -13,16 +14,17 @@ public:
 	TextureManager(const TextureManager&);
 	~TextureManager();
 
-	int AddTexture(ID3D11Device* _device, WCHAR* _filename);
-	int NumberOfTextures();
-	ID3D11ShaderResourceView* GetTextureArrayPointer();
-	void Shutdown();
+	static int AddTexture(CComPtr<ID3D11Device> _device, WCHAR* _filename);
+	static int AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView);
+	static int NumberOfTextures();
+	static CComPtr<ID3D11ShaderResourceView> GetTextureArrayPointer();
+	static void Shutdown();
 
 
-	ID3D11ShaderResourceView* GetTexture(int _index);
+	static CComPtr<ID3D11ShaderResourceView> GetTexture(int _index);
 
 private:
-	vector<ID3D11ShaderResourceView*> textures;
+	static vector<CComPtr<ID3D11ShaderResourceView>> textures;
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 RenderComponent::RenderComponent()
 {
-	memset(&renderComponentFlag, 0, sizeof(char));
+ 	memset(&renderComponentFlag, 0, sizeof(char)); 
 }
 
 RenderComponent::RenderComponent(const RenderComponent& _component)
@@ -30,4 +30,17 @@ void RenderComponent::AddRenderComponent(RENDER_COMPONENTS _componentType, Rende
 void RenderComponent::RemoveRenderComponent(RENDER_COMPONENTS _componentType)
 {
 	renderComponentFlag &= ~(1 << _componentType);
+}
+
+Component* RenderComponent::GetVertexBufferRenderComponent()
+{
+	for(unsigned int i = 0; i < renderComponents.size(); ++i)
+	{
+		if(renderComponents[i].componentType == VERTEX_BUFFER_RENDER_COMPONENT)
+		{
+			return renderComponents[i].component;
+		}
+	}
+
+	return NULL;
 }

@@ -7,12 +7,13 @@ using namespace std;
 #include "RenderComponent.h"
 #include "../../Renderer/D3D11Renderer.h"
 
-enum VERTEX_BUFFER_COMPONENTS{VERTEX_POSITION_COMPONENT, VERTEX_COLOR_COMPONENT, VERTEX_NORMAL_COMPONENT, VERTEX_TEXCOORD_COMPONENT};
+enum VERTEX_BUFFER_COMPONENTS{VERTEX_POSITION_COMPONENT, VERTEX_NORMAL_COMPONENT, VERTEX_TEXCOORD_COMPONENT, VERTEX_TANGENT_COMPONENT, VERTEX_BINORMAL_COMPONENT};
 
 struct VertexComponent
 {
 	VERTEX_BUFFER_COMPONENTS componentType;
-	unsigned int size;
+	unsigned int stride;
+	unsigned int totalSize;
 	CComPtr<ID3D11Buffer> buffer;
 };
 
@@ -23,8 +24,12 @@ public:
 	VertexBufferComponent(const VertexBufferComponent& _vertexBufferComponent);
 	~VertexBufferComponent();
 
-	void AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _size);
+	void AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _stride, unsigned int _totalSize);
 	void RemoveVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _component);
+
+	unsigned int GetNumberVertexBufferComponents(){return vertexBufferComponents.size();}
+
+	vector<VertexComponent*> GetVertexBufferComponents(){return vertexBufferComponents;}
 
 private:
 	char vertexBufferComponentFlag;

@@ -26,6 +26,9 @@ public:
 	void AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _component, void* _data, unsigned int _size);
 	void RemoveIndexBufferComponent(INDEX_BUFFER_COMPONENTS _component);
 
+	vector<IndexComponent*> GetIndexBufferComponents(){return indexBufferComponents;}
+	unsigned int GetNumberIndexBufferComponents(){return indexBufferComponents.size();}
+
 private:
 	char indexBufferComponentFlag;
 

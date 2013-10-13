@@ -13,8 +13,8 @@ struct PixelIn
 
 struct PixelOut
 {
-	float4 Normal			: SV_Target1;
-	float4 DiffuseAlbedo	: SV_Target0;
+	float4 Normal			: SV_Target0;
+	float4 DiffuseAlbedo	: SV_Target1;
 	float4 SpecularAlbedo	: SV_Target2;
 	float4 Position			: SV_Target3;
 };

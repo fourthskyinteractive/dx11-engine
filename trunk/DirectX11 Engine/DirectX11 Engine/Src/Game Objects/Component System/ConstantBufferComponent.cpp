@@ -27,22 +27,22 @@ void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONE
 	newConstantComponent->componentType = _component;
 	newConstantComponent->size = _size;
 
-	D3D11_BUFFER_DESC vBufferDesc;
-	ZeroMemory(&vBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	vBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vBufferDesc.ByteWidth = _size;
-	vBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	vBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	D3D11_BUFFER_DESC cBufferDesc;
+	ZeroMemory(&cBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	cBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cBufferDesc.ByteWidth = _size;
+	cBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	D3D11_SUBRESOURCE_DATA vData;
-	ZeroMemory(&vData, sizeof(D3D11_SUBRESOURCE_DATA));
-	vData.pSysMem = &_data;
+	D3D11_SUBRESOURCE_DATA cData;
+	ZeroMemory(&cData, sizeof(D3D11_SUBRESOURCE_DATA));
+	cData.pSysMem = _data;
 
-	HRESULT hr = D3D11Renderer::d3dDevice->CreateBuffer(&vBufferDesc, &vData, &newConstantComponent->buffer);
+	HRESULT hr = D3D11Renderer::d3dDevice->CreateBuffer(&cBufferDesc, NULL, &newConstantComponent->buffer);
 
 	if(hr != S_OK)
 	{
-		MessageBox(NULL, "Vertex Buffer Creation Failed : VertexBufferComponent::AddVertexBufferComponent(VERTEX_BUFFER_COMPONENT _component, void* _data, unsigned int _size)", "Vertex Buffer Component Error", 0);
+		MessageBox(NULL, "Constant Buffer Creation Failed : ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)", "Constant Buffer Component Error", 0);
 	}
 
 	constantBufferComponents.push_back(newConstantComponent);

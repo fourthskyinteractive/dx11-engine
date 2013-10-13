@@ -1,16 +1,16 @@
 #include "ScreenSpaceObject.h"
-
-#include "ParentMeshObject.h"
-#include "../Utility/Model Loaders/FBXLoader.h"
 #include "../Game/Game.h"
-#include "../Renderer/D3D11Renderer.h"
+
+#include "../../DeferredGeometryVertexShader.csh"
+#include "../../DeferredGeometryPixelShader.csh"
+
 
 ScreenSpaceObject::ScreenSpaceObject()
 {
 
 }
 
-ScreenSpaceObject::ScreenSpaceObject(const ScreenSpaceObject& _childMeshObject)
+ScreenSpaceObject::ScreenSpaceObject(const ScreenSpaceObject& _screenSpaceObject)
 {
 
 }
@@ -20,102 +20,157 @@ ScreenSpaceObject::~ScreenSpaceObject()
 
 }
 
-void ScreenSpaceObject::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11ShaderResourceView* _shaderResourceView, VERTEX_SHADERS _vertexShader, PIXEL_SHADERS _pixelShader, GEOMETRY_SHADERS _geometryShader)
+void ScreenSpaceObject::UpdateShaderConstantBuffers()
 {
-	renderTarget = _renderTargetView;
-	for(int i = 0; i < 4; ++i)
-	{
-		textures[i] = D3D11Renderer::shaderResourceView[i + 1];
-	}
-	InitializeBuffers(NULL, NULL);
-	shaderUsed.Initialize(_vertexShader, _pixelShader, _geometryShader);
-	shaderUsed.UpdatePixelShaderTextureConstants(textures);
+// 	HRESULT hr = 0;
+// 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+// 	ConstantBufferComponent* cBufferComponent = GetConstantBufferComponent();
+// 
+// 	CComPtr<ID3D11Buffer> cBuffer;
+// 	int bufferTypeAndSlot = -1;
+// 
+// 	unsigned int numComponents = cBufferComponent->GetNumberConstantBufferComponents();
+// 	for(unsigned int i = 0; i < numComponents; ++i)
+// 	{
+// 		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
+// 		//Gets the Constant Buffer
+// 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
+// 
+// 		//Picks the bind slot according to what type of matrix it is
+// 		bufferTypeAndSlot = cBufferComponent->GetConstantBufferComponents()[i]->componentType;
+// 
+// 		//Map and copy over the data
+// 		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+// 
+// 		if(hr == S_OK)
+// 		{
+// 			if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
+// 			{
+// 				memcpy(mappedSubresource.pData, &worldMatrix, 64);
+// 			}
+// 			else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
+// 			{
+// 				memcpy(mappedSubresource.pData, &Game::camera->GetViewMatrixF(), sizeof(XMFLOAT4X4));
+// 			}
+// 			else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
+// 			{
+// 				memcpy(mappedSubresource.pData, &Game::camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4));
+// 			}
+// 		}
+// 
+// 		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
+// 
+// 		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferTypeAndSlot, 1, &cBuffer.p);
+// 	}
 }
 
-bool ScreenSpaceObject::InitializeBuffers(VertexType* _vertices, unsigned long* _indices)
+void ScreenSpaceObject::BindRenderComponents()
 {
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData;
+	BaseObject::BindRenderComponents();
 
-	XMFLOAT3 dummyValue = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//Set up the description of the static vertex buffer
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(XMFLOAT3);
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
+	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
+	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
 
-	vertexData.pSysMem = &dummyValue;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
+	//TODO:
+	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
-	//Now create the vertex buffer
+	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
+	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, buffersForBinding->numBuffers, &buffersForBinding->buffers[0].p, &buffersForBinding->strides[0], &buffersForBinding->offsets[0]);
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(renderDataMembers->inputLayout);
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+}
+
+void ScreenSpaceObject::FinalizeObject()
+{
+	if(GetRenderDataMembers()->vertexShader == NULL ||
+		GetRenderDataMembers()->pixelShader == NULL || 
+		GetRenderDataMembers()->geometryShader == NULL ||
+		GetRenderDataMembers()->computeShader == NULL)
+	{
+		MessageBox(NULL, "One or more of the shaders are not set! : ScreenSpaceObject::FinalizeObject()", "Shader Set Error", 0);
+		return;
+	}
 
 	HRESULT hr;
+	BaseObject::FinalizeObject();
 
-	hr = D3D11Renderer::d3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
-	if(FAILED(hr))
+	//Set up all of the buffers that this object will use.
+	//1. Vertex Buffer
+	//2. Index Buffer
+	//3. Constant Buffers	
+	SetRenderable(true);
+
+	//Put the Vertex Buffers in one place
+	VertexBufferComponent* vBufferComponent = GetVertexBufferComponent();
+	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
+	unsigned int numComponents = vBufferComponent->GetNumberVertexBufferComponents();
+
+	unsigned int totalOffset = 0;
+	for(unsigned int i = 0; i < numComponents; ++i)
 	{
-		return false;
+		buffersForBinding->buffers.push_back(vBufferComponent->GetVertexBufferComponents()[i]->buffer);
+		buffersForBinding->strides.push_back(vBufferComponent->GetVertexBufferComponents()[i]->stride);
+		buffersForBinding->offsets.push_back(0);
+		buffersForBinding->numBuffers += 1;
+
+		totalOffset += vBufferComponent->GetVertexBufferComponents()[i]->totalSize;
 	}
 
-	return true;
-}
+	//Setup the input Layout
+	D3D11_INPUT_ELEMENT_DESC polygonLayout;
+	ZeroMemory(&polygonLayout, sizeof(D3D11_INPUT_ELEMENT_DESC));	
 
-void ScreenSpaceObject::SetShaderBuffers()
-{
-	unsigned int stride;
-	unsigned int offset;
+	polygonLayout.SemanticName = "POSITION";
+	polygonLayout.SemanticIndex = 0;
+	polygonLayout.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout.InputSlot = 0;
+	polygonLayout.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout.InstanceDataStepRate = 0;
 
-	//Set the vertex buffer stride and offset
-	stride = sizeof(VertexType);
-	offset = 0;
+	CComPtr<ID3D11InputLayout> inputLayout;
+	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, 1, 
+		GetRenderDataMembers()->vertexBufferBytes,
+		GetRenderDataMembers()->vertexBufferBiteWidth, &inputLayout);
 
-	//Set the vertex buffer to active in the input assembler so it can be rendered
-	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+	if(hr != S_OK)
+	{
+		MessageBox(NULL, "Input Layout Creation Error! : ScreenSpaceObject::FinalizeObject()", "Input Layout Error", 0);
+		return;
+	}
 
-	//Set the index buffer to active in the input assembler so it can be rendered
-	//D3D11Renderer::d3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-
-	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
-	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	SetInputLayout(inputLayout);	
 }
 
 void ScreenSpaceObject::Render()
 {
-	SetShaderBuffers();
-	int numPointLights = LightManager::GetNumberPointLights();
-	int numDirectionalLights = LightManager::GetNumberDirectionalLights();
+	if(!IsRenderable())
+		return;
 
-	shaderUsed.UpdatePerFrame(renderTarget, textures);
+	BaseObject::Render();
 
-	for(int i = 0; i < numPointLights; ++i)
-	{
-		Update(POINT_LIGHT, i);
-		shaderUsed.Render(1);
-	}
+	D3D11Renderer::d3dImmediateContext->VSSetShader(GetVertexShader(), NULL, 0);
+	D3D11Renderer::d3dImmediateContext->GSSetShader(GetGeometryShader(), NULL, 0);
+	D3D11Renderer::d3dImmediateContext->PSSetShader(GetPixelShader(), NULL, 0);
+	D3D11Renderer::d3dImmediateContext->CSSetShader(GetComputeShader(), NULL, 0);
 
-	for(int i = 0; i < numDirectionalLights; ++i)
-	{
-		Update(DIRCTIONAL_LIGHT, i);
-		shaderUsed.Render(1);
-	}
+	//Update and set the Constant Buffers
+	UpdateShaderConstantBuffers();
 
-	if(LightManager::GetAmbientLight())
-	{
-		Update(AMBIENT_LIGHT, 0);
-		shaderUsed.Render(1);
-	}
+	//Set the vertex and index buffers
+	BindRenderComponents();
+
+	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }
 
-void ScreenSpaceObject::Update(LIGHT_TYPE _lightType, int _lightIndex)
+void ScreenSpaceObject::Update(float _dt)
 {
-	shaderUsed.UpdatePerLight(_lightType, _lightIndex);
+	if(!IsRenderable())
+		return;
 }
 
-void ScreenSpaceObject::ChangeShaderResourceView(ID3D11ShaderResourceView* _shaderResourceView[])
+void ScreenSpaceObject::Destroy()
 {
-// 	texture = NULL;
-// 	texture = _shaderResourceView;
+	BaseObject::Destroy();
 }

@@ -13,7 +13,7 @@ using namespace DirectX;
 #include <queue>
 using namespace std;
 
-bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _hasTexture)
+bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 {
 	int axisFlip = 0;
 	FbxManager* fbxManager = FbxManager::Create();
@@ -73,107 +73,107 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 
 	FbxAnimEvaluator* mySceneEvaluator = scene->GetEvaluator();
 
-	FbxTime myTime;
-
-	myTime.SetSecondDouble(1.0);
-
-	FbxNode* myMeshNode = FbxNode::Create(scene, "");
-
-	
-	static int numNodes = 0;
-	//GETTING ANIMAION DATA
-	for(int i = 0; i < scene->GetSrcObjectCount<FbxAnimStack>(); ++i)
-	{
-		FbxAnimStack* lAnimStack = scene->GetSrcObject<FbxAnimStack>(i);
-
-		//WITH THIS I CAN GET THE TOTAL TIME OF THE ANIMATION!!!!!
-		//FINALLY!!!!!
-
-		double secondsTime = ((FbxTime)lAnimStack->LocalStart).GetSecondDouble();
-		secondsTime = ((FbxTime)lAnimStack->LocalStop).GetSecondDouble();
-
-		FbxString stackName = "Animation Stack Name: ";
-		stackName += lAnimStack->GetName();
-		string sStackName = stackName;
-
-		int numLayers = lAnimStack->GetMemberCount<FbxAnimLayer>();
-
-		for(int j = 0; j < numLayers; ++j)
-		{
-			FbxAnimLayer* lAnimLayer = lAnimStack->GetMember<FbxAnimLayer>(j);
-
-			FbxString layerName = "Animation Stack Name: ";
-			layerName += lAnimLayer->GetName();
-			string sLayerName = layerName;
-
-			double weight = lAnimLayer->Weight;
-
-			queue<FbxNode*> nodes;
-
-			FbxNode* tempNode = scene->GetRootNode();
-			FbxString nodeName = "Animation Stack Name: ";
-			layerName += tempNode->GetName();
-			string sNodeName = layerName;
-
-			numNodes ++;
-
-			while(tempNode != NULL)
-			{
-
-				//THIS SHIT RIGHT HERE IS CLOSE NIGGEH
-				FbxString nodeName = "";
-				nodeName += tempNode->GetName();
-				string sNodeName = nodeName;
-
-				FbxNodeAttribute* nodeAttribute = tempNode->GetNodeAttribute();
-				
-				FbxNodeAttribute::EType attributeType;
-
-				if(nodeAttribute)
-					attributeType = nodeAttribute->GetAttributeType();
-
-				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer);			
-
-				if(lAnimCurve != NULL)
-				{
-					nodeName = "";
-					nodeName += lAnimCurve->GetName();
-					sNodeName = nodeName;
-				}
-				FbxMatrix globalMatrix = mySceneEvaluator->GetNodeLocalTransform(tempNode, myTime);
-				
-				FbxGeometry* nodeGeometry = tempNode->GetGeometry();
-
-				FbxGeometryWeightedMap* weightMap;
-				if(nodeGeometry)
-					 weightMap = nodeGeometry->GetSourceGeometryWeightedMap();
-
-				//FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
-
-				if(lAnimCurve != NULL)
-				{
-					
-				}
-
-				for(int i = 0; i < tempNode->GetChildCount(false); ++i)
-				{
-					nodes.push(tempNode->GetChild(i));
-					numNodes++;
-
-				}
-
-				if(nodes.size() > 0)
-				{
-					tempNode = nodes.front();
-					nodes.pop();
-				}
-				else
-				{
-					tempNode = NULL;
-				}
-			}               
-		}       
-	}
+// 	FbxTime myTime;
+// 
+// 	myTime.SetSecondDouble(1.0);
+// 
+// 	FbxNode* myMeshNode = FbxNode::Create(scene, "");
+// 
+// 	
+// 	static int numNodes = 0;
+// 	//GETTING ANIMAION DATA
+// 	for(int i = 0; i < scene->GetSrcObjectCount<FbxAnimStack>(); ++i)
+// 	{
+// 		FbxAnimStack* lAnimStack = scene->GetSrcObject<FbxAnimStack>(i);
+// 
+// 		//WITH THIS I CAN GET THE TOTAL TIME OF THE ANIMATION!!!!!
+// 		//FINALLY!!!!!
+// 
+// 		double secondsTime = ((FbxTime)lAnimStack->LocalStart).GetSecondDouble();
+// 		secondsTime = ((FbxTime)lAnimStack->LocalStop).GetSecondDouble();
+// 
+// 		FbxString stackName = "Animation Stack Name: ";
+// 		stackName += lAnimStack->GetName();
+// 		string sStackName = stackName;
+// 
+// 		int numLayers = lAnimStack->GetMemberCount<FbxAnimLayer>();
+// 
+// 		for(int j = 0; j < numLayers; ++j)
+// 		{
+// 			FbxAnimLayer* lAnimLayer = lAnimStack->GetMember<FbxAnimLayer>(j);
+// 
+// 			FbxString layerName = "Animation Stack Name: ";
+// 			layerName += lAnimLayer->GetName();
+// 			string sLayerName = layerName;
+// 
+// 			double weight = lAnimLayer->Weight;
+// 
+// 			queue<FbxNode*> nodes;
+// 
+// 			FbxNode* tempNode = scene->GetRootNode();
+// 			FbxString nodeName = "Animation Stack Name: ";
+// 			layerName += tempNode->GetName();
+// 			string sNodeName = layerName;
+// 
+// 			numNodes ++;
+// 
+// 			while(tempNode != NULL)
+// 			{
+// 
+// 				//THIS SHIT RIGHT HERE IS CLOSE NIGGEH
+// 				FbxString nodeName = "";
+// 				nodeName += tempNode->GetName();
+// 				string sNodeName = nodeName;
+// 
+// 				FbxNodeAttribute* nodeAttribute = tempNode->GetNodeAttribute();
+// 				
+// 				FbxNodeAttribute::EType attributeType;
+// 
+// 				if(nodeAttribute)
+// 					attributeType = nodeAttribute->GetAttributeType();
+// 
+// 				FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer);			
+// 
+// 				if(lAnimCurve != NULL)
+// 				{
+// 					nodeName = "";
+// 					nodeName += lAnimCurve->GetName();
+// 					sNodeName = nodeName;
+// 				}
+// 				FbxMatrix globalMatrix = mySceneEvaluator->GetNodeLocalTransform(tempNode, myTime);
+// 				
+// 				FbxGeometry* nodeGeometry = tempNode->GetGeometry();
+// 
+// 				FbxGeometryWeightedMap* weightMap;
+// 				if(nodeGeometry)
+// 					 weightMap = nodeGeometry->GetSourceGeometryWeightedMap();
+// 
+// 				//FbxAnimCurve* lAnimCurve = tempNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+// 
+// 				if(lAnimCurve != NULL)
+// 				{
+// 					
+// 				}
+// 
+// 				for(int i = 0; i < tempNode->GetChildCount(false); ++i)
+// 				{
+// 					nodes.push(tempNode->GetChild(i));
+// 					numNodes++;
+// 
+// 				}
+// 
+// 				if(nodes.size() > 0)
+// 				{
+// 					tempNode = nodes.front();
+// 					nodes.pop();
+// 				}
+// 				else
+// 				{
+// 					tempNode = NULL;
+// 				}
+// 			}               
+// 		}       
+// 	}
 
 	FbxArray<FbxMesh*> meshes;
 	FillMeshArray(scene, meshes);
@@ -195,12 +195,12 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 
 	int ptrMove = 0;
 
-	float wValue = 0.0f;
-
-	if(!_hasTexture)
-	{
-		wValue = 1.0f;
-	}
+// 	float wValue = 0.0f;
+// 
+// 	if(!_hasTexture)
+// 	{
+// 		wValue = 1.0f;
+// 	}
 
 	for(int i = 0; i < meshes.GetCount(); ++i)
 	{
@@ -209,6 +209,10 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		if(vertexCount == 0)
 			continue;
 
+		_modelData.positions.resize(vertexCount);
+		_modelData.normals.resize(vertexCount);
+		_modelData.texCoords.resize(vertexCount);
+		
 		VertexType* vertices;
 		vertices = new VertexType[vertexCount];
 
@@ -226,43 +230,43 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 			FbxVector2 fbxUV(0, 0);
 			bool texCoordFound = false;
 			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0);
-			vertices[index].position.x = (float)fbxVerts[index][0];
-			vertices[index].position.y = (float)fbxVerts[index][1];
-			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = wValue;
+			_modelData.positions[index].x = (float)fbxVerts[index][0];
+			_modelData.positions[index].y = (float)fbxVerts[index][1];
+			_modelData.positions[index].z = (float)fbxVerts[index][2];
+			_modelData.positions[index].w = 1.0f;
 			meshes[i]->GetPolygonVertexNormal(j, 0, fbxNorm);
-			vertices[index].normal.x = (float)fbxNorm[0];
-			vertices[index].normal.y = (float)fbxNorm[1];
-			vertices[index].normal.z = (float)fbxNorm[2];
+			_modelData.normals[index].x = (float)fbxNorm[0];
+			_modelData.normals[index].y = (float)fbxNorm[1];
+			_modelData.normals[index].z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV);
-			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
+			_modelData.texCoords[index].x = (float)fbxUV[0];
+			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 
 			face.indices[1] = index = meshes[i]->GetPolygonVertex(j, 1);
-			vertices[index].position.x = (float)fbxVerts[index][0];
-			vertices[index].position.y = (float)fbxVerts[index][1];
-			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = wValue;
+			_modelData.positions[index].x = (float)fbxVerts[index][0];
+			_modelData.positions[index].y = (float)fbxVerts[index][1];
+			_modelData.positions[index].z = (float)fbxVerts[index][2];
+			_modelData.positions[index].w = 1.0f;
 			meshes[i]->GetPolygonVertexNormal(j, 1, fbxNorm);
-			vertices[index].normal.x = (float)fbxNorm[0];
-			vertices[index].normal.y = (float)fbxNorm[1];
-			vertices[index].normal.z = (float)fbxNorm[2];
+			_modelData.normals[index].x = (float)fbxNorm[0];
+			_modelData.normals[index].y = (float)fbxNorm[1];
+			_modelData.normals[index].z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV);
-			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
+			_modelData.texCoords[index].x = (float)fbxUV[0];
+			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 
 			face.indices[2] = index = meshes[i]->GetPolygonVertex(j, 2);
-			vertices[index].position.x = (float)fbxVerts[index][0];
-			vertices[index].position.y = (float)fbxVerts[index][1];
-			vertices[index].position.z = (float)fbxVerts[index][2];
-			vertices[index].position.w = wValue;
+			_modelData.positions[index].x = (float)fbxVerts[index][0];
+			_modelData.positions[index].y = (float)fbxVerts[index][1];
+			_modelData.positions[index].z = (float)fbxVerts[index][2];
+			_modelData.positions[index].w = 1.0f;
 			meshes[i]->GetPolygonVertexNormal(j, 2, fbxNorm);
-			vertices[index].normal.x = (float)fbxNorm[0];
-			vertices[index].normal.y = (float)fbxNorm[1];
-			vertices[index].normal.z = (float)fbxNorm[2];
+			_modelData.normals[index].x = (float)fbxNorm[0];
+			_modelData.normals[index].y = (float)fbxNorm[1];
+			_modelData.normals[index].z = (float)fbxNorm[2];
 			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV);
-			vertices[index].texture.x = (float)fbxUV[0];
-			vertices[index].texture.y = 1.0f - (float)fbxUV[1];
+			_modelData.texCoords[index].x = (float)fbxUV[0];
+			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 
 			faces.push_back(face);
 		}
@@ -275,12 +279,16 @@ bool FBXLoader::LoadFBX(ParentMeshObject* _parentMesh, char* _filePath, bool _ha
 		int indicie = 0;
 		for(unsigned int i = 0; i < faces.size(); ++i)
 		{
+			_modelData.indices.push_back(faces[i].indices[0]);
+			_modelData.indices.push_back(faces[i].indices[1]);
+			_modelData.indices.push_back(faces[i].indices[2]);
 			indices[indicie++] = faces[i].indices[0 + axisFlip];
 			indices[indicie++] = faces[i].indices[1 - axisFlip];
 			indices[indicie++] = faces[i].indices[2];
 		}
+
 		faces.clear();
-		_parentMesh->AddChild(vertices, indices, vertexCount, indexCount);
+		//_parentMesh->AddChild(vertices, indices, vertexCount, indexCount);
 	}
 
 	return true;

@@ -34,7 +34,8 @@ void Terrain::Initialize(ID3D11RenderTargetView* _renderTargetView, ID3D11Shader
 	TerrainGenerator::CreateTerrain(_terrainDescription, verts, indices);
 
 	InitializeBuffers();
-	shaderUsed.Initialize(SIMPLE_VERTEX_SHADER, SIMPLE_PIXEL_SHADER, SIMPLE_GEOMETRY_SHADER);
+	//TODO: Figure out what shaders to use for this.
+	//shaderUsed.Initialize(SIMPLE_VERTEX_SHADER, SIMPLE_PIXEL_SHADER, SIMPLE_GEOMETRY_SHADER);
 	shaderUsed.UpdatePixelShaderTextureConstants(texture);
 }
 

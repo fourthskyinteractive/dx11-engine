@@ -143,7 +143,7 @@ PixelOut PS(PixelIn input)
 
 	lighting *= diffuseAlbedo;
 
-	pOut.color = float4(lighting, 1.0f);
+	pOut.color = float4(diffuseAlbedo, 1.0f);
 
 	return pOut;
 }

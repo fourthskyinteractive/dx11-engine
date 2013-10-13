@@ -25,6 +25,9 @@ public:
 
 	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size);
 	void RemoveConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component);
+	unsigned int GetNumberConstantBufferComponents(){return constantBufferComponents.size();}
+
+	vector<ConstantComponent*> GetConstantBufferComponents(){return constantBufferComponents;}
 
 
 private:

@@ -30,7 +30,7 @@ private:
 	BaseShader* shaderUsed;
 	DepthShader depthShader;
 	ObjectShader objectShader;
-	LightShader lightShader;
+	//LightShader lightShader;
 
 	vector<ChildMeshObject*> children;
 

@@ -21,6 +21,14 @@
 #include "../Game Objects/DynamicObject.h"
 
 #include "../Game Objects/BaseObject.h"
+#include "../Game Objects/WorldObject.h"
+
+struct vertStruct
+{
+	XMFLOAT4 position;
+	XMFLOAT3 normal;
+	XMFLOAT2 texCoord;
+};
 
 class Game
 {
@@ -48,6 +56,7 @@ public:
 
 private:
 	static BaseObject* baseObject;
+	static BaseObject* computeObject;
 
 	static XMFLOAT3 lightPos;
 	static ParentMeshObject* pointLight;

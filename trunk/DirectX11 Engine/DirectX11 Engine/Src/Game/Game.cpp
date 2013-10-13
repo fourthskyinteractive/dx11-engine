@@ -11,6 +11,15 @@
 #include "../Renderer/Shader Classes/BaseShader.h"
 #include "../Utility/Misc/TerrainGenerator.h"
 
+//Shaders
+#include "../../GBufferVertexShader.csh"
+#include "../../GBufferPixelShader.csh"
+#include "../../DeferredLightingComputeShader.csh"
+#include "../../DeferredLightingVertexShader.csh"
+#include "../../DeferredLightingGeometryShader.csh"
+#include "../../DeferredLightingPixelShader.csh"
+
+
 #include "ScreenGrab.h"
 
 //#include <D3DX11async.h>
@@ -29,6 +38,7 @@ using std::stringstream;
 #endif
 
 BaseObject*						Game::baseObject;
+BaseObject*						Game::computeObject;
 
 XMFLOAT3						Game::lightPos;
 ParentMeshObject*				Game::pointLight;
@@ -84,37 +94,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, 1366, 768, false);
- 
-	XMFLOAT3 testArray[10];
-	for(int i = 0; i < 10; ++i)
-	{
-		testArray[i] = XMFLOAT3((float)i, (float)i, (float)i);
-	}
-
-	unsigned int indicies[10];
-	for(int i = 0; i < 10; ++i)
-	{
-		indicies[i] = i;
-	}
-
-	XMMATRIX worldIdentityM;
-	XMFLOAT4X4 worldIdentity;
-	XMMatrixIsIdentity(worldIdentityM);
-	XMStoreFloat4x4(&worldIdentity, worldIdentityM);
-
-	baseObject = new BaseObject();
-	baseObject->AddBaseComponent(RENDER_COMPONENT);
-	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
-	baseObject->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
-	baseObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
-	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, testArray, sizeof(XMFLOAT3) * 10);
-	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, indicies, sizeof(unsigned int) * 10);
-	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4));
-
-	baseObject->LookAtVertexComponent();
-	baseObject->LookAtIndexComponent();
-	baseObject->LookAtConstantComponent();
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true,true, 1366, 768, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -141,31 +121,13 @@ void Game::Run()
 void Game::Render()
 {
 	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)));
-
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(NULL, 0, 0xffffffff);
 
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	mesh->UpdateWorldMatrix();
-	mesh->Render();
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+	baseObject->Render();
 
-// 	for(unsigned int i = 0; i < pointLightPos.size(); ++i)
-// 	{
-// 		D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-// 		pointLight->SetPosition(pointLightPos[i]);
-// 		pointLight->UpdateWorldMatrix();
-// 		pointLight->Update(0.0f);
-// 		pointLight->Render();
-// 	}
-	//terrain->Render();
-
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
-	lightPass->Render();
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-	//edgeDetectionPass->Render();
-	D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
-
+	//D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
+	//lightPass->Render();
+	computeObject->Render();
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
 
@@ -321,6 +283,8 @@ void Game::Exit()
 		delete directInput;
 		directInput = NULL;
 	}
+
+	LightManager::Shutdown();
 }
 
 void Game::CalculateFrameStats()
@@ -349,26 +313,114 @@ void Game::CalculateFrameStats()
 
 void Game::LoadCompiledShaders()
 {
-	ShaderManager::AddShader("Res/Compiled Shaders/VertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/PixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/TextureVertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/TexturePixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTextureVertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/MultipleTexturePixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DepthVertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DepthPixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineVertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombinePixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DeferredCombineGeometryShader.cso", GEOMETRY_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryVertexShader.cso", VERTEX_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/DeferredGeometryPixelShader.cso", PIXEL_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/BillboardGeometryShader.cso", GEOMETRY_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/SkyboxGeometryShader.cso", GEOMETRY_SHADER);
-	ShaderManager::AddShader("Res/Compiled Shaders/SkyboxPixelShader.cso", PIXEL_SHADER);
+	//Object Shaders
+	ShaderManager::AddVertexShader((void*)GBufferVertexShader, sizeof(GBufferVertexShader), GBUFFER_VERTEX_SHADER);
+	ShaderManager::AddPixelShader((void*)GBufferPixelShader, sizeof(GBufferPixelShader), GBUFFER_PIXEL_SHADER);
+
+	//Screen Space Deferred Shaders
+	ShaderManager::AddComputeShader((void*)DeferredLightingComputeShader, sizeof(DeferredLightingComputeShader), DEFERRED_LIGHTING_COMPUTE_SHADER);
+	ShaderManager::AddVertexShader((void*)DeferredLightingVertexShader, sizeof(DeferredLightingVertexShader), DEFERRED_LIGHTING_VERTEX_SHADER);
+	ShaderManager::AddGeometryShader((void*)DeferredLightingGeometryShader, sizeof(DeferredLightingGeometryShader), DEFERRED_LIGHTING_GEOMETRY_SHADER);
+	ShaderManager::AddPixelShader((void*)DeferredLightingPixelShader, sizeof(DeferredLightingPixelShader), DEFERRED_LIGHTING_PIXEL_SHADER);
 }
 
 void Game::InitializeObjects()
 {
+	vertStruct tempstruct[4];
+	tempstruct[0].position.x = -1;
+	tempstruct[0].position.y = -1;
+	tempstruct[0].position.z = 1;
+	tempstruct[0].position.w = 0;
+
+	tempstruct[1].position.x = -1;
+	tempstruct[1].position.y = 1;
+	tempstruct[1].position.z = 1;
+	tempstruct[1].position.w = 0;
+
+	tempstruct[2].position.x = 1;
+	tempstruct[2].position.y = 1;
+	tempstruct[2].position.z = 1;
+	tempstruct[2].position.w = 0;
+
+	tempstruct[3].position.x = 1;
+	tempstruct[3].position.y = -1;
+	tempstruct[3].position.z = 1;
+	tempstruct[3].position.w = 0;
+
+	tempstruct[0].normal.x = -1;
+	tempstruct[0].normal.y = -1;
+	tempstruct[0].normal.z = 1;
+				  
+	tempstruct[1].normal.x = -1;
+	tempstruct[1].normal.y = 1;
+	tempstruct[1].normal.z = 1;
+				 
+	tempstruct[2].normal.x = 1;
+	tempstruct[2].normal.y = 1;
+	tempstruct[2].normal.z = 1;
+				  
+	tempstruct[3].normal.x = 1;
+	tempstruct[3].normal.y = -1;
+	tempstruct[3].normal.z = 1;
+
+	tempstruct[0].texCoord.x = 0;
+	tempstruct[0].texCoord.y = 1;
+
+	tempstruct[1].texCoord.x = 0;
+	tempstruct[1].texCoord.y = 0;
+
+	tempstruct[2].texCoord.x = 1;
+	tempstruct[2].texCoord.y = 0;
+
+	tempstruct[3].texCoord.x = 1;
+	tempstruct[3].texCoord.y = 1;
+
+	unsigned long indicies[6];
+	indicies[0] = 0;
+	indicies[1] = 1;
+	indicies[2] = 2;
+	indicies[3] = 2;
+	indicies[4] = 3;
+	indicies[5] = 0;
+
+	XMMATRIX worldIdentityM;
+	XMFLOAT4X4 worldIdentity;
+	worldIdentityM = XMMatrixIdentity();
+	XMStoreFloat4x4(&worldIdentity, worldIdentityM);
+	ModelData modelData;
+	baseObject = new WorldObject();
+	DX11RenderDataMembers* renderDataMembers = baseObject->GetRenderDataMembers();
+	baseObject->LoadModel("Res/Models/BlueMinion.fbx", modelData);
+	baseObject->AddTexture(L"Res/Textures/BlueMinion.dds");
+	baseObject->AddBaseComponent(RENDER_COMPONENT);
+	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
+	baseObject->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
+	baseObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
+	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &modelData.positions[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * modelData.positions.size());
+	baseObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &modelData.normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * modelData.normals.size());
+	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &modelData.texCoords[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * modelData.texCoords.size());
+	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &modelData.indices[0], sizeof(unsigned long), sizeof(unsigned long) * modelData.indices.size());
+	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4));
+	((WorldObject*)baseObject)->SetWorldMatrix(worldIdentity);
+	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4));
+	baseObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4));
+	baseObject->SetShaders(0, -1, 0, -1);
+	baseObject->FinalizeObject();
+
+
+	XMFLOAT4 pos = XMFLOAT4(0.0f, 0.0f, 5.0f, 1.0f);
+	computeObject = new ScreenSpaceObject();
+	computeObject->AddBaseComponent(RENDER_COMPONENT);
+	for(int i = 1; i < 5; ++i)
+	{
+		computeObject->AddTexture(D3D11Renderer::shaderResourceView[i]);
+	}
+	computeObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
+	computeObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
+	computeObject->AddComputeShaderBuffer(&tempstruct, sizeof(vertStruct), sizeof(vertStruct) * 4);
+	computeObject->SetShaders(1, 0, 1, 0);
+	computeObject->FinalizeObject();
+
 	//terrain = new Terrain();
 	//
 	//TerrainDescription terrainDescription;
@@ -386,8 +438,8 @@ void Game::InitializeObjects()
 	//skyBox = new ScreenSpaceObject();
 	//skyBox->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, SKYBOX_PIXEL_SHADER, SKYBOX_GEOMETRY_SHADER);
 
-	lightPass = new ScreenSpaceObject();
-	lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
+	//lightPass = new ScreenSpaceObject();
+	//lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
 }
 
 void Game::InitializeLights()

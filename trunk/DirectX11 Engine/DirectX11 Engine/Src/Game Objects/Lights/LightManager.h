@@ -38,6 +38,7 @@ public:
 	static void TurnOffPointLight(int _index, char* _lightName = "");
 	static void TurnOnPointLight(int _index, char* _lightName = "");
 	static void TogglePointLight(int _index, char* _lightName = "");
+	static void Shutdown();
 	
 	static int GetNumberPointLights(){return pointLights.size();}
 	static int GetNumberDirectionalLights(){return directionalLights.size();}

@@ -227,7 +227,12 @@ XMMATRIX  Camera::GetViewProjectionMatrixM() const
 
 XMFLOAT4X4 Camera::GetViewMatrixF() const
 {
-	return view;
+	XMMATRIX viewM;
+	viewM = XMLoadFloat4x4(&view);
+	viewM = XMMatrixInverse(0, viewM);
+	XMFLOAT4X4 tempView;
+	XMStoreFloat4x4(&tempView, viewM);
+	return tempView;
 }
 
 XMFLOAT4X4 Camera::GetProjectionMatrixF() const

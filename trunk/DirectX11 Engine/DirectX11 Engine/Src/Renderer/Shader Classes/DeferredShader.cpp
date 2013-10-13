@@ -87,14 +87,14 @@ bool DeferredShader::InitializeShader(int _vertexShaderIndex, int _pixelShaderIn
 	polygonLayout.InstanceDataStepRate = 0;
 
 	//Create the vertex input layout
-	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, 1, 
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
-		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
+// 	hr = D3D11Renderer::d3dDevice->CreateInputLayout(&polygonLayout, 1, 
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferPointer(),
+// 		ShaderManager::vertexShaders[vertexShaderIndex].buffer->GetBufferSize(), &inputLayout);
 
-	if(FAILED(hr))
-	{
-		return false;
-	}
+// 	if(FAILED(hr))
+// 	{
+// 		return false;
+// 	}
 
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -156,9 +156,9 @@ void DeferredShader::SetShader()
 	D3D11Renderer::d3dImmediateContext->IASetInputLayout(inputLayout);
 
 	//Set the vertex and pixel shaders that will be used to render this triangle
-	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
-	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->VSSetShader(ShaderManager::vertexShaders[vertexShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->GSSetShader(ShaderManager::geometryShaders[geometryShaderIndex].shader, NULL, 0);
+// 	D3D11Renderer::d3dImmediateContext->PSSetShader(ShaderManager::pixelShaders[pixelShaderIndex].shader, NULL, 0);
 	//D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &sampleState);
 }
 
