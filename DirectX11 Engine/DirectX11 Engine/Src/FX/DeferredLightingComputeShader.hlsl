@@ -24,6 +24,7 @@ struct DirectionalLightData
 	float3 direction;
 };
 
+
 RWStructuredBuffer<TileData> tileData : register(u0);
 StructuredBuffer<PointLightData> pointLights : register(u1);
 StructuredBuffer<DirectionalLightData> directionalLights : register(u2);
@@ -31,5 +32,6 @@ StructuredBuffer<DirectionalLightData> directionalLights : register(u2);
 [numthreads(1, 1, 1)]
 void CS( ComputeIn input )
 {
+	//FIGURE OUT WHAT LIGHTS HIT THIS TILE!
 	
 }
