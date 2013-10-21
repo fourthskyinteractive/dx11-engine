@@ -4,9 +4,13 @@ AmbientLight*				LightManager::ambientLight;
 vector<DirectionalLight*>	LightManager::directionalLights;
 vector<PointLight*>			LightManager::pointLights;
 
+unsigned int				LightManager::numDirectionalLights;
+unsigned int				LightManager::numPointLights;
+
 LightManager::LightManager()
 {
-
+	numDirectionalLights = 0;
+	numPointLights = 0;
 }
 
 LightManager::LightManager(const LightManager& _lightManager)
@@ -58,6 +62,8 @@ void LightManager::AddDirectionalLight(char* _lightName, XMFLOAT4 _color, XMFLOA
 	directionalLight->SetIsLightOn(_isLightOn);
 
 	directionalLights.push_back(directionalLight);
+
+	numDirectionalLights ++;
 }
 
 void LightManager::AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _position, float _radius, bool _isLightOn)
@@ -71,109 +77,120 @@ void LightManager::AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _po
 	pointLight->SetIsLightOn(_isLightOn);
 
 	pointLights.push_back(pointLight);
+
+	numPointLights ++;
 }
 
-void LightManager::TurnOffDirectionalLight(int _index, char* _lightName /* = "" */)
-{
-	int numDirectionalLights = directionalLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numDirectionalLights; ++i)
-		{
-			if(directionalLights[i]->GetLightName() == _lightName)
-			{
-				directionalLights[i]->SetIsLightOn(false);
-			}
-		}
-	}
 
-	directionalLights[_index]->SetIsLightOn(false);
-}
-
-void LightManager::TurnOnDirectionalLight(int _index, char* _lightName /* = "" */)
-{
-	int numDirectionalLights = directionalLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numDirectionalLights; ++i)
-		{
-			if(directionalLights[i]->GetLightName() == _lightName)
-			{
-				directionalLights[i]->SetIsLightOn(true);
-			}
-		}
-	}
-	
-	directionalLights[_index]->SetIsLightOn(true);
-}
-
-void LightManager::ToggleDirectionalLight(int _index, char* _lightName /* = "" */)
-{
-	int numDirectionalLights = directionalLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numDirectionalLights; ++i)
-		{
-			if(directionalLights[i]->GetLightName() == _lightName)
-			{
-				directionalLights[i]->SetIsLightOn(!directionalLights[i]->GetLightOn());
-			}
-		}
-	}
-
-	directionalLights[_index]->SetIsLightOn(!directionalLights[_index]->GetLightOn());
-}
-
-void LightManager::TurnOffPointLight(int _index, char* _lightName /* = "" */)
-{
-	int numPointLights = pointLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numPointLights; ++i)
-		{
-			if(pointLights[i]->GetLightName() == _lightName)
-			{
-				pointLights[i]->SetIsLightOn(false);
-			}
-		}
-	}
-
-	pointLights[_index]->SetIsLightOn(false);
-}
-
-void LightManager::TurnOnPointLight(int _index, char* _lightName /* = "" */)
-{
-	int numPointLights = pointLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numPointLights; ++i)
-		{
-			if(pointLights[i]->GetLightName() == _lightName)
-			{
-				pointLights[i]->SetIsLightOn(true);
-			}
-		}
-	}
-
-	pointLights[_index]->SetIsLightOn(true);
-}
-
-void LightManager::TogglePointLight(int _index, char* _lightName /* = "" */)
-{
-	int numPointLights = pointLights.size();
-	if(_lightName != "")
-	{
-		for(int i = 0; i < numPointLights; ++i)
-		{
-			if(pointLights[i]->GetLightName() == _lightName)
-			{
-				pointLights[i]->SetIsLightOn(!pointLights[i]->GetLightOn());
-			}
-		}
-	}
-
-	pointLights[_index]->SetIsLightOn(!pointLights[_index]->GetLightOn());
-}
+//TODO:: GO THROUGH AND MAKE SURE THAT ALL OF THIS IS GOOD!
+// void LightManager::TurnOffDirectionalLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numDirectionalLights = directionalLights.size();
+// 
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numDirectionalLights; ++i)
+// 		{
+// 			if(directionalLights[i]->GetLightName() == _lightName)
+// 			{
+// 				directionalLights[i]->SetIsLightOn(false);
+// 			}
+// 		}
+// 	}
+// 
+// 	directionalLights[_index]->SetIsLightOn(false);
+// 
+// 	numDirectionalLights --;
+// }
+// 
+// void LightManager::TurnOnDirectionalLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numDirectionalLights = directionalLights.size();
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numDirectionalLights; ++i)
+// 		{
+// 			if(directionalLights[i]->GetLightName() == _lightName)
+// 			{
+// 				directionalLights[i]->SetIsLightOn(true);
+// 			}
+// 		}
+// 	}
+// 	
+// 	directionalLights[_index]->SetIsLightOn(true);
+// 
+// 	numDirectionalLights ++;
+// }
+// 
+// void LightManager::ToggleDirectionalLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numDirectionalLights = directionalLights.size();
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numDirectionalLights; ++i)
+// 		{
+// 			if(directionalLights[i]->GetLightName() == _lightName)
+// 			{
+// 				directionalLights[i]->SetIsLightOn(!directionalLights[i]->GetLightOn());
+// 			}
+// 		}
+// 	}
+// 
+// 	directionalLights[_index]->SetIsLightOn(!directionalLights[_index]->GetLightOn());
+// 
+// 	
+// }
+// 
+// void LightManager::TurnOffPointLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numPointLights = pointLights.size();
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numPointLights; ++i)
+// 		{
+// 			if(pointLights[i]->GetLightName() == _lightName)
+// 			{
+// 				pointLights[i]->SetIsLightOn(false);
+// 			}
+// 		}
+// 	}
+// 
+// 	pointLights[_index]->SetIsLightOn(false);
+// }
+// 
+// void LightManager::TurnOnPointLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numPointLights = pointLights.size();
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numPointLights; ++i)
+// 		{
+// 			if(pointLights[i]->GetLightName() == _lightName)
+// 			{
+// 				pointLights[i]->SetIsLightOn(true);
+// 			}
+// 		}
+// 	}
+// 
+// 	pointLights[_index]->SetIsLightOn(true);
+// }
+// 
+// void LightManager::TogglePointLight(int _index, char* _lightName /* = "" */)
+// {
+// 	int numPointLights = pointLights.size();
+// 	if(_lightName != "")
+// 	{
+// 		for(int i = 0; i < numPointLights; ++i)
+// 		{
+// 			if(pointLights[i]->GetLightName() == _lightName)
+// 			{
+// 				pointLights[i]->SetIsLightOn(!pointLights[i]->GetLightOn());
+// 			}
+// 		}
+// 	}
+// 
+// 	pointLights[_index]->SetIsLightOn(!pointLights[_index]->GetLightOn());
+// }
 
 AmbientLight* LightManager::GetAmbientLight()
 {

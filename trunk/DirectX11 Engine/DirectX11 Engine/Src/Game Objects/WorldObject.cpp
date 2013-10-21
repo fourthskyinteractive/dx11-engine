@@ -1,10 +1,6 @@
 #include "WorldObject.h"
 #include "../Game/Game.h"
 
-#include "../../DeferredGeometryVertexShader.csh"
-#include "../../DeferredGeometryPixelShader.csh"
-
-
 WorldObject::WorldObject()
 {
 
@@ -46,18 +42,20 @@ void WorldObject::UpdateShaderConstantBuffers()
 
 		if(hr == S_OK)
 		{
-			if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
-			{
-				memcpy(mappedSubresource.pData, &worldMatrix, 64);
-			}
-			else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
-			{
-				memcpy(mappedSubresource.pData, &Game::camera->GetViewMatrixF(), sizeof(XMFLOAT4X4));
-			}
-			else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
-			{
-				memcpy(mappedSubresource.pData, &Game::camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4));
-			}
+			memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			
+			//if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, &GetWorldMatrixF(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
+			//else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
+			//else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
 		}
 
 		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);

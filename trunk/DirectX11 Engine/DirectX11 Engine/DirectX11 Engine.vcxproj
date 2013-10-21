@@ -129,6 +129,7 @@
     <ClInclude Include="Src\Game Objects\Component System\Component.h" />
     <ClInclude Include="Src\Game Objects\Component System\ComponentSystemDefinitions.h" />
     <ClInclude Include="Src\Game Objects\Component System\ConstantBufferComponent.h" />
+    <ClInclude Include="Src\Game Objects\Component System\ConstantBufferUpdateFunctions.h" />
     <ClInclude Include="Src\Game Objects\Component System\IndexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h" />

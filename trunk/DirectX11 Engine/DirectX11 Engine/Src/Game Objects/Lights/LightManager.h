@@ -39,11 +39,14 @@ public:
 	static void TurnOnPointLight(int _index, char* _lightName = "");
 	static void TogglePointLight(int _index, char* _lightName = "");
 	static void Shutdown();
-	
-	static int GetNumberPointLights(){return pointLights.size();}
-	static int GetNumberDirectionalLights(){return directionalLights.size();}
+
+	static unsigned int GetNumberPointLights(){return pointLights.size();}
+	static unsigned int GetNumberDirectionalLights(){unsigned int poo = directionalLights.size(); return poo;}
 	static AmbientLight* GetAmbientLight();
 	static DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
 	static PointLight* GetPointLight(int _index, char* _lightName = "");
+
+	static unsigned int numPointLights;
+	static unsigned int numDirectionalLights;
 };
 #endif

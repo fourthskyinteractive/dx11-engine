@@ -49,13 +49,14 @@ public:
 
 	static void LoadCompiledShaders();
 	static void InitializeObjects();
-	static void InitializeLights();
+	static void* InitializeLights();
 
 	static Camera* camera;
 	static HWND hwnd;
 
-private:
 	static BaseObject* baseObject;
+
+private:
 	static BaseObject* computeObject;
 
 	static XMFLOAT3 lightPos;

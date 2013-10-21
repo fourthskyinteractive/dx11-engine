@@ -14,6 +14,7 @@ struct ConstantComponent
 	CONSTANT_BUFFER_COMPONENTS componentType;
 	unsigned int size;
 	CComPtr<ID3D11Buffer> buffer;
+	void* (*updateFunctionPointer)();
 };
 
 class ConstantBufferComponent : public RenderComponent
@@ -23,7 +24,7 @@ public:
 	ConstantBufferComponent(const ConstantBufferComponent& _vertexBufferComponent);
 	~ConstantBufferComponent();
 
-	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size);
+	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size, void* (*_updateFunctionPointer)());
 	void RemoveConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component);
 	unsigned int GetNumberConstantBufferComponents(){return constantBufferComponents.size();}
 

@@ -10,6 +10,7 @@
 #include "../Game Objects/Lights/LightManager.h"
 #include "../Renderer/Shader Classes/BaseShader.h"
 #include "../Utility/Misc/TerrainGenerator.h"
+#include "../Game Objects/Component System/ConstantBufferUpdateFunctions.h"
 
 //Shaders
 #include "../../GBufferVertexShader.csh"
@@ -400,10 +401,14 @@ void Game::InitializeObjects()
 	baseObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &modelData.normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * modelData.normals.size());
 	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &modelData.texCoords[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * modelData.texCoords.size());
 	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &modelData.indices[0], sizeof(unsigned long), sizeof(unsigned long) * modelData.indices.size());
-	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4));
 	((WorldObject*)baseObject)->SetWorldMatrix(worldIdentity);
-	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4));
-	baseObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4));
+	void* (*function)();
+	function = CBUpdateWorldMatrix;
+	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4), function);
+	function = CBUpdateViewMatrix;
+	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), function);
+	function = CBUpdateProjectionMatrix;
+	baseObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4), function);
 	baseObject->SetShaders(0, -1, 0, -1);
 	baseObject->FinalizeObject();
 
@@ -442,7 +447,7 @@ void Game::InitializeObjects()
 	//lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
 }
 
-void Game::InitializeLights()
+void* Game::InitializeLights()
 {
 	//ParentMeshObject* newLight = new ParentMeshObject();
 	//newLight->Initialize("Res/Models/UnitSphere.fbx", lightPos, XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
@@ -459,4 +464,5 @@ void Game::InitializeLights()
 	//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
+	return NULL;
 }
