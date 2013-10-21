@@ -408,6 +408,9 @@
     <ClInclude Include="Src\Game Objects\WorldObject.h">
       <Filter>Game Objects\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\ConstantBufferUpdateFunctions.h">
+      <Filter>Game Objects\Component System\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\FX\DeferredLightingComputeShader.hlsl">

@@ -1,10 +1,6 @@
 #include "ScreenSpaceObject.h"
 #include "../Game/Game.h"
 
-#include "../../DeferredGeometryVertexShader.csh"
-#include "../../DeferredGeometryPixelShader.csh"
-
-
 ScreenSpaceObject::ScreenSpaceObject()
 {
 

@@ -152,7 +152,7 @@ void BaseObject::AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _componentType,
 	indexBufferComponent->AddIndexBufferComponent(_componentType, _data, _totalSize);
 }
 
-void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize)
+void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* (*_updateFunctionPointer)())
 {
 	unsigned int constantBufferComponentIndex;
 
@@ -179,7 +179,7 @@ void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componen
 
 	ConstantBufferComponent* constantBufferComponent = ((ConstantBufferComponent*)renderComponent->GetRenderComponents()[constantBufferComponentIndex].component);
 
-	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize);
+	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _updateFunctionPointer);
 }
 
 void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize)

@@ -32,7 +32,7 @@ public:
 	void AddRenderComponent(RENDER_COMPONENTS _componentType);
 	void AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _stride, unsigned int _totalSize);
 	void AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _stride, unsigned int _totalSize);
-	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize);
+	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* (*_updateFunctionPointer)());
 	void AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize);
 
 	void AddTexture(WCHAR* _filePath);

@@ -19,13 +19,14 @@ ConstantBufferComponent::~ConstantBufferComponent()
 	}
 }
 
-void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)
+void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size, void* (*_updateFunctionPointer)())
 {
 	constantBufferComponentFlag |= (1 << _component);
 
 	ConstantComponent* newConstantComponent = new ConstantComponent;
 	newConstantComponent->componentType = _component;
 	newConstantComponent->size = _size;
+	newConstantComponent->updateFunctionPointer = _updateFunctionPointer;
 
 	D3D11_BUFFER_DESC cBufferDesc;
 	ZeroMemory(&cBufferDesc, sizeof(D3D11_BUFFER_DESC));
