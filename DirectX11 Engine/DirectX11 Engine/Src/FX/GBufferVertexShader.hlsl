@@ -28,6 +28,8 @@ struct VertexOut
 	float3 posWS		: POSITIONWS;
 	float2 texCoord		: TEXCOORD;
 	float3 normalWS		: NORMALWS;
+	float3 cameraPos	: TEXCOORD1;
+	float3 cameraZ		: TEXCOORD2;
 };
 
 VertexOut VS(VertexIn vIn)
@@ -44,6 +46,14 @@ VertexOut VS(VertexIn vIn)
 	vOut.posCS = mul(pos, worldMatrix);
 	vOut.posCS = mul(vOut.posCS, viewMatrix);
 	vOut.posCS = mul(vOut.posCS, projectionMatrix);
+
+	vOut.cameraPos.x = viewMatrix._41;
+	vOut.cameraPos.y = viewMatrix._42;
+	vOut.cameraPos.z = viewMatrix._43;
+
+	vOut.cameraZ.x = viewMatrix._31;
+	vOut.cameraZ.y = viewMatrix._32;
+	vOut.cameraZ.z = viewMatrix._33;
 
 	//Copy over the texcoords
 	vOut.texCoord = vIn.texCoord;

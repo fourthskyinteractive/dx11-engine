@@ -32,8 +32,13 @@ using namespace std;
 enum RENDERTARGETS{RENDER_BACKBUFFER, RENDER_GEOMETRYBUFFER, RENDER_LIGHTBUFFER, RENDER_DEPTHBUFFER};
 enum BUFFER_TYPE{VERTEX_BUFFER, INDEX_BUFFER};
 
+enum COMPUTEBUFFERTYPE{COMPUTE_NO_TYPE_BUFFER = -1, COMPUTE_BACK_BUFFER, COMPUTE_MISC_BUFFER};
+
 static const int MOUSE_LEFT = 0;
 static const int MOUSE_RIGHT = 1;
+
+#define ScreenWidth 1024
+#define ScreenHeight 768
 
 #define ReleaseCOM(x) if(x != NULL) { x->Release(); x = NULL; }
 #if defined(DEBUG) | defined(_DEBUG)
@@ -84,6 +89,14 @@ struct BuffersForBinding
 	vector<unsigned int> offsets;
 };
 
+struct ComputeShaderBuffers
+{
+	vector<COMPUTEBUFFERTYPE> computeBufferType;
+	vector<CComPtr<ID3D11Buffer>> computeDataBuffers;
+	vector<CComPtr<ID3D11UnorderedAccessView>> computeUAVs;
+	vector<CComPtr<ID3D11ShaderResourceView>> computeSRVs;
+};
+
 struct DX11RenderDataMembers
 {
 	void* vertexBufferBytes;
@@ -96,10 +109,7 @@ struct DX11RenderDataMembers
 	CComPtr<ID3D11SamplerState> samplerState;
 	CComPtr<ID3D11InputLayout> inputLayout;
 
-	vector<CComPtr<ID3D11Buffer>> computeDataBuffers;
-	vector<CComPtr<ID3D11UnorderedAccessView>> computeUAVs;
-	vector<CComPtr<ID3D11ShaderResourceView>> computeSRVs;
-
+	ComputeShaderBuffers computeShaderBuffers;
 
 	vector<BuffersForBinding> buffersToBind;
 };

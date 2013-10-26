@@ -18,46 +18,50 @@ ScreenSpaceObject::~ScreenSpaceObject()
 
 void ScreenSpaceObject::UpdateShaderConstantBuffers()
 {
-// 	HRESULT hr = 0;
-// 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-// 	ConstantBufferComponent* cBufferComponent = GetConstantBufferComponent();
-// 
-// 	CComPtr<ID3D11Buffer> cBuffer;
-// 	int bufferTypeAndSlot = -1;
-// 
-// 	unsigned int numComponents = cBufferComponent->GetNumberConstantBufferComponents();
-// 	for(unsigned int i = 0; i < numComponents; ++i)
-// 	{
-// 		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
-// 		//Gets the Constant Buffer
-// 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
-// 
-// 		//Picks the bind slot according to what type of matrix it is
-// 		bufferTypeAndSlot = cBufferComponent->GetConstantBufferComponents()[i]->componentType;
-// 
-// 		//Map and copy over the data
-// 		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
-// 
-// 		if(hr == S_OK)
-// 		{
-// 			if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
-// 			{
-// 				memcpy(mappedSubresource.pData, &worldMatrix, 64);
-// 			}
-// 			else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
-// 			{
-// 				memcpy(mappedSubresource.pData, &Game::camera->GetViewMatrixF(), sizeof(XMFLOAT4X4));
-// 			}
-// 			else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
-// 			{
-// 				memcpy(mappedSubresource.pData, &Game::camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4));
-// 			}
-// 		}
-// 
-// 		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
-// 
-// 		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferTypeAndSlot, 1, &cBuffer.p);
-// 	}
+	BaseObject::UpdateShaderConstantBuffers();
+
+	HRESULT hr = 0;
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	ConstantBufferComponent* cBufferComponent = GetConstantBufferComponent();
+
+	CComPtr<ID3D11Buffer> cBuffer;
+	int bufferTypeAndSlot = -1;
+
+	unsigned int numComponents = cBufferComponent->GetNumberConstantBufferComponents();
+	for(unsigned int i = 0; i < numComponents; ++i)
+	{
+		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
+		//Gets the Constant Buffer
+		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
+
+		//Picks the bind slot according to what type of matrix it is
+		bufferTypeAndSlot = cBufferComponent->GetConstantBufferComponents()[i]->componentType;
+
+		//Map and copy over the data
+		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+
+		if(hr == S_OK)
+		{
+			memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+
+			//if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, &GetWorldMatrixF(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
+			//else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
+			//else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
+			//{
+			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			//}
+		}
+
+		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
+
+		D3D11Renderer::d3dImmediateContext->CSSetConstantBuffers(1, 1, &cBuffer.p);
+	}
 }
 
 void ScreenSpaceObject::BindRenderComponents()
@@ -67,7 +71,7 @@ void ScreenSpaceObject::BindRenderComponents()
 	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
 	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
 
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
+	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
 	//TODO:
 	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
@@ -157,7 +161,7 @@ void ScreenSpaceObject::Render()
 	//Set the vertex and index buffers
 	BindRenderComponents();
 
-	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
+	//D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }
 
 void ScreenSpaceObject::Update(float _dt)

@@ -182,7 +182,7 @@ void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componen
 	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _updateFunctionPointer);
 }
 
-void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize)
+void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize, COMPUTEBUFFERTYPE _bufferType)
 {
 	HRESULT hr;
 	CComPtr<ID3D11Buffer> dataBuffer;
@@ -197,7 +197,7 @@ void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsig
 	bufferDesc.ByteWidth = _totalSize;
 	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bufferDesc.StructureByteStride = _stride;
-	
+
 	D3D11_SUBRESOURCE_DATA initData;
 	ZeroMemory(&initData, sizeof(D3D11_SUBRESOURCE_DATA));
 	initData.pSysMem = _data;
@@ -242,12 +242,32 @@ void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsig
 		return;
 	}
 
-	renderDataMembers->computeDataBuffers.push_back(dataBuffer);
-	renderDataMembers->computeSRVs.push_back(srv);
-	renderDataMembers->computeUAVs.push_back(uav);
-
-	useComputeShader = true;
+	renderDataMembers->computeShaderBuffers.computeBufferType.push_back(_bufferType);
+	renderDataMembers->computeShaderBuffers.computeDataBuffers.push_back(dataBuffer);
+	renderDataMembers->computeShaderBuffers.computeSRVs.push_back(srv);
+	renderDataMembers->computeShaderBuffers.computeUAVs.push_back(uav);
+	
+	if(!useComputeShader)
+		useComputeShader = true;
 }
+
+void BaseObject::AddComputeShaderBuffer(CComPtr<ID3D11Buffer> _buffer, unsigned int _stride, unsigned int _totalSize)
+{
+
+}
+
+// void BaseObject::AddComputeShaderBuffer(CComPtr<ID3D11ShaderResourceView> _srv, unsigned int _stride = 0, unsigned int _totalSize = 0)
+// {
+// 	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+// 	_srv->GetDesc(&desc);
+// 
+// 	
+// }
+// 
+// void BaseObject::AddComputeShaderBuffer(CComPtr<ID3D11UnorderedAccessView> _uav, unsigned int _stride = 0, unsigned int _totalSize = 0)
+// {
+// 
+// }
 
 void BaseObject::AddTexture(WCHAR* _filePath)
 {
@@ -344,16 +364,27 @@ void BaseObject::BindRenderComponents()
 		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &shaderView.p);
 	}
 
+	//TODO:: Possibly move this somewhere else
 	if(useComputeShader)
 	{
-		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, renderDataMembers->computeUAVs.size(), &renderDataMembers->computeUAVs[0].p, NULL);
+		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, renderDataMembers->computeShaderBuffers.computeUAVs.size(), &renderDataMembers->computeShaderBuffers.computeUAVs[0].p, NULL);
 
-		D3D11Renderer::d3dImmediateContext->Dispatch(1, 1, 1);
+		//CComPtr<ID3D11UnorderedAccessView> nullUAV = NULL;
+		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, NULL);
 
-		CComPtr<ID3D11UnorderedAccessView> nullUAV = NULL;
-		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, NULL);
+		//Set the G Buffer Textures
+		for(unsigned int i = 0; i < textureIndices.size(); ++i)
+		{
+			CComPtr<ID3D11ShaderResourceView> shaderView = TextureManager::GetTexture(textureIndices[i]);
+			D3D11Renderer::d3dImmediateContext->CSSetShaderResources(i, 1, &shaderView.p);
+		}
 
-		D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeSRVs.size(), &renderDataMembers->computeSRVs[0].p);
+		//Set the Lighting Information SRV
+		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::backBufferUAV.p, NULL);
+
+		D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
+
+		D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
 	}
 }
 
