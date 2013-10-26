@@ -33,7 +33,10 @@ public:
 	void AddVertexBufferComponent(VERTEX_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _stride, unsigned int _totalSize);
 	void AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _stride, unsigned int _totalSize);
 	void AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* (*_updateFunctionPointer)());
-	void AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize);
+	void AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize, COMPUTEBUFFERTYPE _bufferType = COMPUTE_NO_TYPE_BUFFER);
+	void AddComputeShaderBuffer(CComPtr<ID3D11Buffer> _buffer, unsigned int _stride = 0, unsigned int _totalSize = 0);
+// 	void AddComputeShaderBuffer(CComPtr<ID3D11ShaderResourceView> _srv, unsigned int _stride = 0, unsigned int _totalSize = 0);
+// 	void AddComputeShaderBuffer(CComPtr<ID3D11UnorderedAccessView> _uav, unsigned int _stride = 0, unsigned int _totalSize = 0);
 
 	void AddTexture(WCHAR* _filePath);
 	void AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView);

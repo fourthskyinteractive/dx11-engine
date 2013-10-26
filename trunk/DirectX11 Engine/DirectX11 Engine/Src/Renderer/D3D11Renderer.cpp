@@ -11,8 +11,10 @@ CComPtr<ID3D11DeviceContext>		D3D11Renderer::d3dImmediateContext = NULL;
 CComPtr<IDXGISwapChain>				D3D11Renderer::swapChain = NULL;
 CComPtr<ID3D11RenderTargetView>		D3D11Renderer::renderTargetView[8];
 CComPtr<ID3D11ShaderResourceView>	D3D11Renderer::shaderResourceView[8];
+CComPtr<ID3D11UnorderedAccessView>	D3D11Renderer::backBufferUAV;
 
-CComPtr<ID3D11Texture2D>			D3D11Renderer::depthStencilBuffer = NULL;
+CComPtr<ID3D11Texture2D>			D3D11Renderer::depthStencilBuffer;
+CComPtr<ID3D11Texture2D>			D3D11Renderer::backBufferPtr = NULL;
 CComPtr<ID3D11DepthStencilView>		D3D11Renderer::depthStencilView = NULL;
 CComPtr<ID3D11DepthStencilView>		D3D11Renderer::orthoDepthStencilView = NULL;
 CComPtr<ID3D11DepthStencilState>	D3D11Renderer::depthStencilState = NULL;
@@ -40,7 +42,6 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
 	int error;
-	CComPtr<ID3D11Texture2D> backBufferPtr;
 	D3D11_TEXTURE2D_DESC renderTextureDesc;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -162,17 +163,51 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		D3D_FEATURE_LEVEL_9_1
 	};
 
-	hr = D3D11CreateDevice(
-		NULL,							//default adaptor
-		D3D_DRIVER_TYPE_HARDWARE,		//D3D_DRIVER_TYPE_HARDWARE if computer supports directX11
-		NULL,							//no software device
-		createDeviceFlags,				
-		featureLevels,					//default feature level array
-		6,							
-		D3D11_SDK_VERSION,
-		&d3dDevice, 
-		&supportedFeatureLevel, 
-		&d3dImmediateContext);
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
+	sd.BufferDesc.Width						= _horizontalRes;
+	sd.BufferDesc.Height					= _verticalRes;
+	//sd.BufferDesc.RefreshRate.Numerator		= 60;
+	//sd.BufferDesc.RefreshRate.Denominator	= 1;
+	sd.BufferDesc.Format					= DXGI_FORMAT_R8G8B8A8_UNORM;
+	//sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	//sd.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
+
+	if(_msaa)
+	{
+		sd.SampleDesc.Count		= 4;
+		sd.SampleDesc.Quality	= 1;
+	}
+	else
+	{
+		sd.SampleDesc.Count		= 1;
+		sd.SampleDesc.Quality	= 0;
+	}
+
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_UNORDERED_ACCESS;
+	sd.BufferCount	= 1;
+	sd.OutputWindow = hwnd;
+	sd.Windowed		= _fullscreen;
+
+	
+
+
+
+	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevels, 6, 
+		D3D11_SDK_VERSION, &sd, &swapChain, &d3dDevice, &supportedFeatureLevel, &d3dImmediateContext);
+
+
+// 	hr = D3D11CreateDevice(
+// 		NULL,							//default adaptor
+// 		D3D_DRIVER_TYPE_HARDWARE,		//D3D_DRIVER_TYPE_HARDWARE if computer supports directX11
+// 		NULL,							//no software device
+// 		createDeviceFlags,				
+// 		featureLevels,					//default feature level array
+// 		6,							
+// 		D3D11_SDK_VERSION,
+// 		&d3dDevice, 
+// 		&supportedFeatureLevel, 
+// 		&d3dImmediateContext);
 
 	if(FAILED(hr))
 	{
@@ -186,65 +221,31 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		return false;
 	}
 
-	UINT m4xMsaaQuality;
-	d3dDevice->CheckMultisampleQualityLevels(
-		DXGI_FORMAT_R8G8B8A8_UNORM, 2, &m4xMsaaQuality);
-
-	assert(m4xMsaaQuality > 0);
-
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
-	sd.BufferDesc.Width						= _horizontalRes;
-	sd.BufferDesc.Height					= _verticalRes;
-	//sd.BufferDesc.RefreshRate.Numerator		= 60;
-	//sd.BufferDesc.RefreshRate.Denominator	= 1;
-	sd.BufferDesc.Format					= DXGI_FORMAT_B8G8R8A8_UNORM;
-	//sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	//sd.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
-
-	if(_msaa)
-	{
-		sd.SampleDesc.Count		= 4;
-		sd.SampleDesc.Quality	= m4xMsaaQuality - 1;
-	}
-	else
-	{
-		sd.SampleDesc.Count		= 1;
-		sd.SampleDesc.Quality	= 0;
-	}
-
-	sd.BufferUsage	= DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount	= 1;
-	sd.OutputWindow = hwnd;
-	sd.Windowed		= _fullscreen;
-	//sd.SwapEffect	= DXGI_SWAP_EFFECT_DISCARD;
-	//sd.Flags		= 0;
-
-	CComPtr<IDXGIDevice> dxgiDevice = NULL;
-	d3dDevice->QueryInterface(_uuidof(IDXGIDevice), (void**)&dxgiDevice);
-
-	CComPtr<IDXGIAdapter> dxgiAdapter = NULL;
-	dxgiDevice->GetParent(_uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
-
-	CComPtr<IDXGIFactory> dxgiFactory = NULL;
-	dxgiAdapter->GetParent(_uuidof(IDXGIFactory), (void**)&dxgiFactory);
-
-	//CREATE THE CHAIN SWAP
-	hr = dxgiFactory->CreateSwapChain(d3dDevice, &sd, &swapChain);
-
-	if(hr == DXGI_ERROR_INVALID_CALL)
-	{
-		printf("DX 11 Unsupported");
-		return false;
-	}
-
-// 	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevels, 6, 
-// 		D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &d3dDevice, NULL, &d3dImmediateContext);
-
-	if(FAILED(hr))
-	{
-		return false;
-	}
+// 	DXGI_SWAP_CHAIN_DESC sd;
+// 	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
+// 	sd.BufferDesc.Width						= _horizontalRes;
+// 	sd.BufferDesc.Height					= _verticalRes;
+// 	//sd.BufferDesc.RefreshRate.Numerator		= 60;
+// 	//sd.BufferDesc.RefreshRate.Denominator	= 1;
+// 	sd.BufferDesc.Format					= DXGI_FORMAT_B8G8R8A8_UNORM;
+// 	//sd.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+// 	//sd.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
+// 
+// 	if(_msaa)
+// 	{
+// 		sd.SampleDesc.Count		= 4;
+// 		sd.SampleDesc.Quality	= m4xMsaaQuality - 1;
+// 	}
+// 	else
+// 	{
+// 		sd.SampleDesc.Count		= 1;
+// 		sd.SampleDesc.Quality	= 0;
+// 	}
+// 
+// 	sd.BufferUsage	= DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_UNORDERED_ACCESS ;
+// 	sd.BufferCount	= 1;
+// 	sd.OutputWindow = hwnd;
+// 	sd.Windowed		= _fullscreen;
 
 	//CREATING THE BLEND STATE
 	D3D11_BLEND_DESC blendStateDescription;
@@ -277,6 +278,13 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		return false;
 	}
 
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+	ZeroMemory(&uavDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
+	uavDesc.Format = DXGI_FORMAT_R32_UINT;
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+	hr = d3dDevice->CreateUnorderedAccessView(backBufferPtr, NULL, &backBufferUAV);
+
 	// Create the render target view with the back buffer pointer.
 	hr = d3dDevice->CreateRenderTargetView(backBufferPtr, NULL, &renderTargetView[0]);
 	if(FAILED(hr))
@@ -299,7 +307,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	renderTextureDesc.SampleDesc.Count = 1;
 	renderTextureDesc.SampleDesc.Quality = 0;
 	renderTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	renderTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	renderTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	renderTextureDesc.CPUAccessFlags = 0;
 	renderTextureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
@@ -321,6 +329,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 		hr = d3dDevice->CreateTexture2D(&renderTextureDesc, NULL, &renderTextures[i]);
 		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], &renderTargetViewDesc, &renderTargetView[i + 1]);
 		hr = d3dDevice->CreateShaderResourceView(renderTextures[i], &shaderResourceViewDesc, &shaderResourceView[i + 1]);
+
 		//renderTextures[i]->Release();
 		//renderTextures[i] = 0;
 	}
@@ -334,11 +343,11 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	depthBufferDesc.Height = _verticalRes;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	depthBufferDesc.SampleDesc.Count = 1;
 	depthBufferDesc.SampleDesc.Quality = 0;
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
@@ -349,6 +358,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	{
 		return false;
 	}
+	
 
 	//Now we need to setup the depth stencil description. This allows us to control what type of depth test Direct3D will do for each pixel.
 	// Initialize the description of the stencil state.

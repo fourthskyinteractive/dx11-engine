@@ -1,8 +1,9 @@
 //Globals
-Texture2D normalTexture : register(t0);
-Texture2D diffuseAlbedoTexture : register(t1);
+Texture2D normalTexture			: register(t0);
+Texture2D diffuseAlbedoTexture	: register(t1);
 Texture2D specularAlbedoTexture : register(t2);
-Texture2D positionTexture : register(t3); 
+Texture2D positionTexture		: register(t3);
+Texture2D depthTexture			: register(t4);
 
 //Constants
 cbuffer LightandCameraParams
@@ -32,7 +33,7 @@ struct PixelOut
 void GetGBufferAttributes(in float2 screenPos, out float3 normal,
 						  out float3 position,
 						  out float3 diffuseAlbedo, out float3 specularAlbedo,
-						  out float specularPower)
+						  out float specularPower, out float3 depth)
 {
 	//Determine our indices for sampling the texture based on current screen position
 	int3 sampleIndices = int3(screenPos.xy, 0);
@@ -41,6 +42,7 @@ void GetGBufferAttributes(in float2 screenPos, out float3 normal,
 	position = positionTexture.Load(sampleIndices).xyz;
 	diffuseAlbedo = diffuseAlbedoTexture.Load(sampleIndices).xyz;
 	float4 spec = specularAlbedoTexture.Load(sampleIndices);
+	depth = depthTexture.Load(sampleIndices).xyz;
 
 	//specularAlbedo = (lightColor * 0.5f);
 	specularAlbedo = ((lightColor.xyz * diffuseAlbedo) *  0.5f);;
@@ -134,14 +136,33 @@ PixelOut PS(PixelIn input)
 	float3 diffuseAlbedo;
 	float3 specularAlbedo;
 	float specularPower;
+	float3 depth;
 
 	//Sample the G-Buffer properties from the textures
 	GetGBufferAttributes(input.pos.xy, normal, position, diffuseAlbedo,
-						specularAlbedo, specularPower);	
+						specularAlbedo, specularPower, depth);	
 
 	float3 lighting = CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 
 	lighting *= diffuseAlbedo;
+
+	// First 10% of the depth buffer color red.
+// 	if(depth.x < 0.9f)
+// 	{
+// 		pOut.color = float4(1.0, 0.0f, 0.0f, 1.0f);
+// 	}
+// 	
+// 	// The next 0.025% portion of the depth buffer color green.
+// 	if(depth.x > 0.9f)
+// 	{
+// 		pOut.color = float4(0.0, 1.0f, 0.0f, 1.0f);
+// 	}
+// 
+// 	// The remainder of the depth buffer color blue.
+// 	if(depth.x > 0.925f)
+// 	{
+// 		pOut.color = float4(0.0, 0.0f, 1.0f, 1.0f);
+// 	}
 
 	pOut.color = float4(diffuseAlbedo, 1.0f);
 

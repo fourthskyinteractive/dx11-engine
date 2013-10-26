@@ -37,6 +37,9 @@ public:
 	static CComPtr<ID3D11RenderTargetView> renderTargetView[8];
 	static CComPtr<ID3D11ShaderResourceView> shaderResourceView[8];
 	static CComPtr<ID3D11Texture2D> depthStencilBuffer;
+
+	static CComPtr<ID3D11Texture2D> backBufferPtr;
+	static CComPtr<ID3D11UnorderedAccessView> backBufferUAV;
 	static CComPtr<ID3D11DepthStencilState> depthStencilState;
 	static CComPtr<ID3D11DepthStencilView> depthStencilView;
 	static CComPtr<ID3D11DepthStencilView> orthoDepthStencilView;

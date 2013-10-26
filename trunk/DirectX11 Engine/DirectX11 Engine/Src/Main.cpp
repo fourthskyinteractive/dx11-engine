@@ -164,8 +164,8 @@ void InitializeApplication()
 {
 	srand((unsigned int)time(0));
 	//Load from .ini all configuration data
-	int baseScreenWidth = 1366;
-	int baseScreenHeight = 768;
+	int baseScreenWidth = ScreenWidth;
+	int baseScreenHeight = ScreenHeight;
 
 	char line[256];
 
@@ -192,13 +192,13 @@ void InitializeApplication()
 		//Resolution - Width
 		videoSettings = 0;
 		file >> videoSettings;
-		videoSettings = 1024;
+		videoSettings = ScreenWidth;
 		file.ignore(INT_MAX, '\t');
 
 		//Resolution - Height
 		videoSettings = 0;
 		file >> videoSettings;
-		videoSettings = 768;
+		videoSettings = ScreenHeight;
 		file.ignore(INT_MAX, '\t');
 
 		//Fov
@@ -355,8 +355,8 @@ void InitializeWindow()
 
 	RegisterClassEx(&wc);
 
-	screenWidth = 1366;
-	screenHeight = 768;
+	screenWidth = ScreenWidth;
+	screenHeight = ScreenHeight;
 
 	if(fullscreen)
 	{

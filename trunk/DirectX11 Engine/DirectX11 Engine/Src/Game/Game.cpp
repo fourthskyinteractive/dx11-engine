@@ -73,6 +73,7 @@ bool							Game::backfaceCulling;
 bool							Game::backFaceSwap = false;
 
 XMFLOAT2						Game::cameraRotation;
+XMFLOAT4						Game::dotLocation;
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
@@ -87,15 +88,15 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(XMConvertToRadians(50), (1366.0f / 768.0f), 0.1f, 10000.0f);
+	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -50.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), 0.1f, 1000.0f);
 	camera->UpdateViewMatrix();
 
 	timer.Init();
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true,true, 1366, 768, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true,true, _screenWidth, _screenHeight, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -129,6 +130,7 @@ void Game::Render()
 	//D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
 	//lightPass->Render();
 	computeObject->Render();
+
 	D3D11Renderer::Present(D3D11Renderer::vsyncEnabled, 0);
 }
 
@@ -153,6 +155,31 @@ void Game::Input(float _deltaTime)
 	prevMouseY = currMouseY;
 
 	directInput->GetMouseLocation(currMouseX, currMouseY);
+
+	if(directInput->IsKeyPressed(DIK_RETURN))
+	{
+// 		DEBUG::printf("X Location: ");
+// 		DEBUG::printf("");
+// 		DEBUG::printf("Y Location: ");
+// 		DEBUG::printf("");
+	}
+
+	if(directInput->IsKeyPressed(DIK_NUMPAD6))
+	{
+		dotLocation.x ++;
+	}
+	if(directInput->IsKeyPressed(DIK_NUMPAD4))
+	{
+		dotLocation.x --;
+	}
+	if(directInput->IsKeyPressed(DIK_NUMPAD8))
+	{
+		dotLocation.y --;
+	}
+	if(directInput->IsKeyPressed(DIK_NUMPAD2))
+	{
+		dotLocation.y ++;
+	}
 
 	if(directInput->IsKeyPressed(DIK_W))
 	{
@@ -416,12 +443,15 @@ void Game::InitializeObjects()
 	XMFLOAT4 pos = XMFLOAT4(0.0f, 0.0f, 5.0f, 1.0f);
 	computeObject = new ScreenSpaceObject();
 	computeObject->AddBaseComponent(RENDER_COMPONENT);
-	for(int i = 1; i < 5; ++i)
+	for(int i = 1; i < 6; ++i)
 	{
 		computeObject->AddTexture(D3D11Renderer::shaderResourceView[i]);
 	}
 	computeObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	computeObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
+	function = GetDotLocation;
+	computeObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
+	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &dotLocation, sizeof(XMFLOAT4), function);
 	computeObject->AddComputeShaderBuffer(&tempstruct, sizeof(vertStruct), sizeof(vertStruct) * 4);
 	computeObject->SetShaders(1, 0, 1, 0);
 	computeObject->FinalizeObject();

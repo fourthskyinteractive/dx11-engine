@@ -70,7 +70,7 @@ void WorldObject::BindRenderComponents()
 
 	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
 	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(4, &D3D11Renderer::renderTargetView[1].p, D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(5, &D3D11Renderer::renderTargetView[1].p, D3D11Renderer::depthStencilView);
 	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
 
 // 	for(unsigned int i = 0; i < vertexBufferInformationForBinding.numBuffers; ++i)
