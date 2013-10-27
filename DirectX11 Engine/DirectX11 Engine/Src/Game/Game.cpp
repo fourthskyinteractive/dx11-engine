@@ -96,7 +96,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true,true, _screenWidth, _screenHeight, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, _screenWidth, _screenHeight, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -447,6 +447,8 @@ void Game::InitializeObjects()
 	{
 		computeObject->AddTexture(D3D11Renderer::shaderResourceView[i]);
 	}
+	//TODO:: WORK ON THE COMPUTE LIGHTS!
+	//computeObject->AddComputeShaderBuffer(LightManager::GetPointLightsMemory(), sizeof(PointLight), sizeof(PointLight) * LightManager::GetNumberPointLights());
 	computeObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	computeObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
 	function = GetDotLocation;
@@ -491,7 +493,7 @@ void* Game::InitializeLights()
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
-	//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 	return NULL;

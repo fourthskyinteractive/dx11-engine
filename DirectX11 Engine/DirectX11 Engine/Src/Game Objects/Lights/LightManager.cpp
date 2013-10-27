@@ -234,5 +234,20 @@ PointLight* LightManager::GetPointLight(int _index, char* _lightName /* = "" */)
 	}
 
 	return pointLights[_index];
+}
 
+void* LightManager::GetPointLightsMemory()
+{
+	if(numPointLights > 0)
+		return &pointLights[0];
+	else
+		return NULL;
+}
+
+void* LightManager::GetDirectionalLightMemory()
+{
+	if(numDirectionalLights > 0)
+		return &directionalLights[0];
+	else
+		return NULL;
 }

@@ -45,6 +45,8 @@ public:
 	static AmbientLight* GetAmbientLight();
 	static DirectionalLight* GetDirectionalLight(int _index, char* _lightName = "");
 	static PointLight* GetPointLight(int _index, char* _lightName = "");
+	static void* GetPointLightsMemory();
+	static void* GetDirectionalLightMemory();
 
 	static unsigned int numPointLights;
 	static unsigned int numDirectionalLights;
