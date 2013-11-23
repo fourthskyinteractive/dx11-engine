@@ -18,5 +18,8 @@ static void* CBUpdateProjectionMatrix(){return &Game::camera->GetProjectionMatri
 static void* CBUpdateWorldMatrix(){return &((WorldObject*)Game::baseObject)->GetWorldMatrixF();}
 static void* CBUpdateNumPointLights(){return &LightManager::numPointLights;}
 static void* CBUpdateNumDirectionalLights(){return &LightManager::numDirectionalLights;}
+static void* CBGetScreenWidthHeight(){return &Game::widthHeightNearFar;}
+static void* CBGetNumberOfLights(){return LightManager::GetNumberOfLightsMemory();}
+static void* CBGetFrustumExtents(){return &Game::frustumExtentsXY;}
 
 #endif

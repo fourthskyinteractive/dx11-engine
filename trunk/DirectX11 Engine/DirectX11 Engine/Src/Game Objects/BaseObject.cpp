@@ -382,7 +382,7 @@ void BaseObject::BindRenderComponents()
 		//Set the Lighting Information SRV
 		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::backBufferUAV.p, NULL);
 
-		D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
+		D3D11Renderer::d3dImmediateContext->Dispatch(1, 1, 1);
 
 		D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
 	}

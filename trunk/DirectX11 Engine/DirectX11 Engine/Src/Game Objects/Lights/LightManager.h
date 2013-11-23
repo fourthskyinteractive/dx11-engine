@@ -40,6 +40,7 @@ public:
 	static void TogglePointLight(int _index, char* _lightName = "");
 	static void Shutdown();
 
+	static void* GetNumberOfLightsMemory();
 	static unsigned int GetNumberPointLights(){return pointLights.size();}
 	static unsigned int GetNumberDirectionalLights(){unsigned int poo = directionalLights.size(); return poo;}
 	static AmbientLight* GetAmbientLight();
@@ -48,6 +49,7 @@ public:
 	static void* GetPointLightsMemory();
 	static void* GetDirectionalLightMemory();
 
+	static XMFLOAT4 numLights;
 	static unsigned int numPointLights;
 	static unsigned int numDirectionalLights;
 };

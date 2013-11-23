@@ -50,12 +50,13 @@ public:
 	static void LoadCompiledShaders();
 	static void InitializeObjects();
 	static void* InitializeLights();
-	static void* GetDotLocation(){return &dotLocation;}
 
 	static Camera* camera;
 	static HWND hwnd;
 
 	static BaseObject* baseObject;
+	static XMFLOAT4 widthHeightNearFar;
+	static XMFLOAT4 frustumExtentsXY;
 
 private:
 	static BaseObject* computeObject;
@@ -85,8 +86,6 @@ private:
 	static bool backFaceSwap;
 
 	static Terrain* terrain;
-
-	static XMFLOAT4 dotLocation;
 };
 
 
