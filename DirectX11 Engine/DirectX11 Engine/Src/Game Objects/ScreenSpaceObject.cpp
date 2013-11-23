@@ -60,7 +60,7 @@ void ScreenSpaceObject::UpdateShaderConstantBuffers()
 
 		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
 
-		D3D11Renderer::d3dImmediateContext->CSSetConstantBuffers(1, 1, &cBuffer.p);
+		D3D11Renderer::d3dImmediateContext->CSSetConstantBuffers(i, 1, &cBuffer.p);
 	}
 }
 

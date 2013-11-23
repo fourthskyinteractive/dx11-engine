@@ -38,6 +38,9 @@ using std::cin;
 using std::stringstream;
 #endif
 
+#define NEAR_PLANE 0.1f
+#define FAR_PLANE 1000.0f
+
 BaseObject*						Game::baseObject;
 BaseObject*						Game::computeObject;
 
@@ -73,7 +76,8 @@ bool							Game::backfaceCulling;
 bool							Game::backFaceSwap = false;
 
 XMFLOAT2						Game::cameraRotation;
-XMFLOAT4						Game::dotLocation;
+XMFLOAT4						Game::widthHeightNearFar;
+XMFLOAT4						Game::frustumExtentsXY;
 
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
@@ -84,19 +88,25 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	directInput = new DirectInput;
 	result = directInput->Initialize(_hInstance, _hWnd, _screenWidth, _screenHeight);
-
+	widthHeightNearFar.x = (float)_screenWidth;
+	widthHeightNearFar.y = (float)_screenHeight;
+	widthHeightNearFar.z = (float)NEAR_PLANE;
+	widthHeightNearFar.w = (float)FAR_PLANE;
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
 	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -50.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
-	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), 0.1f, 1000.0f);
+	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), NEAR_PLANE, FAR_PLANE);
 	camera->UpdateViewMatrix();
+
+	frustumExtentsXY.y = (tan(XMConvertToRadians(50) / 2.0f) * 1000.0f) / 1000.0f;
+	frustumExtentsXY.x = (frustumExtentsXY.y * (float)_screenWidth / (float)_screenHeight) / 1000.0f;
 
 	timer.Init();
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	
-	bool bResult = D3D11Renderer::Initialize(_hWnd, true, false, _screenWidth, _screenHeight, false);
+	bool bResult = D3D11Renderer::Initialize(_hWnd, true, true, _screenWidth, _screenHeight, false);
 
 	LoadCompiledShaders();
 	InitializeLights();
@@ -162,23 +172,6 @@ void Game::Input(float _deltaTime)
 // 		DEBUG::printf("");
 // 		DEBUG::printf("Y Location: ");
 // 		DEBUG::printf("");
-	}
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD6))
-	{
-		dotLocation.x ++;
-	}
-	if(directInput->IsKeyPressed(DIK_NUMPAD4))
-	{
-		dotLocation.x --;
-	}
-	if(directInput->IsKeyPressed(DIK_NUMPAD8))
-	{
-		dotLocation.y --;
-	}
-	if(directInput->IsKeyPressed(DIK_NUMPAD2))
-	{
-		dotLocation.y ++;
 	}
 
 	if(directInput->IsKeyPressed(DIK_W))
@@ -451,9 +444,15 @@ void Game::InitializeObjects()
 	//computeObject->AddComputeShaderBuffer(LightManager::GetPointLightsMemory(), sizeof(PointLight), sizeof(PointLight) * LightManager::GetNumberPointLights());
 	computeObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	computeObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
-	function = GetDotLocation;
 	computeObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
-	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &dotLocation, sizeof(XMFLOAT4), function);
+	function = CBGetNumberOfLights;
+	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &LightManager::numLights, sizeof(XMFLOAT4), function);
+	function = CBGetScreenWidthHeight;
+	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &widthHeightNearFar, sizeof(XMFLOAT4), function);
+	function = CBUpdateViewMatrix;
+	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), function);
+	function = CBGetFrustumExtents;
+	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &frustumExtentsXY, sizeof(XMFLOAT4), function);
 	computeObject->AddComputeShaderBuffer(&tempstruct, sizeof(vertStruct), sizeof(vertStruct) * 4);
 	computeObject->SetShaders(1, 0, 1, 0);
 	computeObject->FinalizeObject();

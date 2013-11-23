@@ -6,11 +6,13 @@ vector<PointLight*>			LightManager::pointLights;
 
 unsigned int				LightManager::numDirectionalLights;
 unsigned int				LightManager::numPointLights;
+XMFLOAT4					LightManager::numLights;
 
 LightManager::LightManager()
 {
 	numDirectionalLights = 0;
 	numPointLights = 0;
+	ZeroMemory(&numLights, sizeof(XMFLOAT4));
 }
 
 LightManager::LightManager(const LightManager& _lightManager)
@@ -64,6 +66,7 @@ void LightManager::AddDirectionalLight(char* _lightName, XMFLOAT4 _color, XMFLOA
 	directionalLights.push_back(directionalLight);
 
 	numDirectionalLights ++;
+	numLights.x += 1.0f;
 }
 
 void LightManager::AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _position, float _radius, bool _isLightOn)
@@ -79,6 +82,7 @@ void LightManager::AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _po
 	pointLights.push_back(pointLight);
 
 	numPointLights ++;
+	numLights.y += 1.0f;
 }
 
 
@@ -234,6 +238,11 @@ PointLight* LightManager::GetPointLight(int _index, char* _lightName /* = "" */)
 	}
 
 	return pointLights[_index];
+}
+
+void* LightManager::GetNumberOfLightsMemory()
+{
+	return &numLights;
 }
 
 void* LightManager::GetPointLightsMemory()
