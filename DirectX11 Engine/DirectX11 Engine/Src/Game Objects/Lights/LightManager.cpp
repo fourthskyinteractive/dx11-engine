@@ -1,8 +1,9 @@
 #include "LightManager.h"
 
-AmbientLight*				LightManager::ambientLight;
-vector<DirectionalLight*>	LightManager::directionalLights;
-vector<PointLight*>			LightManager::pointLights;
+AmbientLight*					LightManager::ambientLight;
+vector<DirectionalLight*>		LightManager::directionalLights;
+vector<PointLight*>				LightManager::pointLights;
+vector<PointLightCompressed*>	LightManager::pointLightsCompressed;
 
 unsigned int				LightManager::numDirectionalLights;
 unsigned int				LightManager::numPointLights;
@@ -83,6 +84,13 @@ void LightManager::AddPointLight(char* _lightName, XMFLOAT4 _color, XMFLOAT3 _po
 
 	numPointLights ++;
 	numLights.y += 1.0f;
+
+	//ADD Compressed Point Light
+	PointLightCompressed* pointLightCompressed = new PointLightCompressed();
+	pointLightCompressed->color = _color;
+	pointLightCompressed->position = _position;
+	pointLightCompressed->radius = _radius;
+	pointLightsCompressed.push_back(pointLightCompressed);
 }
 
 
@@ -248,7 +256,7 @@ void* LightManager::GetNumberOfLightsMemory()
 void* LightManager::GetPointLightsMemory()
 {
 	if(numPointLights > 0)
-		return &pointLights[0];
+		return pointLightsCompressed[0];
 	else
 		return NULL;
 }

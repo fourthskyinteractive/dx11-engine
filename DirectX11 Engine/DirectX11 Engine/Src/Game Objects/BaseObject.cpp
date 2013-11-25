@@ -369,22 +369,28 @@ void BaseObject::BindRenderComponents()
 	{
 		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, renderDataMembers->computeShaderBuffers.computeUAVs.size(), &renderDataMembers->computeShaderBuffers.computeUAVs[0].p, NULL);
 
-		//CComPtr<ID3D11UnorderedAccessView> nullUAV = NULL;
+		CComPtr<ID3D11UnorderedAccessView> nullUAV = NULL;
 		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, NULL);
 
 		//Set the G Buffer Textures
+		int lastIndex = 0;
 		for(unsigned int i = 0; i < textureIndices.size(); ++i)
 		{
 			CComPtr<ID3D11ShaderResourceView> shaderView = TextureManager::GetTexture(textureIndices[i]);
 			D3D11Renderer::d3dImmediateContext->CSSetShaderResources(i, 1, &shaderView.p);
+			lastIndex++;
 		}
 
 		//Set the Lighting Information SRV
 		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::backBufferUAV.p, NULL);
 
+		D3D11Renderer::d3dImmediateContext->CSSetShaderResources(lastIndex, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
+
 		D3D11Renderer::d3dImmediateContext->Dispatch(1, 1, 1);
 
-		D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
+		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &nullUAV, NULL);
+
+		//D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
 	}
 }
 

@@ -69,7 +69,7 @@ Texture2D<float4> depthTexture			: register(t4);
 
 RWTexture2D<float4> outputTexture : register(u0);
 
-StructuredBuffer<PointLightData> pointLights : register(t4);
+StructuredBuffer<PointLightData> pointLights : register(t5);
 //StructuredBuffer<DirectionalLightData> directionalLights : register(t5);
 
 groupshared TileData tileData[1024];
@@ -93,7 +93,6 @@ void CS(ComputeIn _input)
 	//FIGURE OUT WHAT LIGHTS HIT THIS TILE!
 	//LightCulling(input);
 	LightPixel(_input);
-	tileData[_input.groupIndex].affectingLights[0] = 1.0f; 
 
 	GroupMemoryBarrierWithGroupSync();
 }
@@ -119,8 +118,11 @@ void LightPixel(ComputeIn _input)
 		{
 			texturelocation.x = (column * pixelsPerRow) + j;
 			texturelocation.y = (row * pixelsPerColumn) + i;
-	
-			outputTexture[texturelocation.xy] = diffuseAlbedoTexture.Load(texturelocation);
+
+			if(_input.groupThreadID.x == 0 &&  _input.groupThreadID.y == 0)
+				outputTexture[texturelocation.xy] = pointLights[0].color;
+			else
+				outputTexture[texturelocation.xy] = diffuseAlbedoTexture.Load(texturelocation);
 		}
 	}
 }
