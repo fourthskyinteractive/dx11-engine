@@ -453,7 +453,7 @@ void Game::InitializeObjects()
 	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), function);
 	function = CBGetFrustumExtents;
 	computeObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &frustumExtentsXY, sizeof(XMFLOAT4), function);
-	computeObject->AddComputeShaderBuffer(&tempstruct, sizeof(vertStruct), sizeof(vertStruct) * 4);
+	computeObject->AddComputeShaderBuffer(LightManager::GetPointLightsMemory(), sizeof(PointLightCompressed), sizeof(PointLightCompressed) * LightManager::GetNumberPointLights());
 	computeObject->SetShaders(1, 0, 1, 0);
 	computeObject->FinalizeObject();
 
@@ -492,7 +492,7 @@ void* Game::InitializeLights()
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
-	LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), lightPos, 20, true);
+	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), lightPos, 20, true);
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 	return NULL;

@@ -13,12 +13,22 @@ using namespace std;
 
 enum LIGHT_TYPE{POINT_LIGHT, SPOT_LIGHT, DIRCTIONAL_LIGHT, AMBIENT_LIGHT};
 
+struct PointLightCompressed
+{
+	XMFLOAT4 color;
+	XMFLOAT3 position;
+	float radius;
+
+	PointLightCompressed() : color(XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f)), position(XMFLOAT3(0.0f, 0.0f, 0.0f)), radius(0.0f){}
+};
+
 class LightManager
 {
 private:
 	static AmbientLight* ambientLight;
 	static vector<DirectionalLight*> directionalLights;
 	static vector<PointLight*> pointLights;
+	static vector<PointLightCompressed*> pointLightsCompressed;
 
 public:
 	LightManager();
