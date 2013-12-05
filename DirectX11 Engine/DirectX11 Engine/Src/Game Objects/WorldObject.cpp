@@ -34,9 +34,6 @@ void WorldObject::UpdateShaderConstantBuffers()
 		//Gets the Constant Buffer
 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
 
-		//Picks the bind slot according to what type of matrix it is
-		bufferTypeAndSlot = cBufferComponent->GetConstantBufferComponents()[i]->componentType;
-
 		//Map and copy over the data
 		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
 
@@ -60,7 +57,7 @@ void WorldObject::UpdateShaderConstantBuffers()
 
 		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
 
-		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferTypeAndSlot, 1, &cBuffer.p);
+		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(i, 1, &cBuffer.p);
 	}
 }
 
