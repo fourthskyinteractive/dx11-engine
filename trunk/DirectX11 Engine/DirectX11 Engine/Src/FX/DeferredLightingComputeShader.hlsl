@@ -1,5 +1,5 @@
-#define horizontalTiles 16
-#define verticalTiles 16
+#define horizontalTiles 32
+#define verticalTiles 32
 
 //PlaneOrder{PLANE_LEFT, PLANE_RIGHT, PLANE_TOP, PLANE_BOTTOM, PLANE_NEAR, PLANE_FAR}
 //PLANES ARE WRAPPED FROM THE INSIDE
@@ -83,7 +83,7 @@ RWTexture2D<float4> outputTexture : register(u0);
 StructuredBuffer<PointLightData> pointLights : register(t5);
 //StructuredBuffer<DirectionalLightData> directionalLights : register(t5);
 
-groupshared int tileData[1024];
+groupshared int tileData[100];
 
 void LightPixel(float3 _textureLocation);
 void LightCulling(ComputeIn _input);
@@ -122,7 +122,7 @@ void CS(ComputeIn _input)
 	LightCulling(_input);
 	LightTile(_input);
 
-	GroupMemoryBarrierWithGroupSync();
+	//GroupMemoryBarrierWithGroupSync();
 }
 
 void LightCulling(ComputeIn _input)
@@ -185,8 +185,8 @@ void LightPixel(float3 _textureLocation)
 										pointLights[tileData[i]].position, pointLights[tileData[i]].color, pointLights[tileData[i]].radius, float3(0.0f, 0.0f, 0.0f));
 	}
 
-	totalLight += CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
-										float3(0.0f, 0.0f, 0.0f), float4(0.15f, 0.15f, 0.15f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
+ 	totalLight += CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
+ 										float3(0.0f, 0.0f, 0.0f), float4(0.15f, 0.15f, 0.15f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
 
 	outputTexture[_textureLocation.xy] = float4(totalLight * diffuseAlbedo, 1.0f);
 }
@@ -196,6 +196,7 @@ void FindFurthestAndNearest(ComputeIn input, out float3 zNear, out float3 zFar)
 	int column = input.groupThreadID.x;
 	int row = input.groupThreadID.y;
 
+	//TODO: OPTIMIZE OUT AND PUT INTO A CONSTANT BUFFER
 	int pixelsPerColumn = (screenWidthHeightNearFar.y / horizontalTiles);
 	int pixelsPerRow = (screenWidthHeightNearFar.x / verticalTiles);
 
@@ -212,6 +213,7 @@ void FindFurthestAndNearest(ComputeIn input, out float3 zNear, out float3 zFar)
 			textureLocation.y = (row * pixelsPerColumn) + i;
 
 			float depth = depthTexture.Load(textureLocation).x;
+
 			if(depth > farDistance)
 			{
 				farDistance = depth;
@@ -245,21 +247,22 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	float distanceToNear = FindDistance(cameraPosition, zNear, cameraLook);
 	float distanceToFar = FindDistance(cameraPosition, zFar, cameraLook);
 
-	if(distanceToNear < screenWidthHeightNearFar.z)
-		distanceToNear = screenWidthHeightNearFar.z;
-	if(distanceToFar > screenWidthHeightNearFar.w)
-		distanceToFar = screenWidthHeightNearFar.w;
+// 	if(distanceToNear < screenWidthHeightNearFar.z)
+// 		distanceToNear = screenWidthHeightNearFar.z;
+// 	if(distanceToFar > screenWidthHeightNearFar.w)
+// 		distanceToFar = screenWidthHeightNearFar.w;
 
 	float farX = frustumExtentsXY.x * distanceToFar;
-	float farY = frustumExtentsXY.x * distanceToFar;
-	float nearX = frustumExtentsXY.x * distanceToFar;
-	float nearY = frustumExtentsXY.x * distanceToFar;
+	float farY = frustumExtentsXY.y * distanceToFar;
+	float nearX = frustumExtentsXY.x * distanceToNear;
+	float nearY = frustumExtentsXY.y * distanceToNear;
 
 	float3 farMiddle = cameraPosition + (cameraLook * distanceToFar);
 	float3 nearMiddle = cameraPosition + (cameraLook * distanceToNear);
 
 	float3 xVector;
 	float3 yVector;
+
 	//LEFT
 	_frustum.planes[0].TL = (nearMiddle - (cameraRight * nearX)) + (cameraUp * nearY);//NTL
 	_frustum.planes[0].TR = (farMiddle - (cameraRight * farX)) + (cameraUp * farY);//FTL
@@ -267,7 +270,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[0].BR = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
 	xVector = _frustum.planes[0].TR - _frustum.planes[0].TL;
 	yVector = _frustum.planes[0].BL - _frustum.planes[0].TL;
-	_frustum.planes[0].normal = cross(xVector, yVector);
+	_frustum.planes[0].normal = normalize(cross(xVector, yVector));
 
 	//RIGHT
 	_frustum.planes[1].TL = (farMiddle + (cameraRight * farX)) + (cameraUp * farY);//FTR
@@ -276,7 +279,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[1].BR = (nearMiddle + (cameraRight * nearX)) - (cameraUp * nearY);//NBR
 	xVector = _frustum.planes[1].TR - _frustum.planes[1].TL;
 	yVector = _frustum.planes[1].BL - _frustum.planes[1].TL;
-	_frustum.planes[1].normal = cross(xVector, yVector);
+	_frustum.planes[1].normal = normalize(cross(xVector, yVector));
 
 	//TOP
 	_frustum.planes[2].TL = (nearMiddle - (cameraRight * nearX)) + (cameraUp * nearY);//NTL
@@ -285,7 +288,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[2].BR = (farMiddle + (cameraRight * farX)) + (cameraUp * farY);//FTR
 	xVector = _frustum.planes[2].TR - _frustum.planes[2].TL;
 	yVector = _frustum.planes[2].BL - _frustum.planes[2].TL;
-	_frustum.planes[2].normal = cross(xVector, yVector);
+	_frustum.planes[2].normal = normalize(cross(xVector, yVector));
 
 	//BOTTOM
 	_frustum.planes[3].TL = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
@@ -294,7 +297,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[3].BR = (nearMiddle + (cameraRight * nearX)) - (cameraUp * nearY);//NBR
 	xVector = _frustum.planes[3].TR - _frustum.planes[3].TL;
 	yVector = _frustum.planes[3].BL - _frustum.planes[3].TL;
-	_frustum.planes[3].normal = cross(xVector, yVector);
+	_frustum.planes[3].normal = normalize(cross(xVector, yVector));
 
 	//NEAR
 	_frustum.planes[4].TL = (nearMiddle + (cameraRight * nearX)) + (cameraUp * nearY);//NTR
@@ -303,7 +306,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[4].BR = (nearMiddle - (cameraRight * nearX)) - (cameraUp * nearY);//NBL
 	xVector = _frustum.planes[4].TR - _frustum.planes[4].TL;
 	yVector = _frustum.planes[4].BL - _frustum.planes[4].TL;
-	_frustum.planes[4].normal = cross(xVector, yVector);
+	_frustum.planes[4].normal = normalize(cross(xVector, yVector));
 
 	//FAR
 	_frustum.planes[5].TL = (farMiddle - (cameraRight * farX)) + (cameraUp * farY);//FTL
@@ -312,7 +315,7 @@ void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 	_frustum.planes[5].BR = (farMiddle + (cameraRight * farX)) - (cameraUp * farY);//FBR
 	xVector = _frustum.planes[5].TR - _frustum.planes[5].TL;
 	yVector = _frustum.planes[5].BL - _frustum.planes[5].TL;
-	_frustum.planes[5].normal = cross(xVector, yVector);
+	_frustum.planes[5].normal = normalize(cross(xVector, yVector));
 }
 
 float FindDistance(float3 _startPos, float3 _endPos, float3 _direction)
@@ -389,7 +392,7 @@ float3 CalculateLighting(in float3 _normal,
 	{
  		L = _lightPosition.xyz - _position;
 		float dist = length(L);
-		attenuation = max(0, 1.0f - (dist / _lightRange.x));
+		attenuation = max(0, 1.0f - (dist / _lightRange));
 		L /= dist;
 	}
 	//If directional light

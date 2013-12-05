@@ -196,14 +196,6 @@ void Game::Input(float _deltaTime)
 		D3D11Renderer::BackfaceCulling(!backfaceCulling);
 		backfaceCulling = !backfaceCulling;
 	}
-	if(directInput->IsKeyPressed(DIK_SPACE))
-	{
-		camera->Raise(50.0f * _deltaTime);
-	}
-	if(directInput->IsKeyPressed(DIK_LCONTROL))
-	{
-		camera->Raise(-50.0f * _deltaTime); 
-	}
 
 // 	if(directInput->IsKeyPressed(DIK_M))
 // 	{
@@ -492,7 +484,14 @@ void* Game::InitializeLights()
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
-	LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -50.0f), 200, true);
+	//for(int i = -100; i < 100; i += 20)
+	//{
+		//for(int j = -100; j <= 100; j += 20)
+		//{
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 200, true);
+// 		}
+// 	}
+	
 	
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);

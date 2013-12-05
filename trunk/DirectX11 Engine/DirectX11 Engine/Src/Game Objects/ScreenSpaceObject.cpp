@@ -25,7 +25,6 @@ void ScreenSpaceObject::UpdateShaderConstantBuffers()
 	ConstantBufferComponent* cBufferComponent = GetConstantBufferComponent();
 
 	CComPtr<ID3D11Buffer> cBuffer;
-	int bufferTypeAndSlot = -1;
 
 	unsigned int numComponents = cBufferComponent->GetNumberConstantBufferComponents();
 	for(unsigned int i = 0; i < numComponents; ++i)
@@ -33,9 +32,6 @@ void ScreenSpaceObject::UpdateShaderConstantBuffers()
 		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
 		//Gets the Constant Buffer
 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
-
-		//Picks the bind slot according to what type of matrix it is
-		bufferTypeAndSlot = cBufferComponent->GetConstantBufferComponents()[i]->componentType;
 
 		//Map and copy over the data
 		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
@@ -75,10 +71,10 @@ void ScreenSpaceObject::BindRenderComponents()
 	//TODO:
 	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
-	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
+	//D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
 	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, buffersForBinding->numBuffers, &buffersForBinding->buffers[0].p, &buffersForBinding->strides[0], &buffersForBinding->offsets[0]);
-	D3D11Renderer::d3dImmediateContext->IASetInputLayout(renderDataMembers->inputLayout);
-	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	//D3D11Renderer::d3dImmediateContext->IASetInputLayout(renderDataMembers->inputLayout);
+	//D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 }
 
 void ScreenSpaceObject::FinalizeObject()
