@@ -142,9 +142,9 @@ PixelOut PS(PixelIn input)
 	GetGBufferAttributes(input.pos.xy, normal, position, diffuseAlbedo,
 						specularAlbedo, specularPower, depth);	
 
-	float3 lighting = CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower);
+	//float3 lighting = CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 
-	lighting *= diffuseAlbedo;
+	//lighting *= diffuseAlbedo;
 
 	// First 10% of the depth buffer color red.
 // 	if(depth.x < 0.9f)

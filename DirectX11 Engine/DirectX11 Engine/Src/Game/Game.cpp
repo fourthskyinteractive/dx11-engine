@@ -481,14 +481,14 @@ void* Game::InitializeLights()
 	//pointLight->Initialize("Res/Models/UnitSphere.fbx", XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), DIFFUSE_SHADER, true, NULL);
 
 
-	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f), true);
+	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), true);
 	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
 	//for(int i = -100; i < 100; i += 20)
 	//{
 		//for(int j = -100; j <= 100; j += 20)
 		//{
-			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 200, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(.0f, 0.0f, -500.0f), 1000, true);
 // 		}
 // 	}
 	

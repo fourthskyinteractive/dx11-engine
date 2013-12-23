@@ -83,7 +83,7 @@ RWTexture2D<float4> outputTexture : register(u0);
 StructuredBuffer<PointLightData> pointLights : register(t5);
 //StructuredBuffer<DirectionalLightData> directionalLights : register(t5);
 
-groupshared int tileData[100];
+groupshared int tileData[1024];
 
 void LightPixel(float3 _textureLocation);
 void LightCulling(ComputeIn _input);
@@ -161,6 +161,7 @@ void LightTile(ComputeIn _input)
 			textureLocation.x = (column * pixelsPerRow) + j;
 			textureLocation.y = (row * pixelsPerColumn) + i;
 
+
 			LightPixel(textureLocation);
 		}
 	}
@@ -175,7 +176,7 @@ void LightPixel(float3 _textureLocation)
 	float3 depth;
 	float specularPower;
 	float3 totalLight = float3(0.0f, 0.0f, 0.0f);
-	for(int i = 0; i < 1024; ++i)
+	for(int i = 0; i < 128; ++i)
 	{
 		if(tileData[i] == -1)
 			break;
@@ -186,7 +187,7 @@ void LightPixel(float3 _textureLocation)
 	}
 
  	totalLight += CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
- 										float3(0.0f, 0.0f, 0.0f), float4(0.15f, 0.15f, 0.15f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
+ 										float3(0.0f, 0.0f, 0.0f), float4(0.05f, 0.05f, 0.05f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
 
 	outputTexture[_textureLocation.xy] = float4(totalLight * diffuseAlbedo, 1.0f);
 }
@@ -357,12 +358,17 @@ void GetGBufferAttributes(in float3 _textureLocation,
 	_normal = normalTexture.Load(_textureLocation).xyz;
 	_position = positionTexture.Load(_textureLocation).xyz;
 	_diffuseAlbedo = diffuseAlbedoTexture.Load(_textureLocation).xyz;
-	float4 spec = specularAlbedoTexture.Load(_textureLocation);
 	_depth = depthTexture.Load(_textureLocation).xyz;
 
-	_specularAlbedo = (_lightColor * 0.5f).xyz;
-	_specularAlbedo = ((_lightColor.xyz * _diffuseAlbedo) *  0.5f);;
-	_specularPower = spec.w;
+	float4 spec = specularAlbedoTexture.Load(_textureLocation);
+	_specularAlbedo = float3(1.0f, 1.0f, 1.0f);//(_lightColor * 0.5f).xyz;
+	//_specularAlbedo = ((_lightColor.xyz * _diffuseAlbedo) *  0.5f);;
+	_specularPower = 0.15f;//spec.w;
+}
+
+void GetSpecularColor()
+{
+	
 }
 
 
@@ -390,10 +396,13 @@ float3 CalculateLighting(in float3 _normal,
 	//If point light or spot light
  	if(_lightType.x == 1.0f || _lightType.y == 1.0f)
 	{
- 		L = _lightPosition.xyz - _position;
-		float dist = length(L);
-		attenuation = max(0, 1.0f - (dist / _lightRange));
-		L /= dist;
+		if(_lightRange != 0.0f)
+		{
+ 			L = _lightPosition.xyz - _position;
+			float dist = length(L);
+			attenuation = max(0, 1.0f - (dist / _lightRange));
+			L /= dist;
+		}
 	}
 	//If directional light
 	else if(_lightType.z == 1.0f)
