@@ -163,13 +163,13 @@ static HRESULT LoadTextureDataFromFile( _In_z_ const wchar_t* fileName,
     }
 
     // open the file
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile( safe_handle( CreateFile2( fileName,
-                                                  GENERIC_READ,
-                                                  FILE_SHARE_READ,
-                                                  OPEN_EXISTING,
-                                                  nullptr ) ) );
-#else
+// #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+//     ScopedHandle hFile( safe_handle( CreateFile2( fileName,
+//                                                   GENERIC_READ,
+//                                                   FILE_SHARE_READ,
+//                                                   OPEN_EXISTING,
+//                                                   nullptr ) ) );
+// #else
     ScopedHandle hFile( safe_handle( CreateFileW( fileName,
                                                   GENERIC_READ,
                                                   FILE_SHARE_READ,
@@ -177,7 +177,7 @@ static HRESULT LoadTextureDataFromFile( _In_z_ const wchar_t* fileName,
                                                   OPEN_EXISTING,
                                                   FILE_ATTRIBUTE_NORMAL,
                                                   nullptr ) ) );
-#endif
+//#endif
 
     if ( !hFile )
     {
