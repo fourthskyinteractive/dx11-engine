@@ -222,7 +222,7 @@ bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 		FbxVector4* fbxVerts = new FbxVector4[vertexCount];
 		int arrayIndex = 0;
 		memcpy(fbxVerts, meshes[i]->GetControlPoints(), vertexCount * sizeof(FbxVector4));
-		int poopy = 0;
+
 		for(int j = 0; j < triangleCount; ++j)
 		{
 			int index = 0;
