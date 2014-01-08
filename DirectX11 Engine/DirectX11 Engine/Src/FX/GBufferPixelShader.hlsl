@@ -29,8 +29,8 @@ PixelOut PS(PixelIn input)
 	//Sample the diffuse texture
 
 	float3 diffuseAlbedo = DiffuseMap.Sample(sampleType, input.texCoord).rgb;
-	pOut.DiffuseAlbedo = float4(diffuseAlbedo, 1.0f);
-	//pOut.DiffuseAlbedo = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	//pOut.DiffuseAlbedo = float4(diffuseAlbedo, 1.0f);
+	pOut.DiffuseAlbedo = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	//Normalize the normal after interpolation
 	float3 normalWS = input.normalWS;
 

@@ -20,9 +20,6 @@
 #include "../../DeferredLightingGeometryShader.csh"
 #include "../../DeferredLightingPixelShader.csh"
 
-
-#include "ScreenGrab.h"
-
 //#include <D3DX11async.h>
 #include <fstream>
 using std::ifstream;
@@ -403,7 +400,7 @@ void Game::InitializeObjects()
 	ModelData modelData;
 	baseObject = new WorldObject();
 	DX11RenderDataMembers* renderDataMembers = baseObject->GetRenderDataMembers();
-	baseObject->LoadModel("Res/Models/BlueMinion.fbx", modelData);
+	baseObject->LoadModel("Res/Models/Box1.fbx", modelData);
 	baseObject->AddTexture(L"Res/Textures/BlueMinion.dds");
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
 	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
@@ -488,7 +485,7 @@ void* Game::InitializeLights()
 	//{
 		//for(int j = -100; j <= 100; j += 20)
 		//{
-			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(.0f, 0.0f, -500.0f), 1000, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(100.0f, 0.0f, 0.0f), 1000, true);
 // 		}
 // 	}
 	
