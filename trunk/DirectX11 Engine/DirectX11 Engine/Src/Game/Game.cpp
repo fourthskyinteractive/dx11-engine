@@ -96,8 +96,11 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), NEAR_PLANE, FAR_PLANE);
 	camera->UpdateViewMatrix();
 
-	frustumExtentsXY.y = (tan(XMConvertToRadians(50) / 2.0f) * 1000.0f) / 1000.0f;
-	frustumExtentsXY.x = (frustumExtentsXY.y * (float)_screenWidth / (float)_screenHeight) / 1000.0f;
+	frustumExtentsXY.y = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * 1000.0f);
+	frustumExtentsXY.x = (frustumExtentsXY.y * ((float)_screenWidth / (float)_screenHeight));
+
+	frustumExtentsXY.y /= 1000.0f;
+	frustumExtentsXY.x /= 1000.0f;
 
 	timer.Init();
 
@@ -400,7 +403,7 @@ void Game::InitializeObjects()
 	ModelData modelData;
 	baseObject = new WorldObject();
 	DX11RenderDataMembers* renderDataMembers = baseObject->GetRenderDataMembers();
-	baseObject->LoadModel("Res/Models/Box1.fbx", modelData);
+	baseObject->LoadModel("Res/Models/BlueMinion.fbx", modelData);
 	baseObject->AddTexture(L"Res/Textures/BlueMinion.dds");
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
 	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
