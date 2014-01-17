@@ -28,7 +28,7 @@ private:
 	static AmbientLight* ambientLight;
 	static vector<DirectionalLight*> directionalLights;
 	static vector<PointLight*> pointLights;
-	static vector<PointLightCompressed*> pointLightsCompressed;
+	static vector<PointLightCompressed> pointLightsCompressed;
 
 public:
 	LightManager();
