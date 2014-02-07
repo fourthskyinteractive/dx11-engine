@@ -59,7 +59,7 @@ class FBXSDK_DLL FbxEventBase
      virtual const char* GetEventName() const = 0;   
 
 	protected:
-     static int GetStaticTypeId(char const*);
+     static int GetStaticTypeId(const char*);
 };
 
 // Force events to declare a name by using an abstract method, and force them to use 
@@ -79,7 +79,7 @@ class FBXSDK_DLL FbxEventBase
   private:                                                                         \
      static const char* FbxEventName() {                                           \
      static FbxString lEventName = FbxString(#Class) + FbxString("<") +                  \
-     FbxGetDataTypeFromEnum(FbxTypeOf(*((FBXType const*)0))).GetName() + ">";               \
+     FbxGetDataTypeFromEnum(FbxTypeOf(*((const FBXType *)0))).GetName() + ">";               \
                                                                                    \
      return lEventName.Buffer();                                                   \
   }                                                                                \

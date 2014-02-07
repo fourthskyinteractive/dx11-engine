@@ -229,6 +229,7 @@ bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 			FbxVector4 fbxNorm(0, 0, 0, 0);
 			FbxVector2 fbxUV(0, 0);
 			bool texCoordFound = false;
+			bool mapped = false;
 			face.indices[0] = index = meshes[i]->GetPolygonVertex(j, 0);
 			_modelData.positions[index].x = (float)fbxVerts[index][0];
 			_modelData.positions[index].y = (float)fbxVerts[index][1];
@@ -238,7 +239,7 @@ bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 			_modelData.normals[index].x = (float)fbxNorm[0];
 			_modelData.normals[index].y = (float)fbxNorm[1];
 			_modelData.normals[index].z = (float)fbxNorm[2];
-			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 0, "map1", fbxUV, mapped);
 			_modelData.texCoords[index].x = (float)fbxUV[0];
 			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 
@@ -251,7 +252,7 @@ bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 			_modelData.normals[index].x = (float)fbxNorm[0];
 			_modelData.normals[index].y = (float)fbxNorm[1];
 			_modelData.normals[index].z = (float)fbxNorm[2];
-			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 1, "map1", fbxUV, mapped);
 			_modelData.texCoords[index].x = (float)fbxUV[0];
 			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 
@@ -264,7 +265,7 @@ bool FBXLoader::LoadFBX(char* _filePath, ModelData& _modelData)
 			_modelData.normals[index].x = (float)fbxNorm[0];
 			_modelData.normals[index].y = (float)fbxNorm[1];
 			_modelData.normals[index].z = (float)fbxNorm[2];
-			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV);
+			texCoordFound = meshes[i]->GetPolygonVertexUV(j, 2, "map1", fbxUV, mapped);
 			_modelData.texCoords[index].x = (float)fbxUV[0];
 			_modelData.texCoords[index].y = 1.0f - (float)fbxUV[1];
 

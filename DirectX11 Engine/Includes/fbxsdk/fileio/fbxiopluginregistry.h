@@ -46,18 +46,18 @@ public:
       */
 	virtual ~FbxIOPluginRegistry();
 
-#ifndef FBXSDK_ENV_WINRT
+#ifndef FBXSDK_ENV_WINSTORE
 	/** Registers a Reader from a plug-in path.
 	  *	\param pPluginPath          The plug-in path.
 	  * \param pFirstPluginID       Contains the ID of the first plug-in found.
 	  * \param pRegisteredCount     Contains the number of registered Readers.
 	  * \param pOverride			Override any existing writer that is using the same extension. 
 	  */
-	void RegisterReader(char const* pPluginPath,
+	void RegisterReader(const char* pPluginPath,
 						int& pFirstPluginID,
 						int& pRegisteredCount,
 						bool pOverride = false);
-#endif /* !FBXSDK_ENV_WINRT */
+#endif /* !FBXSDK_ENV_WINSTORE */
 
 	/** Registers a Reader.
 	  *	\param pCreateF             The function that creates the Reader to be registered.
@@ -74,18 +74,18 @@ public:
 						FbxReader::IOSettingsFillerFuncType pIOSettingsFillerF = NULL,
 						bool pOverride = false);
 
-#ifndef FBXSDK_ENV_WINRT
+#ifndef FBXSDK_ENV_WINSTORE
 	/** Registers a Writer from a plug-in path
 	  *	\param pPluginPath          The plug-in path.
 	  * \param pFirstPluginID       Contains the ID of the first plug-in found.
 	  * \param pRegisteredCount     Contains the number of registered Writers.
 	  * \param pOverride			Override any existing writer that is using the same extension. 
 	  */
-	void RegisterWriter(char const* pPluginPath,
+	void RegisterWriter(const char* pPluginPath,
 						int& pFirstPluginID,
 						int& pRegisteredCount,
 						bool pOverride = false);
-#endif /* !FBXSDK_ENV_WINRT */
+#endif /* !FBXSDK_ENV_WINSTORE */
 
 	/** Registers a Writer.
 	  *	\param pCreateF             The function that creates the Writer to be registered. 
@@ -124,25 +124,25 @@ public:
 	  * \param pExt             The file extension.
 	  *	\return                 The Reader ID if found, if not found, returns -1
 	  */
-	int FindReaderIDByExtension(char const* pExt) const;
+	int FindReaderIDByExtension(const char* pExt) const;
 
 	/** Searches for the Writer ID by the file extension.
 	  * \param pExt             The file extension.	  
 	  *	\return                 The Writer ID if found, if not found, returns -1
 	  */
-	int FindWriterIDByExtension(char const* pExt) const;
+	int FindWriterIDByExtension(const char* pExt) const;
 	
 	/** Searches for the Reader ID by the file format description.
 	  * \param pDesc            The file format description.	  
 	  *	\return                 The Reader ID if found, if not found, returns -1
 	  */
-	int FindReaderIDByDescription(char const* pDesc) const;
+	int FindReaderIDByDescription(const char* pDesc) const;
 
 	/** Searches for the Writer ID by the file format description.
 	  * \param pDesc            The file format description.	  
 	  *	\return                 The Writer ID if found, if not found, returns -1.
 	  */
-	int FindWriterIDByDescription(char const* pDesc) const;
+	int FindWriterIDByDescription(const char* pDesc) const;
 	
 	/** Verifies if the file format of the Reader is FBX.
 	  * \param pFileFormat      The file format identifier.
@@ -185,25 +185,25 @@ public:
 	  *	\param pFileFormat     The file format identifier.
 	  *	\return                A pointer to the character representation of the description.
 	  */
-	char const* GetReaderFormatDescription(int pFileFormat) const;
+	const char* GetReaderFormatDescription(int pFileFormat) const;
 
 	/** Returns the description of an exportable file format.
 	  *	\param pFileFormat     The file format identifier.
 	  *	\return                A pointer to the character representation of the description.
 	  */
-	char const* GetWriterFormatDescription(int pFileFormat) const;
+	const char* GetWriterFormatDescription(int pFileFormat) const;
 
 	/** Returns an importable file format's file extension.
 	  *	\param pFileFormat     The file format identifier.
 	  *	\return                A pointer to the character representation of the file extension.
 	  */
-	char const* GetReaderFormatExtension(int pFileFormat) const;
+	const char* GetReaderFormatExtension(int pFileFormat) const;
 	
 	/** Returns an exportable file format's file extension.
 	  *	\param pFileFormat     The file format identifier.
 	  *	\return                A pointer to the character representation of the file extension.
 	  */
-	char const* GetWriterFormatExtension(int pFileFormat) const;
+	const char* GetWriterFormatExtension(int pFileFormat) const;
 
 	/** Returns a list of the writable file format versions.
 	  *	\param pFileFormat     The file format identifier.
@@ -265,11 +265,11 @@ private:
 
 	struct ReaderPluginEntry
 	{
-		ReaderPluginEntry(char const* pExtension, char const* pDescription, FbxReader::CreateFuncType pCreatorFunction, int pBaseID,
+		ReaderPluginEntry(const char* pExtension, const char* pDescription, FbxReader::CreateFuncType pCreatorFunction, int pBaseID,
 			FbxReader::IOSettingsFillerFuncType pIOSettingsFillerFunction=NULL);
 		
-		char const*								mExtension;
-		char const*								mDescription;
+		const char*								mExtension;
+		const char*								mDescription;
 		FbxReader::CreateFuncType				mCreatorFunction;
 		FbxReader::IOSettingsFillerFuncType	mIOSettingsFillerFunction;
 		int										mBaseID;
@@ -279,11 +279,11 @@ private:
 	
 	struct WriterPluginEntry
 	{
-		WriterPluginEntry(char const* pExtension, char const* pDescription, char const* const* pVersions, FbxWriter::CreateFuncType pCreatorFunction, int pBaseID,
+		WriterPluginEntry(const char* pExtension, const char* pDescription, char const* const* pVersions, FbxWriter::CreateFuncType pCreatorFunction, int pBaseID,
 			FbxWriter::IOSettingsFillerFuncType pIOSettingsFillerFunction=NULL);
 		
-		char const*								mExtension;
-		char const*								mDescription;
+		const char*								mExtension;
+		const char*								mDescription;
 		char const* const*						mVersions;
 		FbxWriter::CreateFuncType				mCreatorFunction;
 		FbxWriter::IOSettingsFillerFuncType	mIOSettingsFillerFunction;

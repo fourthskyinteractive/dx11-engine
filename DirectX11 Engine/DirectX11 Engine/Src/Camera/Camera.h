@@ -70,6 +70,8 @@ public:
 	XMFLOAT4X4 GetViewMatrixF() const;
 	XMFLOAT4X4 GetProjectionMatrixF() const;
 	XMFLOAT4X4 GetViewProjectionMatrixF() const;
+	void* GetViewMatrixP();
+	void* GetProjectionMatrixP();
 
 	//Strafe/Walk the camera a distance _d
 	void Strafe(float _d);
@@ -104,6 +106,7 @@ private:
 
 	//View/Projection Matrices
 	XMFLOAT4X4 view;
+	XMFLOAT4X4 inverseView;
 	XMFLOAT4X4 projection;
 };
 #endif

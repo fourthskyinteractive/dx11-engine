@@ -82,7 +82,7 @@ public:
       * \param pIndex                  Index of the blend shape channel.
       * \return                        Pointer to the blend shape channel or \c NULL if index is out of range.
       */
-    FbxBlendShapeChannel const* GetBlendShapeChannel(int pIndex) const;
+    const FbxBlendShapeChannel* GetBlendShapeChannel(int pIndex) const;
 
     /** Get the type of the deformer.
       * \return                         The deformer type identifier of blend shape deformer.
@@ -101,7 +101,8 @@ public:
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     virtual FbxObject& Copy(const FbxObject& pObject);
-
+    virtual FbxObject* Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const;
+    
 protected:
     virtual FbxStringList GetTypeFlags() const;
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/

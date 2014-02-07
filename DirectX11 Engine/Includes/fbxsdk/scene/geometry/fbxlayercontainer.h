@@ -70,7 +70,7 @@ public:
 	  *	\param pIndex     Layer index.
 	  * \return           Pointer to the layer, or \c NULL if pIndex is out of range.
 	  */
-	FbxLayer const* GetLayer(int pIndex) const;
+	const FbxLayer* GetLayer(int pIndex) const;
 
 	/** Returns the n'th layer as specified by pIndex that contains the specified layer element type. 
       * If the pType is FbxLayerElement::eUV, this method will return the n'th layer as specified by pIndex that contains the diffuse UV.
@@ -90,7 +90,7 @@ public:
       * \param pIsUV      When \c true, requests the UV layer element that corresponds with the specified texture type.
 	  * \return           Pointer to the layer, or \c NULL if pIndex is out of range.
 	  */
-	FbxLayer const* GetLayer(int pIndex, FbxLayerElement::EType pType, bool pIsUV=false) const;
+	const FbxLayer* GetLayer(int pIndex, FbxLayerElement::EType pType, bool pIsUV=false) const;
 
 	/**	Returns the global index of the n'th layer as specified by pIndex that contains the specified layer element type.
 	  * \param pIndex     Layer index of the specified type.
@@ -127,11 +127,11 @@ public:
 	int  GTC(FbxUInt i, int j);
 	void* GT (int  i,    FbxUInt l, int j); 
 	int  AT (void* t,    FbxUInt l, int j);
-	int  GTI(char const* n, FbxUInt l, int j);
+	int  GTI(const char* n, FbxUInt l, int j);
 	int  GMC(FbxUInt i, void* n = NULL);
 	void* GM (int  i,    FbxUInt l, void* n = NULL);
 	int  AM (void* m,    FbxUInt l, void* n = NULL, bool b = false);
-	int  GMI(char const* n, FbxUInt l, void* d = NULL);
+	int  GMI(const char* n, FbxUInt l, void* d = NULL);
 
 	int AddToLayerElementsList(FbxLayerElement* pLEl);
 	void RemoveFromLayerElementsList(FbxLayerElement* pLEl);
@@ -139,7 +139,7 @@ public:
 protected:
 	virtual void Destruct(bool pRecursive);
 
-	void CopyLayers(FbxLayerContainer const* pLayerContainer);
+	void CopyLayers(const FbxLayerContainer* pLayerContainer);
 
 	virtual void SetDocument(FbxDocument* pDocument);
 	virtual	bool ConnectNotify (FbxConnectEvent const &pEvent);

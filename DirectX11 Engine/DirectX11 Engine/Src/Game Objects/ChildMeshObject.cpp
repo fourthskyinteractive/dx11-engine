@@ -108,7 +108,7 @@ void ChildMeshObject::SetShaderBuffers()
 
 void ChildMeshObject::AddTexture(WCHAR* _filePath)
 {
-	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
+	textures->AddTexture(_filePath);
 }
 
 void ChildMeshObject::Render(BaseShader* _shaderUsed, ID3D11RenderTargetView* _renderTarget)

@@ -72,7 +72,7 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     struct NameCell
     {
-        NameCell(char const* pName) :
+        NameCell(const char* pName) :
     mName(pName),
         mInstanceCount(0)
     {

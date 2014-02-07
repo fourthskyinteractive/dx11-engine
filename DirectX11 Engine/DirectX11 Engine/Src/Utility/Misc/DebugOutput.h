@@ -11,8 +11,8 @@ class DebugOutput
 {
 public:
 
-	static enum DebuggerFlags {NETWORK_MSG = 1, RENDER_MSG = 2, PHYSICS_MSG = 4, INPUT_MSG = 8, SOUND_MSG = 16 , ANIMATION_MSG = 32, OTHER_MSG = 256};
-	static enum DebugOutputType { INFO, EVENT, SUCCESS_CREATE, FAILURE_CREATE, SUCCESS_DESTROY, FAILURE_DESTROY, FAILURE_SHADER_COMPILE, NETWORKING, NETWORKING_FAILURE };
+	static enum DebuggerFlags {RENDER_MSG = 1, FBXLOADER_MSG = 2};
+	static enum DebugOutputType { INFO, SUCCESS_CREATE, FAILURE_CREATE, SUCCESS_GENERIC, FAILURE_GENERIC};
 
 	static void Initialize(unsigned int _flags);
 	static void Print(DebuggerFlags _flags, DebugOutputType _type, const char* const _msg);

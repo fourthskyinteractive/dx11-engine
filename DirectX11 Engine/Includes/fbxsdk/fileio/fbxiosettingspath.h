@@ -35,7 +35,7 @@
 	
 #define KS_VERSION                      FbxString(FBXSDK_VERSION_STRING)
 
-#define FBXSDK_PLUGINS_REGISTRY_PATH	"SOFTWARE\\Autodesk\\FBX_Plugins_"FBXSDK_VERSION_STRING
+#define FBXSDK_PLUGINS_REGISTRY_PATH	"SOFTWARE\\Autodesk\\FBX_Plugins_" FBXSDK_VERSION_STRING
 
 #define IMP_FBX_PRESET_EXT			    "fbximportpreset"
 #define EXP_FBX_PRESET_EXT		        "fbxexportpreset"

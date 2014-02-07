@@ -29,6 +29,9 @@ public:
 	//! Copy constructor.
 	FbxArray(const FbxArray& pArray) : mSize(0), mCapacity(0), mArray(NULL){ *this = pArray; }
 
+	//! Reserve constructor.
+	FbxArray(int pCapacity) : mSize(0), mCapacity(0), mArray(NULL){ if( pCapacity > 0 ) Reserve(pCapacity); }
+
 	/** Destructor.
 	* \remark The destructor for each element will not be called. */
 	~FbxArray(){ Clear(); }
@@ -326,7 +329,7 @@ public:
 	}
 
 	/** Append the elements of another array at the end of this array if they are not present.
-	* \param pArray Another array. */
+	* \param pOther Another array. */
 	inline void AddArrayNoDuplicate(const FbxArray<T>& pOther)
 	{
 		for( int i = 0, c = pOther.mSize; i < c; ++i )
@@ -336,7 +339,7 @@ public:
 	}
 
 	/** Remove the elements of another array from this array is they are present.
-	* \param pArray Another array. */
+	* \param pOther Another array. */
 	inline void RemoveArray(const FbxArray<T>& pOther)
 	{
 		for( int i = 0, c = pOther.mSize; i < c; ++i )

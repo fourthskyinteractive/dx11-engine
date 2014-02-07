@@ -25,8 +25,8 @@ FbxReader* CreateFBXReader(FbxManager& pManager,
 							int pID,
                             FbxStatus& pStatus);
 void GetInfoFBXReader(int* pCount, 
-					  char const* const* * pExtensions, 
-					  char const* const* * pDescriptions);
+					  const char* * pExtensions, 
+					  const char* * pDescriptions);
 
 class FbxReaderFbx5 : public FbxReader
 {
@@ -35,6 +35,7 @@ public:
 	virtual ~FbxReaderFbx5();
 
     virtual bool FileOpen(char* pFileName, bool pIgnoredArg);
+    virtual bool FileOpen(char* pFileName, EFileOpenSpecialFlags pFlags){ return FbxReader::FileOpen(pFileName, pFlags); }
 	virtual bool FileOpen(char* pFileName);
     virtual bool FileOpen(FbxFile * pFile);
 	virtual bool FileOpen(FbxStream * pStream, void* pStreamData);

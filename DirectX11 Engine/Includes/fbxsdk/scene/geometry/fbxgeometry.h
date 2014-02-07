@@ -175,7 +175,7 @@ public:
     * \param pStatus                       The FbxStatus object to hold error codes.
 	* \return                              Pointer to the shape (or \c NULL if pIndex is out of range).
 	*/
-	FbxShape const* GetShape(int pBlendShapeIndex, int pBlendShapeChannelIndex, int pShapeIndex, FbxStatus* pStatus = NULL) const;
+	const FbxShape* GetShape(int pBlendShapeIndex, int pBlendShapeChannelIndex, int pShapeIndex, FbxStatus* pStatus = NULL) const;
 
 	/** Get the shape animation curve.
 	* The shape channel is an animatable property with a value range from 0 to 100 (with 100 being full shape deformation).
@@ -248,10 +248,9 @@ public:
 	*/
 	void SetDefaultShape(int pBlendShapeIndex, int pBlendShapeChannelIndex, double pPercent);
 
-	/** Sets the default deformation for a specified shape.
+	/** Sets the default deformation for a specified channel.
 	* The default shape property has a value range from 0 to 100 (with 100 being full shape deformation).
 	* The default value is 0.
-	* \param pBlendShape              The blend shape deformer.
 	* \param pBlendShapeChannel       The blend shape channel.
 	* \param pPercent                 Deformation percentage (on a scale ranging from 0 to 100).
 	* \remarks                        This function has no effect if pShapeName is invalid.
@@ -267,10 +266,9 @@ public:
 	*/
 	double GetDefaultShape(int pBlendShapeIndex, int pBlendShapeChannelIndex) const;
 
-	/** Returns the default deformation value for the specified shape.
+	/** Returns the default deformation value for the specified channel.
 	* The default shape property has a value range from 0 to 100 (with 100 being full shape deformation).
 	* The default value is 0.
-	* \param pBlendShape              The blend shape deformer.
 	* \param pBlendShapeChannel       The blend shape channel.
 	* \return                         The deformation value for the specified shape, or 0 if pShapeName is invalid.
 	*/
@@ -283,6 +281,7 @@ public:
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     virtual FbxObject& Copy(const FbxObject& pObject);
+    virtual FbxObject* Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const;
 
     void CleanShapeChannels(FbxAnimLayer* pAnimLayer);
     void CleanShapeChannel(FbxAnimLayer* pAnimLayer, int pShapeIndex);
@@ -294,15 +293,15 @@ public:
     void ClearTemporaryShapeNames();
 
 protected:
-	virtual void Construct(const FbxGeometry* pFrom);
+	virtual void Construct(const FbxObject* pFrom);
     virtual void Destruct(bool pRecursive);
     virtual void SetDocument(FbxDocument* pDocument);
 
     FbxString CreateShapeChannelName(int pShapeIndex);
     FbxString CreateShapeChannelName(FbxString pShapeName);
 
-    void CopyDeformers(FbxGeometry const* pGeometry);
-    void CopyPivot(FbxGeometry const* pSource);
+    void CopyDeformers(const FbxGeometry* pGeometry);
+    void CopyPivot(const FbxGeometry* pSource);
 
     // Used during FBX v5 file store
     FbxArray<FbxString*> mShapeNameArrayV6;

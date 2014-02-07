@@ -87,7 +87,7 @@ public:
 	* \param pIndex                  Index of the target shape.
 	* \return                        Pointer to the target shape or \c NULL if index is out of range.
 	*/
-	FbxShape const* GetTargetShape(int pIndex) const;
+	const FbxShape* GetTargetShape(int pIndex) const;
 
 	/** Get the index of the given target shape.
 	* \param pShape                  The given target shape to find index.
@@ -130,9 +130,10 @@ public:
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     virtual FbxObject& Copy(const FbxObject& pObject);
-
+    virtual FbxObject* Clone(FbxObject::ECloneType pCloneType=eDeepClone, FbxObject* pContainer=NULL, void* pSet = NULL) const;
+    
 protected:
-    virtual void Construct(const FbxBlendShapeChannel* pFrom);
+    virtual void Construct(const FbxObject* pFrom);
     virtual void ConstructProperties(bool pForceSet);
 
     virtual FbxStringList GetTypeFlags() const;

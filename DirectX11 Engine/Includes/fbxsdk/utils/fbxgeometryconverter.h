@@ -37,83 +37,65 @@ class FbxSurfaceEvaluator;
 class FBXSDK_DLL FbxGeometryConverter
 {
 public:
-	/** Constructor.
-    * \param pManager SDK object manager.
-    */
-    FbxGeometryConverter(FbxManager* pManager);
+	/** \name Triangulation Utilities */
+	//@{
+		/** Triangulate all node attributes in the scene that can be triangulated.
+		* \param pScene The scene to iterate through to triangulate meshes.
+		* \param pReplace If \c true, replace the original meshes with the new triangulated meshes on all the nodes, and delete the original meshes. Otherwise, original meshes are left untouched.
+		* \param pLegacy If \c true, use legacy triangulation method that does not support holes in geometry. Provided for backward compatibility.
+		* \return \c true if all node attributes that can be triangulated were triangulated successfully.
+		* \remark The function will still iterate through all meshes regardless if one fails to triangulate, but will return false in that case. This function
+		* currently only supports node attribute of type eMesh, ePatch, eNurbs or eNurbsSurface. */
+		bool Triangulate(FbxScene* pScene, bool pReplace, bool pLegacy=false);
 
-	/** Destructor.
-    */
-    ~FbxGeometryConverter();
-
-    /** 
-    * \name Triangulation
-    */
-    //@{
-		/** Triangulate a mesh.
-		  * \param pMesh     Pointer to the mesh to triangulate.
-		  * \return          Pointer to the new triangulated mesh.
-		  * \remarks         This method creates a new mesh, leaving the source mesh unchanged.
-		  */
-		FbxMesh* TriangulateMesh(FbxMesh const* pMesh);
-
-		/** Triangulate a patch.
-		  * \param pPatch     Pointer to the patch to triangulate.
-		  * \return           Pointer to the new triangulated mesh.
-		  * \remarks          The current deformations (skins & shapes) on the patch are also converted and applied to the
-		  *                   resulting mesh.
-		  */
-		FbxMesh* TriangulatePatch(FbxPatch const* pPatch);
-
-		/** Triangulate a nurb.
-		  * \param pNurbs     Pointer to the nurb to triangulate.
-		  * \return          Pointer to the new triangulated mesh.
-		  * \remarks         The current deformations (skins and shapes) on the nurb are also converted and applied to the
-		  *                  resulting mesh.
-		  */
-		FbxMesh* TriangulateNurbs(FbxNurbs const* pNurbs);
-
-		/** Triangulate a mesh, patch or nurb contained in a node and preserve the
-		  * skins and shapes animation channels.
-		  * \param pNode     Pointer to the node containing the geometry to triangulate.
-		  * \return          \c true on success, or \c false if the node attribute is not a mesh, a patch or a nurb.
-		  * \remarks         See the remarks for functions TriangulateMesh(), TriangulatePatch() and TriangulateNurbs().
-		  */
-		bool TriangulateInPlace(FbxNode* pNode);
-
-		/** Add an "alternate" geometry to the node.
-		  * \param pNode                        Pointer to the node containing the geometry.
-		  * \param pSrcGeom                     Pointer to the source geometry.
-		  * \param pAltGeom                     Pointer to the alternate geometry.
-		  * \param pSrcToAltWeightedMapping     Pointer to the weighted mapping table (optional).
-		  * \param pConvertDeformations         Flag used only if parameter pSrcToAltWeightedMapping is a valid pointer to a weighted mapping table.
-		  *                                     Set to \c true to convert deformations using the weighted mapping table.
-		  * \return                             \c true on success, or \c false if the node attribute is not a mesh, a patch or a nurb.
-		  * \remarks							  Although this method is publicly available, its only use in the FBX SDK is internal to some of
-		  *                                     the conversion routines declared in this class.
-		  */
-		bool AddAlternateGeometry(FbxNode* pNode, FbxGeometry* pSrcGeom, FbxGeometry* pAltGeom, FbxWeightedMapping* pSrcToAltWeightedMapping, bool pConvertDeformations);
-
-		/** Convert skins and shapes from source to destination geometry.
-		  * \param pNode        Pointer to the node containing the geometry.
-		  * \param pSrcGeom     Pointer to the source geometry.
-		  * \param pDstGeom     Pointer to the destination geometry.
-		  * \return             \c true on success, \c false otherwise.
-		  * \remarks            Source and destination geometry must belong to the same node and must be linked by a geometry weighted map.
-		  * \remarks			  Although this method is publicly available, its only use in the FBX SDK is internal to some of
-		  *                     the conversion routines declared in this class.
-		  */
-		bool ConvertGeometryAnimation(FbxNode* pNode, FbxGeometry* pSrcGeom, FbxGeometry* pDstGeom);
+		/** Triangulate a node attribute, if supported, and preserve the skins and shapes animation channels.
+		* \param pNodeAttribute Pointer to the node containing the geometry to triangulate.
+		* \param pReplace If \c true, replace the original mesh with the new triangulated mesh on the nodes, and delete the original mesh. Otherwise, original mesh is left untouched and only return new mesh.
+		* \param pLegacy If \c true, use legacy triangulation method that does not support holes in geometry. Provided for backward compatibility.
+		* \return The newly created node attribute if successful, otherwise NULL. If node attribute type is not supported by triangulation, it returns the original node attribute.
+		* \remark This function currently only supports node attribute of type eMesh, ePatch, eNurbs or eNurbsSurface. If the node attribute does not support triangulation,
+		* or if it is already triangulated, this function will return pNodeAttribute. */
+		FbxNodeAttribute* Triangulate(FbxNodeAttribute* pNodeAttribute, bool pReplace, bool pLegacy=false);
 
 		/** Compute a "vertex-correspondence" table that helps passing from source to destination geometry.
-		  * \param pSrcGeom                     Pointer to the source geometry.
-		  * \param pDstGeom                     Pointer to the destination geometry.
-		  * \param pSrcToDstWeightedMapping     Pointer to the weighted mapping table.
-		  * \param pSwapUV                      Set to \c true to swap UVs.
-		  * \return                             \c true on success, \c false if the function fails to compute the correspondence.
-		  * \remarks                            Skins and shapes are also converted to fit the alternate geometry.
-		  */
+		* \param pSrcGeom Pointer to the source geometry.
+		* \param pDstGeom Pointer to the destination geometry.
+		* \param pSrcToDstWeightedMapping Pointer to the weighted mapping table.
+		* \param pSwapUV Set to \c true to swap UVs.
+		* \return \c true on success, \c false if the function fails to compute the correspondence.
+		* \remark Skins and shapes are also converted to fit the alternate geometry. */
 		bool ComputeGeometryControlPointsWeightedMapping(FbxGeometry* pSrcGeom, FbxGeometry* pDstGeom, FbxWeightedMapping* pSrcToDstWeightedMapping, bool pSwapUV=false);
+
+		/** Triangulate a basic mesh, without support for holes.
+		* \param pMesh Pointer to the mesh to triangulate.
+		* \return Pointer to the new triangulated mesh.
+		* \remark This method creates a new mesh, leaving the source mesh unchanged. This function is deprecated, please use Triangulate instead. */
+		FBX_DEPRECATED FbxMesh* TriangulateMesh(const FbxMesh* pMesh);
+
+		/** Triangulate a mesh with support for simple holes in polygons.
+		* \param pMesh Pointer to the mesh to triangulate.
+		* \return Pointer to the new triangulated mesh if successful, otherwise NULL.
+		* \remark This method creates a new mesh, leaving the source mesh unchanged. This function is deprecated, please use Triangulate instead. */
+		FBX_DEPRECATED FbxMesh* TriangulateMeshAdvance(const FbxMesh* pMesh);
+
+		/** Triangulate a patch.
+		* \param pPatch Pointer to the patch to triangulate.
+		* \return Pointer to the new triangulated mesh.
+		* \remark The current deformations (skins & shapes) on the patch are also converted and applied to the resulting mesh. This function is deprecated, please use Triangulate instead. */
+		FBX_DEPRECATED FbxMesh* TriangulatePatch(const FbxPatch* pPatch);
+
+		/** Triangulate a nurb.
+		* \param pNurbs Pointer to the nurb to triangulate.
+		* \return Pointer to the new triangulated mesh.
+		* \remark The current deformations (skins and shapes) on the nurb are also converted and applied to the resulting mesh. This function is deprecated, please use Triangulate instead. */
+		FBX_DEPRECATED FbxMesh* TriangulateNurbs(const FbxNurbs* pNurbs);
+
+		/** Triangulate the default mesh, patch or nurb contained in a node and preserve the skins and shapes animation channels.
+		* \param pNode Pointer to the node containing the geometry to triangulate.
+		* \return \c true on success, or \c false if the node attribute is not a mesh, a patch or a nurb.
+		* \remark This funciton will only triangulate the default node attribute found on the node. Also, see the remarks for functions TriangulateMesh(), TriangulatePatch() and TriangulateNurbs().
+		* This function is deprecated, please consider using Triangulate instead. */
+		FBX_DEPRECATED bool TriangulateInPlace(FbxNode* pNode);
     //@}
 
     /** 
@@ -249,90 +231,77 @@ public:
 		bool ComputeEdgeSmoothingFromPolygonSmoothing( FbxMesh* pMesh, int pIndex=0 ) const;
     //@}
 
-	/** Replace node attribute with new one.
-	  * \param pNode Pointer to the node which node attribute will be replaced.
-	  * \param pNewNodeAttr new node attribute.
-	  * \remark a)node attribute of all instance object will also be replaced;
-	  *         b)the old node attribute will be destroyed.
-	  */
-	void ReplaceNodeAttribute(FbxNode* pNode, FbxNodeAttribute* pNewNodeAttr);
+	/** \name Split Mesh Per Materials */
+	//@{
+		/** Split all the mesh in the scene per material.
+		* \param pScene The scene to iterate through to split meshes.
+		* \param pReplace If \c true, replace the original mesh with new ones and delete the original meshes, but *only* if they got split into multiple meshes, otherwise they are left untouched.
+		* \return \c true if all splitable mesh were successfully split, \c false otherwise.
+		* \remark The function will still iterate through all meshes regardless if one fails to split, but will return false in that case. */
+		bool SplitMeshesPerMaterial(FbxScene* pScene, bool pReplace);
 
-	/** Add a "triangulated mesh" geometry to the node.
-	  * \param pNode Pointer to the node containing the geometry.
-	  * \param pUVStepCoeff Coefficient factor for the U/V steps. Must be >= 1.
-	  * \return \c true on success, \c false if the node attribute is not a mesh, 
-	  * a patch or a nurb.
-	  * \remarks The remarks relative to functions TriangulateMesh(), TriangulatePatch()
-	  * , TriangulateNurbs() and TriangulateInPlace() are applicable.
-	  */
-	bool AddTriangulatedMeshGeometry(FbxNode* pNode, int pUVStepCoeff);
+		/** Split mesh per material.
+		* \param pMesh The mesh that will be split if it has multiple materials assigned.
+		* \param pReplace If \c true, replace the original mesh with new one and delete the original mesh, but *only* if they got split into multiple meshes, otherwise left untouched.
+		* \return \c true on success, \c false otherwise.
+		* \remark The function will fail if the mapped material is not per face (FbxLayerElement::eByPolygon) or if a material is multi-layered. It will create as many meshes as
+		* there are materials applied to it. If one mesh have some polygons with material A, some polygons with material B, and some polygons with NO material, 3 meshes distinct
+		* will be created. The newly created meshes will be automatically attached to the same FbxNode that holds the original FbxMesh. If the original mesh have tangents, they will
+		* be regenerated on the new meshes. */
+		bool SplitMeshPerMaterial(FbxMesh* pMesh, bool pReplace);
+	//@}
 
-	/** Split Mesh Per Material.
-	  * Each split mesh only has a single material on it.
-	  * \param pMesh     The mesh that contains the smoothing to be converted.    
-	  * \return          \c true on success, \c false otherwise.
-	  * \remarks          It will work only on mesh that have material mapped "per-face" (Mapping Mode is FbxLayerElement::eByPolygon).
-	  *                   It does NOT work on meshes with material mapped per-vertex/per-edge/etc.
-	  *                   It will create as many meshes on output that there are materials applied to it. 
-	  *                   If one mesh have some polygons with material A, some polygons with material B, 
-	  *                   and some polygons with NO material, it should create 3 meshes after calling this function.
-	  *                   The newly created meshes should be attached to the same FbxNode that hold the original FbxMesh.
-	  *                   The original FbxMesh STAY UNCHANGED.
-	  *                   Now, the new mesh will have Normals, UVs, vertex color, material and textures.
-      *                   Does NOT support multi-layered materials.  The function will exit and return false if applied on a mesh containing multi-layered materials.
-	  */
-	bool SplitMeshPerMaterial(FbxMesh* pMesh);
+	/** Reset meshes geometry center to be at world center, if delta between the two is greater than threshold.
+	* Basically, this function calculates the scene bounding box in world coordinates, and test if the center of that bounding box distance from the world center is larger than the threshold.
+	* If this happen to be true, this function goes ahead and substracts the center's delta to the mesh's control points directly.
+	* \param pScene The scene to iterate through meshes to reset their world center.
+	* \param pThreshold If the scene center distance from world center is greater than the threshold, apply center offset to all meshes to reset them to world center.
+	* \return \c true only if any meshes were modified, otherwise \c false.
+	* \remark This function does not work on deformed geometry. */
+	bool ResetMeshesCenterToWorld(FbxScene* pScene, FbxDouble pThreshold);
 
-	/** Split all the mesh in the scene.
-	  * \param pScene    each mesh in the scene will be split.
-	  * \return          \c true on success, \c false otherwise.
-	  */
-	bool SplitMeshesPerMaterial(FbxScene* pScene);
-
-	/** Create LayerElement, and copy settings from pRefMesh to pNewMesh.
-	  * \param pNewMesh    new mesh to create layerElement.
-	  * \param pRefMesh    reference mesh, to copy layerElement settings from it. 
-	  * \return          \c true on success, \c false otherwise.
-	  */
-	bool CreateAndCopyLayerElement(FbxMesh *pNewMesh, FbxMesh *pRefMesh);
-
-	/** Set Normals, UVs and Vertex Color, when building new mesh.
-	  * \remarks          If MappingMode is FbxLayerElement::eByPolygon,
-	  *                   only pIsEndPolygon/pPolygonIndex are meaningful here,
-	  *                   pIsSearched/pPolyPointIndex/pLoopIndex are not used here.
-	  */
-	bool SetLayerElements(FbxMesh *pNewMesh, FbxMesh *pMesh, int pPolygonIndex, int pPolyPointIndex, int pLoopIndex, bool pIsSearched, bool pIsEndPolygon);
-
-	/** Triangulate a mesh(support without holes or with holes simple polygon)
-	  * \param pMesh     Pointer to the mesh to triangulate.
-	  * \param pStatus   The status is \c true if the triangulation is successful for the whole mesh.
-	  * \return          Pointer to the new triangulated mesh.
-	  * \remarks         This method creates a new mesh, leaving the source mesh unchanged.
-	  */
-	FbxMesh* TriangulateMeshAdvance(FbxMesh const* pMesh, bool& pStatus);
-
-	 /**
-	 * Merge multiple meshes to one mesh.
-	 * The method will merge: 
-	 * a) mesh vertex;
-	 * b) mesh polygon;
-	 * c) mesh edge;
-	 * d) all mesh elements; only the layer 0 elements is merged.
-	 * e) if there are skins for old mesh, merge these skins. The new skin clusters link to old skeletons.
-	 *
-	 * \param pMeshNodes FBX nodes that hold multiple meshes. These meshes will be merged.
-	 * \param pNodeName	 Name of new mesh node.
-	 * \param pScene     The scene that will contain the new mesh node.
-	 * \return			 The new mesh node if merge successfully, otherwise NULL is returned.
-	 * \remarks			 This method creates a new mesh, leaving the source mesh unchanged.
-	 *                   The transform of new mesh node is: translate (0, 0, 0), rotation (0, 0, 0), scale (1, 1, 1).
-	 *					 For layer element material, normal, smoothing, UV set, vertex color, binormal, tangent and polygon group,
-	 *					 if any mesh misses these element, the merge for this kind of element is skipped.
-	 *					 For layer element crease, hole, visibility and user data, if any mesh has such element, the kind of element
-	 *                   will be merged. The missing element will be filled with default values.
-	 *					 For meshes with skin binding, if the pose of frame 0 is different with bind pose, the new mesh will be distorted.
-	 */
+	/**
+	* Merge multiple meshes to one mesh.
+	* The method will merge: 
+	* a) mesh vertex;
+	* b) mesh polygon;
+	* c) mesh edge;
+	* d) all mesh elements; only the layer 0 elements is merged.
+	* e) if there are skins for old mesh, merge these skins. The new skin clusters link to old skeletons.
+	*
+	* \param pMeshNodes FBX nodes that hold multiple meshes. These meshes will be merged.
+	* \param pNodeName	 Name of new mesh node.
+	* \param pScene     The scene that will contain the new mesh node.
+	* \return			 The new mesh node if merge successfully, otherwise NULL is returned.
+	* \remarks			 This method creates a new mesh, leaving the source mesh unchanged.
+	*                   The transform of new mesh node is: translate (0, 0, 0), rotation (0, 0, 0), scale (1, 1, 1).
+	*					 For layer element material, normal, smoothing, UV set, vertex color, binormal, tangent and polygon group,
+	*					 if any mesh misses these element, the merge for this kind of element is skipped.
+	*					 For layer element crease, hole, visibility and user data, if any mesh has such element, the kind of element
+	*                   will be merged. The missing element will be filled with default values.
+	*					 For meshes with skin binding, if the pose of frame 0 is different with bind pose, the new mesh will be distorted.
+	*/
 	FbxNode* MergeMeshes(FbxArray<FbxNode*>& pMeshNodes, const char* pNodeName, FbxScene* pScene);
+
+/*****************************************************************************************************************************
+** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
+*****************************************************************************************************************************/
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    FbxGeometryConverter(FbxManager* pManager);
+    ~FbxGeometryConverter();
+
+private:
+	FbxMesh* TriangulateMeshInternal(const FbxMesh* pMesh);
+	FbxMesh* TriangulateMeshInternalLegacy(const FbxMesh* pMesh);
+	FbxMesh* TriangulatePatchInternal(const FbxPatch* pPatch);
+	FbxMesh* TriangulateNurbsInternal(const FbxNurbs* pNurbs);
+
+	bool AddAlternateGeometry(FbxNode* pNode, FbxGeometry* pSrcGeom, FbxGeometry* pAltGeom, FbxWeightedMapping* pSrcToAltWeightedMapping, bool pConvertDeformations);
+	bool ConvertGeometryAnimation(FbxNode* pNode, FbxGeometry* pSrcGeom, FbxGeometry* pDstGeom);
+	void ReplaceNodeAttribute(FbxNode* pNode, FbxNodeAttribute* pNewNodeAttr);
+	bool AddTriangulatedMeshGeometry(FbxNode* pNode, int pUVStepCoeff);
+	bool CreateAndCopyLayerElement(FbxMesh *pNewMesh, FbxMesh *pRefMesh);
+	bool SetLayerElements(FbxMesh *pNewMesh, FbxMesh *pMesh, int pPolygonIndex, int pPolyPointIndex, int pLoopIndex, bool pIsSearched, bool pIsEndPolygon);
 
     /** FbxTriangulation
     * \param Index Output array of triangle indices
@@ -350,15 +319,9 @@ public:
     *         0 0-----0-------------0 6
     *                 7
     *  The result of this one will be [{0,1,2},{2,3,0},{0,3,7},{3,4,7},{7,4,6},{4,5,6}]
-    *
     */
     static void FbxTriangulation(int *Index, int pNumSide);
 
-/*****************************************************************************************************************************
-** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **
-*****************************************************************************************************************************/
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-protected:
     bool ComputePatchToMeshControlPointsWeightedMapping(FbxPatch* pSrcPatch, FbxMesh* pDstMesh, FbxWeightedMapping* pMapping, bool pSwapUV=false);
     bool ComputeNurbsToMeshControlPointsWeightedMapping(FbxNurbsSurface* pSrcNurbs, FbxMesh* pDstMesh, FbxWeightedMapping* pMapping, bool pRescaleUVs=false, bool pSwapUV=false);
 
@@ -366,13 +329,13 @@ protected:
     void InitializeWeightInNormals(FbxLayerContainer* pLayerContainer);
     void TriangulateContinuousSurface(FbxMesh* pMesh, FbxSurfaceEvaluator* pSurface, FbxUInt pPointCountX, FbxUInt pPointCountY, bool ClockWise=false);
     void CheckForZeroWeightInShape(FbxGeometry *pGeometry);
-    FbxMesh* CreateMeshFromParametricSurface(FbxGeometry const* pGeometry);
+    FbxMesh* CreateMeshFromParametricSurface(const FbxGeometry* pGeometry);
     FbxNurbs* CreateNurbsFromPatch(FbxPatch* pPatch);
     FbxNurbsSurface* CreateNurbsSurfaceFromPatch(FbxPatch* pPatch);
 
-    void ConvertShapes(FbxGeometry const* pSource, FbxGeometry* pDestination, FbxSurfaceEvaluator* pEvaluator, int pUCount, int pVCount);
-    void ConvertShapes(FbxGeometry const* pSource, FbxGeometry* pDestination, FbxWeightedMapping* pSourceToDestinationMapping);
-    void ConvertClusters(FbxGeometry const* pSource, FbxGeometry* pDestination, FbxWeightedMapping* pSourceToDestinationMapping);
+    void ConvertShapes(const FbxGeometry* pSource, FbxGeometry* pDestination, FbxSurfaceEvaluator* pEvaluator, int pUCount, int pVCount);
+    void ConvertShapes(const FbxGeometry* pSource, FbxGeometry* pDestination, FbxWeightedMapping* pSourceToDestinationMapping);
+    void ConvertClusters(const FbxGeometry* pSource, FbxGeometry* pDestination, FbxWeightedMapping* pSourceToDestinationMapping);
     void ConvertClusters(FbxArray<FbxCluster*> const& pSourceClusters, int pSourceControlPointsCount, FbxArray<FbxCluster*>& pDestinationClusters, int pDestinationControlPointsCount, FbxWeightedMapping* pSourceToDestinationMapping);
     void BuildClusterToSourceMapping(FbxArray<FbxCluster*> const& pSourceClusters, FbxWeightedMapping* pClusterToSourceMapping);
     void CheckClusterToSourceMapping(FbxWeightedMapping* pClusterToSourceMapping);
@@ -391,6 +354,8 @@ protected:
     void RevertMaterialReferenceModeConversion(FbxMesh* pMeshRef) const;
 
     FbxManager* mManager;
+
+	friend class FbxWriter3ds;
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/
 };
 

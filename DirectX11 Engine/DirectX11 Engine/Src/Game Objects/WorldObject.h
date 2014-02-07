@@ -19,6 +19,7 @@ public:
 
 	void SetWorldMatrix(XMFLOAT4X4 _worldMatrix){worldMatrix = _worldMatrix;}
 	XMFLOAT4X4 GetWorldMatrixF(){return worldMatrix;}
+	void* GetWorldMatrixP(){return &worldMatrix;}
 
 private:
 	XMFLOAT4X4 worldMatrix;

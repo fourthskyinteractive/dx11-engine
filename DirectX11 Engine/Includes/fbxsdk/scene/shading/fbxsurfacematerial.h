@@ -32,37 +32,37 @@ public:
 	  */
 	//@{	
 
-	static char const* sShadingModel;
-	static char const* sMultiLayer;
+	static const char* sShadingModel;
+	static const char* sMultiLayer;
 	
-	static char const* sEmissive;
-	static char const* sEmissiveFactor;
+	static const char* sEmissive;
+	static const char* sEmissiveFactor;
 	
-	static char const* sAmbient;
-	static char const* sAmbientFactor;
+	static const char* sAmbient;
+	static const char* sAmbientFactor;
 	
-	static char const* sDiffuse;
-	static char const* sDiffuseFactor;
+	static const char* sDiffuse;
+	static const char* sDiffuseFactor;
 	
-	static char const* sSpecular;
-	static char const* sSpecularFactor;
-	static char const* sShininess;
+	static const char* sSpecular;
+	static const char* sSpecularFactor;
+	static const char* sShininess;
 	
-	static char const* sBump;
-	static char const* sNormalMap;
-    static char const* sBumpFactor;
+	static const char* sBump;
+	static const char* sNormalMap;
+    static const char* sBumpFactor;
 
-	static char const* sTransparentColor;
-	static char const* sTransparencyFactor;
+	static const char* sTransparentColor;
+	static const char* sTransparencyFactor;
 	
-	static char const* sReflection;
-	static char const* sReflectionFactor;
+	static const char* sReflection;
+	static const char* sReflectionFactor;
 
-    static char const* sDisplacementColor;
-    static char const* sDisplacementFactor;
+    static const char* sDisplacementColor;
+    static const char* sDisplacementFactor;
 
-    static char const* sVectorDisplacementColor;
-    static char const* sVectorDisplacementFactor;
+    static const char* sVectorDisplacementColor;
+    static const char* sVectorDisplacementFactor;
 	//@}	
 
 	/**
@@ -83,7 +83,7 @@ public:
 	//@{
 
 	static const FbxBool sMultiLayerDefault;
-	static char const*	sShadingModelDefault;
+	static const char*	sShadingModelDefault;
 
     //@}
 

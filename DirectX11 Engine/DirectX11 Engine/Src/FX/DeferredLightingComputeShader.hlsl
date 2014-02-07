@@ -1,5 +1,5 @@
-#define horizontalTiles 32
-#define verticalTiles 32
+#define horizontalTiles 64
+#define verticalTiles 64
 
 //PlaneOrder{PLANE_LEFT, PLANE_RIGHT, PLANE_TOP, PLANE_BOTTOM, PLANE_NEAR, PLANE_FAR}
 //PLANES ARE WRAPPED FROM THE INSIDE
@@ -115,14 +115,18 @@ void GetGBufferAttributes(in float3 _textureLocation,
 						  out float3 _depth,
 						  out float _specularPower);
 
-[numthreads(horizontalTiles, verticalTiles, 1)]
+[numthreads(16, 12, 1)]
 void CS(ComputeIn _input)
 {
 	//FIGURE OUT WHAT LIGHTS HIT THIS TILE!
-	LightCulling(_input);
-	LightTile(_input);
+	if(_input.groupThreadID.x == 0 && _input.groupThreadID.y == 0 && _input.groupThreadID.z == 0)
+	{
+		LightCulling(_input);
+	}
 
-	//GroupMemoryBarrierWithGroupSync();
+	GroupMemoryBarrierWithGroupSync();
+
+	LightTile(_input);
 }
 
 void LightCulling(ComputeIn _input)
@@ -147,24 +151,16 @@ void LightCulling(ComputeIn _input)
 
 void LightTile(ComputeIn _input)
 {
-	int column = _input.groupThreadID.x;
-	int row = _input.groupThreadID.y;
+	int column = _input.groupID.x;
+	int row = _input.groupID.y;
 	
-	int pixelsPerColumn = (screenWidthHeightNearFar.y / horizontalTiles);
-	int pixelsPerRow = (screenWidthHeightNearFar.x / verticalTiles);
-	
-	int3 textureLocation = int3( 0, 0, 0 );
-	for(int i = 0; i < pixelsPerColumn; ++i)
-	{
-		for(int j = 0; j < pixelsPerRow; ++j)
-		{
-			textureLocation.x = (column * pixelsPerRow) + j;
-			textureLocation.y = (row * pixelsPerColumn) + i;
+	int pixelsPerColumn = (screenWidthHeightNearFar.x / horizontalTiles);
+	int pixelsPerRow = (screenWidthHeightNearFar.y / verticalTiles);
+	int texLocX = column * pixelsPerColumn + _input.groupThreadID.x;
+	int texLocY = row * pixelsPerRow + _input.groupThreadID.y;
+	int3 textureLocation = int3( texLocX, texLocY, 0 );
 
-
-			LightPixel(textureLocation);
-		}
-	}
+	LightPixel(textureLocation);
 }
 
 void LightPixel(float3 _textureLocation)
@@ -176,7 +172,7 @@ void LightPixel(float3 _textureLocation)
 	float3 depth;
 	float specularPower;
 	float3 totalLight = float3(0.0f, 0.0f, 0.0f);
-	for(int i = 0; i < 128; ++i)
+	for(int i = 0; i < 1024; ++i)
 	{
 		if(tileData[i] == -1)
 			break;
@@ -194,12 +190,12 @@ void LightPixel(float3 _textureLocation)
 
 void FindFurthestAndNearest(ComputeIn input, out float3 zNear, out float3 zFar)
 {
-	int column = input.groupThreadID.x;
-	int row = input.groupThreadID.y;
+	int column = input.groupID.x;
+	int row = input.groupID.y;
 
 	//TODO: OPTIMIZE OUT AND PUT INTO A CONSTANT BUFFER
-	int pixelsPerColumn = (screenWidthHeightNearFar.y / horizontalTiles);
-	int pixelsPerRow = (screenWidthHeightNearFar.x / verticalTiles);
+	int pixelsPerColumn = (screenWidthHeightNearFar.x / horizontalTiles);
+	int pixelsPerRow = (screenWidthHeightNearFar.y / verticalTiles);
 
 	int3 farTextureLocation = int3(0, 0, 0);
 	int3 nearTextureLocation = int3(0, 0, 0);
@@ -370,7 +366,6 @@ void GetSpecularColor()
 {
 	
 }
-
 
 //THIS FUNCTION NEEDS WORK
 float3 CalculateLighting(in float3 _normal,

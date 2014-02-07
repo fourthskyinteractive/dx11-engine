@@ -14,7 +14,7 @@ public:
 	TextureManager(const TextureManager&);
 	~TextureManager();
 
-	static int AddTexture(CComPtr<ID3D11Device> _device, WCHAR* _filename);
+	static int AddTexture(WCHAR* _filename);
 	static int AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView);
 	static int NumberOfTextures();
 	static CComPtr<ID3D11ShaderResourceView> GetTextureArrayPointer();

@@ -259,7 +259,7 @@ protected:
 	FbxLayerContainer* mOwner;
 
 	void Destruct() { FbxDelete(this); }
-	virtual void SetOwner(FbxLayerContainer* pOwner);
+	virtual void SetOwner(FbxLayerContainer* pOwner, int pInstance = 0);
 
     FBXSDK_FRIEND_NEW();
 
@@ -526,7 +526,7 @@ public:
       * \param pValueType           Data type of the new item 
       * \return                     The index of the new item
       */
-	int     Add(void const* pItem, EFbxType pValueType);
+	int     Add(const void* pItem, EFbxType pValueType);
 
     /** Inserts a new item at the specified position of the data buffer.
       * \param pIndex               The specified position
@@ -535,7 +535,7 @@ public:
       * \return                     The index of the inserted item
       * \remarks The input index must be within valid range and no error will be thrown if it is invalid.
       */
-	int		InsertAt(int pIndex, void const* pItem, EFbxType pValueType);
+	int		InsertAt(int pIndex, const void* pItem, EFbxType pValueType);
 
     /** Sets the value for the specified item.
       * \param pIndex               The index of the item to be updated.
@@ -543,14 +543,14 @@ public:
       * \param pValueType           Data type of the item 
       * \remarks The input index must be within valid range and no error will be thrown if it is invalid.
       */
-	void	SetAt(int pIndex, void const* pItem, EFbxType pValueType);
+	void	SetAt(int pIndex, const void* pItem, EFbxType pValueType);
 
     /** Sets the value of the last item.
       * \param pItem                Pointer of the item whose value is copied to the last item
       * \param pValueType           Data type of the item 
       * \remarks The array should contain at least one item and no error will be thrown if it is empty.
       */
-	void    SetLast(void const* pItem, EFbxType pValueType);
+	void    SetLast(const void* pItem, EFbxType pValueType);
 
     /** Removes the specified item from the data buffer.
       * \param pIndex               The index of the item to be removed               
@@ -603,7 +603,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	int     Find(void const* pItem, EFbxType pValueType) const;
+	int     Find(const void* pItem, EFbxType pValueType) const;
 
     /** Searches for an item after the specified index in the data buffer.  
       * \param pAfterIndex          The specified index after which the searching begins
@@ -612,7 +612,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	int     FindAfter(int pAfterIndex, void const* pItem, EFbxType pValueType) const;
+	int     FindAfter(int pAfterIndex, const void* pItem, EFbxType pValueType) const;
 
     /** Searches for an item before the specified index in the data buffer.  
       * \param pBeforeIndex         The specified index before which the searching begins
@@ -621,7 +621,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	int     FindBefore(int pBeforeIndex, void const* pItem, EFbxType pValueType) const;
+	int     FindBefore(int pBeforeIndex, const void* pItem, EFbxType pValueType) const;
 
     /** Equivalence operator
       * \param pArray               Array compared to this one
@@ -633,7 +633,7 @@ public:
       * \param pItem                The new item to be added
       * \return                     The index of the new item
       */   
-	template <class T> inline int  Add(T const& pItem)								 { return Add((void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline int  Add(T const& pItem)								 { return Add((const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Inserts a new item at the specified position of the data buffer.
       * \param pIndex               The specified position
@@ -641,20 +641,20 @@ public:
       * \return                     The index of the inserted item
       * \remarks The input index must be within valid range and no error will be thrown if it is invalid.
       */
-	template <class T> inline int  InsertAt(int pIndex, T const& pItem)				 { return InsertAt(pIndex, (void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline int  InsertAt(int pIndex, T const& pItem)				 { return InsertAt(pIndex, (const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Sets the value of the specified item.
       * \param pIndex               The index of the item to be updated.
       * \param pItem                The item whose value is copied to pIndex'th item
       * \remarks The input index must be within valid range and no error will be thrown if it is invalid.
       */
-	template <class T> inline void SetAt(int pIndex, T const& pItem)				 { SetAt(pIndex, (void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline void SetAt(int pIndex, T const& pItem)				 { SetAt(pIndex, (const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Sets the value of the last item.
       * \param pItem                The item whose value is copied to the last item
       * \remarks The array should contain at least one item and no error will be thrown if it is empty.
       */
-	template <class T> inline void SetLast(T const& pItem)							 { SetLast((void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline void SetLast(T const& pItem)							 { SetLast((const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Removes the specified item from the data buffer.
       * \param pIndex               The index of the item to be removed               
@@ -700,7 +700,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	template <class T> inline int Find(T const& pItem) const						 { return Find((void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline int Find(T const& pItem) const						 { return Find((const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Searches for an item after the specified index in the data buffer.  
       * \param pAfterIndex          The specified index after which the searching begins
@@ -708,7 +708,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	template <class T> inline int FindAfter(int pAfterIndex, T const& pItem) const   { return FindAfter(pAfterIndex, (void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline int FindAfter(int pAfterIndex, T const& pItem) const   { return FindAfter(pAfterIndex, (const void*)&pItem, FbxTypeOf(pItem)); }
 
     /** Searches for one item before the specified index in the data buffer.  
       * \param pBeforeIndex         The specified index before which the searching begins
@@ -716,7 +716,7 @@ public:
       * \return                     The index of the item found, -1 if not found.
       * \remarks                    The index of the first item whose value equals pItem is returned.
       */
-	template <class T> inline int FindBefore(int pBeforeIndex, T const& pItem) const { return FindBefore(pBeforeIndex, (void const*)&pItem, FbxTypeOf(pItem)); }
+	template <class T> inline int FindBefore(int pBeforeIndex, T const& pItem) const { return FindBefore(pBeforeIndex, (const void*)&pItem, FbxTypeOf(pItem)); }
 
 
     /** Copies the items in the data buffer to an array.
@@ -975,7 +975,7 @@ private:
   * \return return -1 if the layer element is FbxLayerElement::eDirect
   *         0 if layer element or index array is \c NULL and 1 if the remap is successful
   */
-extern int RemapIndexArrayTo(FbxLayerElement* pLayerEl, 
+extern FBXSDK_DLL int RemapIndexArrayTo(FbxLayerElement* pLayerEl, 
 							 FbxLayerElement::EMappingMode pNewMapping, 
 							 FbxLayerElementArrayTemplate<int>* pIndexArray);
 
@@ -1258,7 +1258,7 @@ public:
 
 #define FBXSDK_LAYER_ELEMENT_CREATE_DECLARE(classDesc) \
     FBXSDK_FRIEND_NEW();        \
-	static Fbx##classDesc* Create(FbxLayerContainer* pOwner, char const *pName);
+	static Fbx##classDesc* Create(FbxLayerContainer* pOwner, const char* pName);
 
 /** \brief Layer element for mapping Normals to a geometry.
   * \remarks To be correctly saved in FBX file, this type of Layer element should have its reference 
@@ -1494,7 +1494,7 @@ public:
       * \return             A pointer to the layer element or \c NULL if creation fails. 
       * \remarks            Only "bool", "int", "float" and "double" are supported. 
       */
-	static FbxLayerElementUserData* Create(FbxLayerContainer* pOwner, char const *pName, int pId, FbxArray<FbxDataType>& pDataTypes, FbxArray<const char*>& pDataNames);
+	static FbxLayerElementUserData* Create(FbxLayerContainer* pOwner, const char* pName, int pId, FbxArray<FbxDataType>& pDataTypes, FbxArray<const char*>& pDataNames);
 
     /** Allocation method.
       * \param pOwner       The owner of this layer element.        
@@ -1528,7 +1528,7 @@ public:
 	  * \param pStatus                  A flag to indicate whether the direct array is returned successfully or not.
 	  * \return                         The specified attribute's direct array.
 	  */ 
-	FbxLayerElementArrayTemplate<void*> const* GetDirectArrayVoid( int pIndex, bool* pStatus = NULL) const
+	const FbxLayerElementArrayTemplate<void*>* GetDirectArrayVoid( int pIndex, bool* pStatus = NULL) const
 	{
 		if( pIndex >= 0 || pIndex < GetDirectArray().GetCount() )
 		{
@@ -1539,7 +1539,7 @@ public:
 		{
 			if( pStatus ) *pStatus = false;
 			FBX_ASSERT_NOW("Index out of bounds");
-			return (FbxLayerElementArrayTemplate<void*> const*)NULL;
+			return (const FbxLayerElementArrayTemplate<void*>*)NULL;
 		}
 	}
 
@@ -1567,7 +1567,7 @@ public:
 	  * \param pStatus                  A flag to indicate whether the direct array is returned successfully or not.
 	  * \return                         The specified attribute's direct array.
 	  */ 
-	FbxLayerElementArrayTemplate<void *> const* GetDirectArrayVoid ( const char* pName, bool* pStatus = NULL ) const
+	const FbxLayerElementArrayTemplate<void*>* GetDirectArrayVoid ( const char* pName, bool* pStatus = NULL ) const
 	{
 		FbxString lName( pName );
 		for( int i = 0; i < mDataNames.GetCount(); ++i )
@@ -1577,7 +1577,7 @@ public:
 		}
 
 		if (pStatus) *pStatus = false;
-		return (FbxLayerElementArrayTemplate<void *> const*)NULL;
+		return (const FbxLayerElementArrayTemplate<void*>*)NULL;
 	}
 
 	/** Returns the data type for the specified index
@@ -1947,7 +1947,7 @@ inline FbxLayerElementArrayTemplate<T>& FbxGetDirectArray( FbxLayerElementUserDa
 template <class T>
 inline FbxLayerElementArrayTemplate<T> const& FbxGetDirectArray(FbxLayerElementUserData const *pLayerElement, int pIndex, bool* pStatus)
 {
-	return *(FbxLayerElementArrayTemplate<T> const*)pLayerElement->GetDirectArrayVoid(pIndex,pStatus);
+	return *(const FbxLayerElementArrayTemplate<T>*)pLayerElement->GetDirectArrayVoid(pIndex,pStatus);
 }
 
 
@@ -1974,7 +1974,7 @@ inline FbxLayerElementArrayTemplate<T>& FbxGetDirectArray( FbxLayerElementUserDa
 template <class T>
 inline FbxLayerElementArrayTemplate<T> const& FbxGetDirectArray(FbxLayerElementUserData const *pLayerElement, const char* pName, bool* pStatus )
 {
-	return *(FbxLayerElementArrayTemplate<T> const*)pLayerElement->GetDirectArrayVoid(pName,pStatus);
+	return *(const FbxLayerElementArrayTemplate<T>*)pLayerElement->GetDirectArrayVoid(pName,pStatus);
 }
 
 
@@ -1994,7 +1994,7 @@ public:
       * \param pName        The name of this layer element.
       * \return             A pointer to the layer element or \c NULL if creation fails. 
       */
-	static FbxLayerElementSmoothing* Create(FbxLayerContainer* pOwner, char const *pName);
+	static FbxLayerElementSmoothing* Create(FbxLayerContainer* pOwner, const char* pName);
 
 	/** Sets the Reference Mode.
 	  * \param pMode       Specifies the reference mode.
@@ -2034,7 +2034,7 @@ public:
       * \param pName        The name of this layer element.
       * \return             A pointer to the layer element or \c NULL if creation fails. 
       */
-	static FbxLayerElementCrease* Create(FbxLayerContainer* pOwner, char const *pName);
+	static FbxLayerElementCrease* Create(FbxLayerContainer* pOwner, const char* pName);
 
 	/** Sets the Reference Mode.
 	  * \param pMode       Specifies the reference mode.
@@ -2074,7 +2074,7 @@ public:
         * \param pName        The name of this layer element.
         * \return             A pointer to the layer element or \c NULL if creation fails. 
         */
-        static FbxLayerElementHole* Create(FbxLayerContainer* pOwner, char const *pName);
+        static FbxLayerElementHole* Create(FbxLayerContainer* pOwner, const char* pName);
 
     /** Sets the Reference Mode.
     * \param pMode       Specifies the reference mode.
@@ -2351,7 +2351,7 @@ public:
 	  * \return      A pointer to the Normals layer element, or \c NULL if no Normals layer element is defined in this layer.
 	  * \remarks     FbxNurbs or FbxPatch geometry should not have Normals defined.
 	  */
-	FbxLayerElementNormal const* GetNormals() const;
+	const FbxLayerElementNormal* GetNormals() const;
 
     /** Returns this layer's Tangents description.
       * \return      A pointer to the Tangents layer element, or \c NULL if no Tangents layer element is defined in this layer.
@@ -2363,7 +2363,7 @@ public:
       * \return      A pointer to the Tangents layer element, or \c NULL if no Tangents layer element is defined in this layer.
       * \remarks     FbxNurbs or FbxPatch geometry should not have Tangents defined.
       */
-    FbxLayerElementTangent const* GetTangents() const;
+    const FbxLayerElementTangent* GetTangents() const;
 
     /** Returns this layer's Binormals description.
       * \return      A pointer to the Binormals layer element, or \c NULL if no Binormals layer element is defined in this layer.
@@ -2375,7 +2375,7 @@ public:
       * \return      A pointer to the Binormals layer element, or \c NULL if no Binormals layer element is defined in this layer.
       * \remarks     FbxNurbs or FbxPatch geometry should not have Binormals defined.
       */
-    FbxLayerElementBinormal const* GetBinormals() const;
+    const FbxLayerElementBinormal* GetBinormals() const;
 
 	/** Returns this layer's Materials description.
 	  * \return     A pointer to the Materials layer element, or \c NULL if no Materials layer element is defined in this layer.
@@ -2385,7 +2385,7 @@ public:
 	/** Returns this layer's Materials description.
 	  * \return     A pointer to the Materials layer element, or \c NULL if no Materials layer element is defined in this layer.
 	  */
-	FbxLayerElementMaterial const* GetMaterials() const;
+	const FbxLayerElementMaterial* GetMaterials() const;
 
 	/** Returns this layer's Polygon Groups description.
 	  * \return     A pointer to the Polygon Groups layer element, or \c NULL if no Polygon Groups layer element is defined in this layer.
@@ -2395,7 +2395,7 @@ public:
 	/** Returns this layer's Polygon Groups description.
 	  * \return     A pointer to the Polygon Groups layer element, or \c NULL if no Polygon Groups layer element is defined in this layer.
 	  */
-	FbxLayerElementPolygonGroup const* GetPolygonGroups() const;
+	const FbxLayerElementPolygonGroup* GetPolygonGroups() const;
 
 	/** Returns this layer's UV description.
 	  * \param pTypeIdentifier          Layer element type identifier, should be a texture type identifier.  
@@ -2411,7 +2411,7 @@ public:
 	  * \remarks                        FbxNurbs or FbxPatch geometry should not have UVs defined. 
 	  *                                 The NURBS/Patch parameterization is used as UV parameters to map a texture.
 	  */
-	FbxLayerElementUV const* GetUVs(FbxLayerElement::EType pTypeIdentifier=FbxLayerElement::eTextureDiffuse) const;
+	const FbxLayerElementUV* GetUVs(FbxLayerElement::EType pTypeIdentifier=FbxLayerElement::eTextureDiffuse) const;
 
 
 	/** Returns the number of different UV sets in this layer.
@@ -2424,7 +2424,7 @@ public:
 
 	/** Returns an array of UV sets in this layer.
 	  */
-	FbxArray<FbxLayerElementUV const*> GetUVSets() const;
+	FbxArray<const FbxLayerElementUV*> GetUVSets() const;
 
 	/** Returns this layer's Vertex Colors description.
 	  * \return      A pointer to the Vertex Colors layer element, or \c NULL if no Vertex Color layer element is defined in this layer.
@@ -2436,7 +2436,7 @@ public:
 	  * \return      A pointer to the Vertex Colors layer element, or \c NULL if no Vertex Color layer element is defined in this layer.
 	  * \remarks     FbxNurbs or FbxPatch geometry should not have Vertex Colors defined, since no vertex exists.
 	  */
-	FbxLayerElementVertexColor const* GetVertexColors() const;
+	const FbxLayerElementVertexColor* GetVertexColors() const;
 
 	/** Returns this layer's Smoothing description.
 	  * \return      A pointer to the Smoothing layer element, or \c NULL if no Smoothing layer element is defined in this layer.
@@ -2448,7 +2448,7 @@ public:
 	  * \return      A pointer to the Smoothing layer element, or \c NULL if no Smoothing layer element is defined in this layer.
 	  * \remarks     FbxNurbs or FbxPatch geometry should not have Smoothing defined.
 	  */
-	FbxLayerElementSmoothing const* GetSmoothing() const;
+	const FbxLayerElementSmoothing* GetSmoothing() const;
 
 	/** Returns this layer's vertex crease description.
 	  * \return      A pointer to the Crease layer element, or \c NULL if no Crease layer element is defined in this layer.
@@ -2460,7 +2460,7 @@ public:
 	  * \return      A pointer to the Crease layer element, or \c NULL if no Crease layer element is defined in this layer.
 	  * \remarks     Crease info should only be defined when the geometry is FbxSubDiv.
 	  */
-	FbxLayerElementCrease const* GetVertexCrease() const;
+	const FbxLayerElementCrease* GetVertexCrease() const;
 
     /** Returns this layer's edge crease description.
       * \return      A pointer to the Crease layer element, or \c NULL if no Crease layer element is defined in this layer.
@@ -2472,7 +2472,7 @@ public:
       * \return      A pointer to the Crease layer element, or \c NULL if no Crease layer element is defined in this layer.
       * \remarks     Crease info should only be defined when the geometry is FbxSubDiv.
       */
-    FbxLayerElementCrease const* GetEdgeCrease() const;
+    const FbxLayerElementCrease* GetEdgeCrease() const;
 
     /** Returns this layer's Hole description.
     * \return      A pointer to the Hole layer element, or \c NULL if no Hole layer element is defined in this layer.
@@ -2484,7 +2484,7 @@ public:
     * \return      A pointer to the Hole layer element, or \c NULL if no Hole layer element is defined in this layer.
     * \remarks     Hole info should only be defined when the geometry is FbxMesh.
     */
-    FbxLayerElementHole const* GetHole() const;
+    const FbxLayerElementHole* GetHole() const;
 
 	/** Returns this layer's User Data.
 	  * \return     A pointer to the User Data layer element, or \c NULL if no User Data layer element is defined in this layer.
@@ -2494,7 +2494,7 @@ public:
 	/** Returns this layer's User Data.
 	  * \return     A pointer to the User Data layer element, or \c NULL if no User Data layer element is defined in this layer.
 	  */
-	FbxLayerElementUserData const* GetUserData() const;
+	const FbxLayerElementUserData* GetUserData() const;
 
 	/** Returns this layer's visibility.
 	  * \return     A pointer to the visibility layer element, or \c NULL if no visibility layer element is defined in this layer.
@@ -2504,7 +2504,7 @@ public:
 	/** Returns this layer's visibility.
 	  * \return     A pointer to the visibility layer element, or \c NULL if no visibility layer element is defined in this layer.
 	  */
-	FbxLayerElementVisibility const* GetVisibility() const;
+	const FbxLayerElementVisibility* GetVisibility() const;
 
 	/** Returns this layer's Textures description.
 	  * \param pType            Layer element type, should be a texture type identifier.
@@ -2516,7 +2516,7 @@ public:
 	  * \param pType            Layer element type, should be a texture type identifier.
 	  * \return                 A pointer to the Textures layer element, or \c NULL if no Textures layer element is defined in this layer.
 	  */
-	FbxLayerElementTexture const* GetTextures(FbxLayerElement::EType pType) const;
+	const FbxLayerElementTexture* GetTextures(FbxLayerElement::EType pType) const;
 
 	/** Sets this layer's Textures description.
 	  * \param pType            Texture type identifier.
@@ -2562,7 +2562,7 @@ public:
       * \param pIsUV            If \c true, requests the UV layer element that corresponds with the specified texture type.
 	  * \return                 A pointer to the requested layer element, or \e NULL if the layer element is not defined in this layer.
 	  */
-	FbxLayerElement const* GetLayerElementOfType(FbxLayerElement::EType pType, bool pIsUV=false) const;
+	const FbxLayerElement* GetLayerElementOfType(FbxLayerElement::EType pType, bool pIsUV=false) const;
 
 	/** Sets this layer's Normals description.
 	  * \param pNormals         A pointer to the Normals layer element, or \c NULL to remove the Normals definition.
