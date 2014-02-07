@@ -98,12 +98,12 @@ public:
 	  * \param pTargetType The target type for the binding table.
 	  * \return the new binding table.
 	  */ 
-	FbxBindingTable* AddNewTable( char const* pTargetName, char const* pTargetType );
+	FbxBindingTable* AddNewTable( const char* pTargetName, const char* pTargetType );
 
     /** Retrieves a handle on the root binding table.
     * \return A const pointer to the root table or NULL if it does not exist.
     */ 
-    FbxBindingTable const* GetRootTable() const;
+    const FbxBindingTable* GetRootTable() const;
     
 	/** Retrieves a handle on the root binding table.
 	* \return A pointer to the root table or NULL if it does not exist.
@@ -119,7 +119,7 @@ public:
 	  * \param pIndex The index of the table to retrieve. Valid values are [ 0, GetTableCount() ).
 	  * \return A const pointer to the pIndex-th table or NULL if pIndex is out of range.
 	  */ 
-	FbxBindingTable const* GetTable( int pIndex ) const;
+	const FbxBindingTable* GetTable( int pIndex ) const;
     /** Retrieves a handle on the (pIndex)th binding table.
 	  * \param pIndex The index of the table to retrieve. Valid values are [ 0, GetTableCount() ).
 	  * \return A const pointer to the pIndex-th table or NULL if pIndex is out of range.
@@ -130,25 +130,25 @@ public:
 	* \param pName The target name of the table to look for.
 	* \return A const pointer to the binding table with the given target name, or NULL if there is no such binding table.
 	*/ 
-	FbxBindingTable const* GetTableByTargetName( char const* pName ) const;
+	const FbxBindingTable* GetTableByTargetName( const char* pName ) const;
 	
 	/** Returns the binding table that has the given target name.
 	* \param pName The target name of the table to look for.
 	* \return A pointer to the binding table with the given target name, or NULL if there is no such binding table.
 	*/ 
-	FbxBindingTable* GetTableByTargetName( char const* pName );
+	FbxBindingTable* GetTableByTargetName( const char* pName );
 
   	/** Returns the binding table that has the given target type.
-	* \param pTargetType The target type to look for.
+	* \param pTargetName The target type to look for.
 	* \return A const pointer to the binding table with the given target type, or NULL if there is no such binding table.
 	*/
-	FbxBindingTable const* GetTableByTargetType( char const* pTargetName ) const;
+	const FbxBindingTable* GetTableByTargetType( const char* pTargetName ) const;
 	
 	/** Returns the binding table that has the given target type.
-	* \param pTargetType The target type to look for.
+	* \param pTargetName The target type to look for.
 	* \return A pointer to the binding table with the given target type, or NULL if there is no such binding table.
 	*/
-	FbxBindingTable* GetTableByTargetType( char const* pTargetName );
+	FbxBindingTable* GetTableByTargetType( const char* pTargetName );
 
 	
 	/** Add a new binding operator to the operator list.
@@ -156,7 +156,7 @@ public:
 	* \param pFunctionName The function name for the binding operator.
 	* \return The new operator.
 	*/ 
-	FbxBindingOperator* AddNewBindingOperator( char const* pTargetName, char const* pFunctionName );
+	FbxBindingOperator* AddNewBindingOperator( const char* pTargetName, const char* pFunctionName );
 
 	/** Gets the number of binding operators.
 	  * \return the number of binding operators.
@@ -167,7 +167,7 @@ public:
 	* \param pTargetName The target name of the binding operator to look for.
 	* \return A const pointer to the binding operator with the given name, or NULL if there is no such binding table.
 	*/
-	FbxBindingOperator const* GetOperatorByTargetName( char const* pTargetName ) const;
+	const FbxBindingOperator* GetOperatorByTargetName( const char* pTargetName ) const;
     //@}
 
 

@@ -142,7 +142,7 @@ void ParentMeshObject::AddChild(VertexType* _vertices, unsigned long* _indices, 
 
 void ParentMeshObject::AddTexture(WCHAR* _filePath)
 {
-	textures->AddTexture(D3D11Renderer::d3dDevice, _filePath);
+	textures->AddTexture(_filePath);
 }
 
 void ParentMeshObject::AddChildTexture(WCHAR* _filePath, int _child)

@@ -91,7 +91,7 @@ public:
 private:
     struct NameCell
     {
-        NameCell(char const* pName) :
+        NameCell(const char* pName) :
             mName(pName),
             mInstanceCount(0)
         {
@@ -168,7 +168,7 @@ public:
      * \param pName    A name containing a prefix.
      * \return         The part of pName following the "::"
      */
-    static char* NoPrefixName (char const* pName);
+    static char* NoPrefixName (const char* pName);
 
     /** Returns a name with its prefix removed.
     * \param pName    A name containing a prefix.
@@ -228,7 +228,7 @@ public:
      /** Recursively replace the namespace starting from this node to its children.
      * \param pNode        Current node.
      * \param OldNS        The old namespace to be replaced with the NewNs.
-     * \param NewNs        The new namespace to replace OldNs.
+     * \param NewNS        The new namespace to replace OldNs.
      */
     virtual bool PropagateNameSpaceChange(FbxNode* pNode, FbxString OldNS, FbxString NewNS);
 
@@ -246,7 +246,7 @@ protected:
 
     struct NameCell
     {
-        NameCell(char const* pName) :
+        NameCell(const char* pName) :
             mName(pName),
             mInstanceCount(0)
         {

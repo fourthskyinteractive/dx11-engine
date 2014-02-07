@@ -462,7 +462,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 int main()
 {
 #ifdef _DEBUG
-	DebugOutput::Initialize(DebugOutput::RENDER_MSG | DebugOutput::OTHER_MSG);
+	DebugOutput::Initialize(DebugOutput::RENDER_MSG | DebugOutput::FBXLOADER_MSG);
 #endif
 
 	int msg = WinMain(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOWDEFAULT);

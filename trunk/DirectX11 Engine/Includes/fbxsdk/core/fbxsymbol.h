@@ -35,7 +35,7 @@ public:
     * \param pName Symbol name.
     * \param pRealm The real value for this symbol. 
     */
-    FbxSymbol(char const* pName, char const* pRealm);
+    FbxSymbol(const char* pName, const char* pRealm);
 
     //! Destructor.
     ~FbxSymbol();

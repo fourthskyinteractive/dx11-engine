@@ -60,26 +60,26 @@ public:
       * \return             \c True if successful, returns \c false otherwise.
 	  *	\remarks            The texture file name must be valid, you cannot leave the name empty.
       */
-    bool SetFileName(char const* pName);
+    bool SetFileName(const char* pName);
 
     /** Sets the associated texture file. 
       * \param pName        The relative path of the texture file.   
       * \return             \c True if successful, returns \c false otherwise.
 	  *	\remarks            The texture file name must be valid.
       */
-    bool SetRelativeFileName(char const* pName);
+    bool SetRelativeFileName(const char* pName);
 
     /** Returns the absolute texture file path.
 	  * \return             The absolute texture file path.
 	  * \remarks            An empty string is returned if FbxFileTexture::SetFileName() has not been called before.
 	  */
-    char const* GetFileName () const;
+    const char* GetFileName () const;
 
     /** Returns the relative texture file path.
 	  * \return             The relative texture file path.
 	  * \remarks            An empty string is returned if FbxFileTexture::SetRelativeFileName() has not been called before.
 	  */
-    char const* GetRelativeFileName() const;
+    const char* GetRelativeFileName() const;
 
 	/** \enum EMaterialUse      Specify if texture uses model material.
 	  */
@@ -112,15 +112,15 @@ public:
 	bool operator==(FbxFileTexture const& pTexture) const;
 
 	FbxString& GetMediaName();
-	void SetMediaName(char const* pMediaName);
+	void SetMediaName(const char* pMediaName);
 
 protected:
-	virtual void Construct(const FbxFileTexture* pFrom);
+	virtual void Construct(const FbxObject* pFrom);
 	virtual void ConstructProperties(bool pForceSet);
 
 	void Init();
-	void SyncVideoFileName(char const* pFileName);
-	void SyncVideoRelativeFileName(char const* pFileName);
+	void SyncVideoFileName(const char* pFileName);
+	void SyncVideoRelativeFileName(const char* pFileName);
 
 	FbxString mFileName;
 	FbxString mRelativeFileName;

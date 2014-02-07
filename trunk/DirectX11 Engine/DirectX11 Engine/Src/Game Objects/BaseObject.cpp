@@ -152,7 +152,7 @@ void BaseObject::AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _componentType,
 	indexBufferComponent->AddIndexBufferComponent(_componentType, _data, _totalSize);
 }
 
-void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* (*_updateFunctionPointer)())
+void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* _memoryAddress)
 {
 	unsigned int constantBufferComponentIndex;
 
@@ -179,7 +179,7 @@ void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componen
 
 	ConstantBufferComponent* constantBufferComponent = ((ConstantBufferComponent*)renderComponent->GetRenderComponents()[constantBufferComponentIndex].component);
 
-	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _updateFunctionPointer);
+	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _memoryAddress);
 }
 
 void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize, COMPUTEBUFFERTYPE _bufferType)
@@ -271,7 +271,7 @@ void BaseObject::AddComputeShaderBuffer(CComPtr<ID3D11Buffer> _buffer, unsigned 
 
 void BaseObject::AddTexture(WCHAR* _filePath)
 {
-	textureIndices.push_back(TextureManager::AddTexture(D3D11Renderer::d3dDevice, _filePath));
+	textureIndices.push_back(TextureManager::AddTexture(_filePath));
 }
 
 void BaseObject::AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView)
@@ -386,7 +386,7 @@ void BaseObject::BindRenderComponents()
 
 		D3D11Renderer::d3dImmediateContext->CSSetShaderResources(lastIndex, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
 
-		D3D11Renderer::d3dImmediateContext->Dispatch(1, 1, 1);
+		D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
 
 		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &nullUAV, NULL);
 

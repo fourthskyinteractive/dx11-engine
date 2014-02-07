@@ -12,7 +12,6 @@ using std::string;
 
 #include <atlbase.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
 #include <dxgi.h>
 using namespace DirectX;
 
@@ -73,10 +72,32 @@ namespace Colors
 	XMGLOBALCONST XMFLOAT4 Yellow    = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 	XMGLOBALCONST XMFLOAT4 Cyan      = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
 	XMGLOBALCONST XMFLOAT4 Magenta   = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-	
+
 	XMGLOBALCONST XMFLOAT4 Silver    = XMFLOAT4(0.75f, 0.75f, 0.75f, 1.0f);
 	XMGLOBALCONST XMFLOAT4 LightSteelBlue = XMFLOAT4(0.69f, 0.77f, 0.87f, 1.0f);
 }
+
+static wchar_t* ConvertConstCharToWChar(const char* _charToConvert)
+{
+	// newsize describes the length of the 
+	// wchar_t string called wcstring in terms of the number 
+	// of wide characters, not the number of bytes.
+	size_t newsize = strlen(_charToConvert) + 1;
+
+	// The following creates a buffer large enough to contain 
+	// the exact number of characters in the original string
+	// in the new format. If you want to add more characters
+	// to the end of the string, increase the value of newsize
+	// to increase the size of the buffer.
+	wchar_t * wcstring = new wchar_t[newsize];
+
+	// Convert char* string to a wchar_t* string.
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, wcstring, newsize, _charToConvert, _TRUNCATE);
+	// Display the result and indicate the type of string that it is.
+
+	return wcstring;
+}	
 
 struct BuffersForBinding
 {

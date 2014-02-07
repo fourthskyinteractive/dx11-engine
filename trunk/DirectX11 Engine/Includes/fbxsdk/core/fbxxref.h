@@ -108,7 +108,7 @@ public:
 		  * \param pResolvedPath            Filled with the resolved path.
           * \return                         \c True if the URL is resolved, return \c false if the URL is not resolved.
           */
-        bool GetResolvedUrl (char const* pUrl, FbxDocument* pDoc, FbxString& pResolvedPath) const;
+        bool GetResolvedUrl (const char* pUrl, FbxDocument* pDoc, FbxString& pResolvedPath) const;
     //@}
 
         /** Looks for the first file that matches a specified "pattern",
@@ -128,7 +128,7 @@ public:
 	      * \param pResolvedPath            Filled with the first matching URL.
 	      * \return                         \c True if one matching file is found, returns \c false if no matching file is found.
           */
-        bool GetFirstMatchingUrl(char const* pPrefix, char const* pOptExt, const FbxDocument* pDoc, FbxString& pResolvedPath) const;
+        bool GetFirstMatchingUrl(const char* pPrefix, const char* pOptExt, const FbxDocument* pDoc, FbxString& pResolvedPath) const;
 
     /**
       * \name XRef Resolve URL and Projects
@@ -213,7 +213,7 @@ public:
 		  * \param pResolvePath             Filled with the resolved path.
           * \return                         \c True if the URL is resolved, returns \c false if the URL is not resolved.
           */
-        bool GetResolvedUrl (char const *pUrl,FbxString & pResolvePath) const;
+        bool GetResolvedUrl (const char* pUrl,FbxString & pResolvePath) const;
 
     //@}
 private:

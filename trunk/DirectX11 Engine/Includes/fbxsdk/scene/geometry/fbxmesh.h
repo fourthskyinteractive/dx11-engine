@@ -125,15 +125,26 @@ public:
 		* \param pVertexIndex Index of the vertex in the polygon.
 		* \param pUVSetName The name of the UV set that contains the UV.
 		* \param pUV The returned UV.
+        * \param pUnmapped State flag that indicates if the polygon vertex does not have an associated UV.
 		* \return \c True on success, \c false on failure.
-		* \remark \c pUV remain unchanged if the requested vertex does not exists. */
-		bool GetPolygonVertexUV(int pPolyIndex, int pVertexIndex, const char* pUVSetName, FbxVector2& pUV) const;
+		* \remark \c pUV remain unchanged if the requested vertex does not exists.
+        * \remark This function return \c true if the specified polygon vertex does not have an associated UV. In this case,
+        *         pUnampped is set to \c true and the content of \c pUV is undefined.
+        */
+		bool GetPolygonVertexUV(int pPolyIndex, int pVertexIndex, const char* pUVSetName, FbxVector2& pUV, bool& pUnmapped) const;
 
 		/** Get the UVs associated with the mesh for every polygon vertex.
 		* \param pUVSetName The name of the UV set that contains the UVs.
 		* \param pUVs The returned UVs.
-		* \return \c True on success, \c false on failure. */
-		bool GetPolygonVertexUVs(const char* pUVSetName, FbxArray<FbxVector2>& pUVs) const;
+        * \param pUnmappedUVId If specified, this array will be filled with the indices of the UVs that are not associated to a polygon vertex and thus, 
+        *        have an undefined value. If the array as a size of 0, then all the polygon vertices have an associated UV coordinate and the \c pUVs
+        *        array can be used as is. Otherwise, the calling application may be required to process the invalid UV coordinates to avoid inconsistent
+        *        results. It is strongly suggested to use the FbxLayerElementUV's Direct and Indexed arrays directly (specially if the calling application
+        *        supports indirection of the UVs).
+        * \remark unmapped UV coordinates are set to (0,0)
+		* \return \c True on success, \c false on failure.
+        */
+		bool GetPolygonVertexUVs(const char* pUVSetName, FbxArray<FbxVector2>& pUVs, FbxArray<int>* pUnmappedUVId = NULL) const;
 
 		/** Get the array of polygon vertices (i.e: indices to the control points).
 		* This array is a concatenation of the list of polygon vertices of all the polygons. Example: a mesh made of 2 triangles with vertices [1,2,3]
@@ -297,10 +308,19 @@ public:
 		* Frees and set to \c NULL all layers and clear the polygon and the control point array. */
 		void Reset();
 
+        /** Generate vertex normals on the mesh.
+        * The normal computation takes into consideration, as much as possible, the smoothing groups.
+		* \param pOverwrite If true, re-generate normals data regardless of availability, otherwise left untouched if exist.
+        * \param pByCtrlPoint If true, the recomputed normals will be defined by control points instead of by polygon vertex.
+        * \param pCW True if the normals are calculated clockwise, false otherwise (counter-clockwise).
+		* \return \c true if successfully generated normals data, or if already available and pOverwrite is false. */
+		bool GenerateNormals(bool pOverwrite=false, bool pByCtrlPoint = false, bool pCW=false);
+
 		/** Compute the vertex normals on the mesh.
 		* The normals are per vertex and are the average of all the polygon normals associated with each vertex.
-		* \param pCW True if the normals are calculated clockwise, false otherwise (counter-clockwise). */
-		void ComputeVertexNormals(bool pCW=false);
+		* \param pCW True if the normals are calculated clockwise, false otherwise (counter-clockwise).
+        * \remark This function is deprecated. Please use GenerateNormals(true, true, pCW) */
+		FBX_DEPRECATED void ComputeVertexNormals(bool pCW=false);
 
 		/** Compares the normals calculated by doing cross-products between the polygon vertex and by the ones
 		* stored in the normal array.
@@ -370,7 +390,7 @@ public:
 		void MergePointsForPolygonVerteNormals(FbxArray<int> &pMergeList);
 	//@}
 
-	/** \name Edge management functions
+	/** \name Edge management functions */
 	//@{
 		/** Automatically generate edge data for the mesh. Clears all previously stored edge information */
 		void BuildMeshEdgeArray();
@@ -720,7 +740,7 @@ public:
     void ComputeComponentMaps(ComponentMap& pEdgeToPolyMap, ComponentMap& pPolyToEdgeMap);
 
 protected:
-	virtual void Construct(const FbxMesh* pFrom);
+	virtual void Construct(const FbxObject* pFrom);
 	virtual void Destruct(bool pRecursive);
 
 	void InitTextureIndices(FbxLayerElementTexture* pLayerElementTexture, FbxLayerElement::EMappingMode pMappingMode);
@@ -748,7 +768,7 @@ protected:
 		PolygonIndexDef* mV2PV;
 		int* mV2PVOffset;
 		int* mV2PVCount;
-		int* mPVEdge;
+		FbxArray<FbxSet2<int>* > mPVEdge;
 		bool mValid;
 
 		//Used for fast search in GetMeshEdgeIndexForPolygon this array does not follow the same allocation as the above ones because
@@ -763,13 +783,16 @@ protected:
 	static int				PolygonIndexCompare(const void* p1, const void* p2);
 	void					PolySetTexture(FbxLayer* pLayer, int pTextureIndex, FbxLayerElement::EType pTextureType);
 	template<class T> bool	GetPolygonVertexLayerElementIndex(const FbxLayerElementTemplate<T>* pLayerElement, int pPolyIndex, int pVertexIndex, int& pIndex) const;
-	template<class T> bool	GetPolygonVertexLayerElementValue(const FbxLayerElementTemplate<T>* pLayerElement, int pPolyIndex, int pVertexIndex, T& pValue) const;
+	template<class T> bool	GetPolygonVertexLayerElementValue(const FbxLayerElementTemplate<T>* pLayerElement, int pPolyIndex, int pVertexIndex, T& pValue, bool pAllowUnmapped) const;
 
 	friend class FbxGeometryConverter;
 
 private:
     bool GenerateTangentsData(FbxLayerElementUV* pUVSet, int pLayerIndex, bool pOverwrite=false);
     void FillMeshEdgeTable(FbxArray<int>& pTable, int* pValue, void (*FillFct)(FbxArray<int>& pTable, int pIndex, int* pValue));
+    void ComputeNormalsPerCtrlPoint(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);
+    void ComputeNormalsPerPolygonVertex(FbxArray<VertexNormalInfo>& lNormalInfo, bool pCW=false);
+    void GenerateNormalsByCtrlPoint(bool pCW);
 
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/
 };

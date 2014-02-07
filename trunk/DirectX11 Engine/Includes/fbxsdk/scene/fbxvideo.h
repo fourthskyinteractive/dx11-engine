@@ -54,7 +54,7 @@ public:
 		  * \return          \c True,if update successfully, \c false otherwise.
 		  * \remarks         Update the texture filename if the connection exists.
 		  */
-		bool SetFileName(char const* pName);
+		bool SetFileName(const char* pName);
 
 		/** Retrieve the Video full filename.
 		  * \return          Video full filename.
@@ -66,7 +66,7 @@ public:
 		  * \return          \c True, if update successfully, \c false otherwise.
 		  * \remarks         Update the texture filename if the connection exists.
 		  */
-		bool SetRelativeFileName(char const* pName);
+		bool SetRelativeFileName(const char* pName);
 
 		/** Retrieve the Video relative filename.
 		  * \return         Video relative filename.
@@ -248,7 +248,7 @@ public:
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 protected:
-    virtual void Construct(const FbxVideo* pFrom);
+    virtual void Construct(const FbxObject* pFrom);
     virtual void ConstructProperties(bool pForceSet);
     virtual bool ConnectNotify(FbxConnectEvent const &pEvent);
 

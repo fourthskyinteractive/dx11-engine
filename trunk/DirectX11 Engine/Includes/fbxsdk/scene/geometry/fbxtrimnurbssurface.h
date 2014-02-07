@@ -66,7 +66,7 @@ public:
       *                     pIndex is in the range [0, GetEdgeCount() ),
       *                     otherwise, the return value is undefined.
       */
-    FbxNurbsCurve const* GetCurve( int pIndex ) const;
+    const FbxNurbsCurve* GetCurve( int pIndex ) const;
 
 
     //! Returns the type of node attribute.
@@ -158,7 +158,7 @@ public:
       *                         if pIndex is in the range [0, GetBoundaryCount() ),
       *                         otherwise the result is undefined.
       */
-    FbxBoundary const*     GetBoundary( int pIndex, int pRegionIndex = 0 ) const;
+    const FbxBoundary*     GetBoundary( int pIndex, int pRegionIndex = 0 ) const;
 
     /** Returns the number of boundaries for a given region.
 	  * \param pRegionIndex     The index of the region. 
@@ -169,7 +169,7 @@ public:
     /** Sets the NURBS surface that is trimmed by the trimming boundaries.
       * \param pNurbs           The NURBS surface to be trimmed.
       */
-    void       SetNurbsSurface( FbxNurbsSurface const* pNurbs );
+    void       SetNurbsSurface( const FbxNurbsSurface* pNurbs );
 
     /** Returns the NURBS surface that is trimmed by the trim boundaries.
       * \return                 A pointer to the (untrimmed) NURBS surface.
@@ -179,7 +179,7 @@ public:
     /** Returns the NURBS surface that is trimmed by the trim boundaries.
       * \return                 A pointer to the (untrimmed) NURBS surface.
       */
-    FbxNurbsSurface const* GetNurbsSurface() const;
+    const FbxNurbsSurface* GetNurbsSurface() const;
 
     /** Sets the flag which indicates whether the surface normals are flipped. 
       * You can flip the normals of the surface to reverse the surface.
@@ -198,8 +198,15 @@ public:
       * \param pCtrlPoint         The value of the control point.
       * \param pNormal            The value of the normal.
       * \param pIndex             The specified index.
+      * \param pI2DSearch         Unused in this implementation.
       */
-    virtual void SetControlPointAt(FbxVector4 &pCtrlPoint, FbxVector4 &pNormal , int pIndex);
+    virtual void SetControlPointAt(const FbxVector4 &pCtrlPoint, const FbxVector4 &pNormal , int pIndex, bool pI2DSearch = false);
+
+    /** Sets the control point for a specified index.
+      * \param pCtrlPoint         The value of the control point.
+      * \param pIndex             The specified index.
+      */
+    virtual void SetControlPointAt(const FbxVector4 &pCtrlPoint, int pIndex) { ParentClass::SetControlPointAt(pCtrlPoint, pIndex); }
 
      /** Returns the NURBS surface's control points.
        * \param pStatus         The FbxStatus object to hold error codes.
@@ -219,7 +226,7 @@ public:
     void RebuildRegions();
 
 protected:
-	virtual void Construct(const FbxTrimNurbsSurface* pFrom);
+	virtual void Construct(const FbxObject* pFrom);
 
 private:
     bool			mFlipNormals;

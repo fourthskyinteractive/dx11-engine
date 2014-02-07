@@ -24,7 +24,7 @@
 /** A binding table represents a collection of bindings
   * from source types such as FbxObject, or FbxLayerElements
   * to destinations which can be of similar types.
-  * \See FbxBindingTableEntry.
+  * \see FbxBindingTableEntry.
   * \nosubgrouping
   */
 class FBXSDK_DLL FbxBindingTableBase : public FbxObject
@@ -59,14 +59,14 @@ public:
       * \return The corresponding entry, or NULL if no entry in
       *             the table has a source equal in value to pSrcName.
       */
-    FbxBindingTableEntry const* GetEntryForSource(char const* pSrcName) const;
+    const FbxBindingTableEntry* GetEntryForSource(const char* pSrcName) const;
 
     /** Retrieve the table entry for the given destination value.
       * \param pDestName The destination value to query.
       * \return The corresponding entry, or NULL if no entry in
       *             the table has a destination equal in value to pDestName.
       */
-    FbxBindingTableEntry const* GetEntryForDestination(char const* pDestName) const;
+    const FbxBindingTableEntry* GetEntryForDestination(const char* pDestName) const;
 
 /*****************************************************************************************************************************
 ** WARNING! Anything beyond these lines is for internal use, may not be documented and is subject to change without notice! **

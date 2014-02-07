@@ -38,7 +38,7 @@ public:
       * \param pInitialName Name string used to initialize both members (initialName and currentName)
       * of this class.
       */
-    FbxNameHandler(char const* pInitialName = "");
+    FbxNameHandler(const char* pInitialName = "");
 
     /** Copy constructor.
       * \param pName A FbxNameHandler copied to this one.
@@ -52,34 +52,34 @@ public:
       * \param pInitialName New string for the initial name.
       * \remarks The current name will also be changed to this value.
       */
-    void SetInitialName(char const* pInitialName);
+    void SetInitialName(const char* pInitialName);
 
     /** Get the initial name.
       * \return Pointer to the InitialName string buffer.
       */
-    char const* GetInitialName() const;
+    const char* GetInitialName() const;
 
     /** Set the current name.
       * \param pNewName New string for the current name.
       * \remarks The initial name is not affected.
       */
-    void SetCurrentName(char const* pNewName);
+    void SetCurrentName(const char* pNewName);
 
     /** Get the current name.
       * \return Pointer to the CurrentName string buffer.
       */
-    char const* GetCurrentName() const;
+    const char* GetCurrentName() const;
 
     /** Set the namespace.
       * \param pNameSpace New string for the namespace.
       * \remarks The initial name is not affected.
       */
-    void SetNameSpace(char const* pNameSpace);
+    void SetNameSpace(const char* pNameSpace);
 
     /** Get the namespace.
       * \return Pointer to the namespace string buffer.
       */
-    char const* GetNameSpace() const;
+    const char* GetNameSpace() const;
 
     /** Check if the current name and initial name match.
       * \return \c true if the current name isn't identical to the initial name.
@@ -112,12 +112,12 @@ public:
     * For the above hierarchy, the parent name of C is "AB".
     * The full name of C is "ABC".
     */
-    void SetParentName(char const* pParentName);
+    void SetParentName(const char* pParentName);
 
     /** Get the parent name.
     * \return Pointer to the ParentName string buffer.
     */
-    char const* GetParentName() const;
+    const char* GetParentName() const;
 
     //@}
 

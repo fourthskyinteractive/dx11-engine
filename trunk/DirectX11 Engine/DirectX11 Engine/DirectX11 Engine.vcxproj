@@ -42,6 +42,7 @@
     <IncludePath>..\Includes;..\..\DirectX11 Helper Project\Inc;$(IncludePath)</IncludePath>
     <LibraryPath>..\Libraries;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\..\DirectX11 Helper Project\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2014.1\include;$(IncludePath)</IncludePath>
@@ -52,12 +53,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FBXSDK_SHARED;WIN32;_WINDOWS;_DEBUG;_WIN32;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;D3dcompiler.lib;dxgi.lib;wininet.lib;fbxsdk-2014.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;D3dcompiler.lib;dxgi.lib;wininet.lib;libfbxsdk-md.lib;libfbxsdk.lib;libfbxsdk-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <Profile>true</Profile>
@@ -95,6 +96,7 @@
     <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp" />
     <ClCompile Include="Src\Game Objects\CubeObjectColor.cpp" />
     <ClCompile Include="Src\Game Objects\DynamicObject.cpp" />
+    <ClCompile Include="Src\Game Objects\FBXModel.cpp" />
     <ClCompile Include="Src\Game Objects\LightObjects.cpp" />
     <ClCompile Include="Src\Game Objects\Lights\LightManager.cpp" />
     <ClCompile Include="Src\Game Objects\ParentMeshObject.cpp" />
@@ -137,6 +139,7 @@
     <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\CubeObjectColor.h" />
     <ClInclude Include="Src\Game Objects\DynamicObject.h" />
+    <ClInclude Include="Src\Game Objects\FBXModel.h" />
     <ClInclude Include="Src\Game Objects\LightObjects.h" />
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h" />
     <ClInclude Include="Src\Game Objects\Lights\DirectionalLight.h" />

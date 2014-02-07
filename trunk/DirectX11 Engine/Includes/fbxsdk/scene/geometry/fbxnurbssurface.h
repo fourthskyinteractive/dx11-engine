@@ -213,7 +213,7 @@ public:
      * \param pIndex        Index of the curve to retrieve (Valid range is 0 to GetCurveOnSurfaceCount() - 1).
      * \return              The curve at the specified index, or returns NULL if pIndex is out of range.
      */
-    FbxNode const* GetCurveOnSurface( int pIndex ) const;
+    const FbxNode* GetCurveOnSurface( int pIndex ) const;
 
    /** Returns the number of curves on this surface.
      * \return              The number of curves on this surface.
@@ -249,13 +249,14 @@ public:
     };
 
     virtual FbxObject& Copy(const FbxObject& pObject);
+    virtual void InitControlPoints(int pCount) { ParentClass::InitControlPoints(pCount); }
 
     void SetFlipNormals(bool pFlipNormals);
     bool GetFlipNormals() const;
     bool IsValidKnots() const;
 
 protected:
-	virtual void Construct(const FbxNurbsSurface* pFrom);
+	virtual void Construct(const FbxObject* pFrom);
     virtual void Destruct(bool pRecursive);
 
     FbxUInt mUOrder, mVOrder;

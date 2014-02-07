@@ -39,7 +39,7 @@ void WorldObject::UpdateShaderConstantBuffers()
 
 		if(hr == S_OK)
 		{
-			memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+			memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress, cBufferComponent->GetConstantBufferComponents()[i]->size);
 			
 			//if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
 			//{

@@ -220,7 +220,7 @@ XMMATRIX Camera::GetProjectionMatrixM() const
 	return XMLoadFloat4x4(&projection);
 }
 
-XMMATRIX  Camera::GetViewProjectionMatrixM() const
+XMMATRIX Camera::GetViewProjectionMatrixM() const
 {	
 	return XMMatrixMultiply(XMMatrixInverse(NULL, XMLoadFloat4x4(&view)), XMLoadFloat4x4(&projection));
 }
@@ -242,10 +242,23 @@ XMFLOAT4X4 Camera::GetProjectionMatrixF() const
 
 XMFLOAT4X4 Camera::GetViewProjectionMatrixF() const
 {
-	
 	XMFLOAT4X4 viewProj;
 	XMStoreFloat4x4(&viewProj, XMMatrixMultiply(XMMatrixInverse(NULL, XMLoadFloat4x4(&view)), XMLoadFloat4x4(&projection)));
 	return viewProj;
+}
+
+void* Camera::GetViewMatrixP()
+{
+	XMMATRIX viewM;
+	viewM = XMLoadFloat4x4(&view);
+	viewM = XMMatrixInverse(0, viewM);
+	XMStoreFloat4x4(&inverseView, viewM);
+	return reinterpret_cast<void*>(&inverseView);
+}
+
+void* Camera::GetProjectionMatrixP()
+{
+	return reinterpret_cast<void*>(&projection);
 }
 
 void Camera::Strafe(float _d)
@@ -343,31 +356,35 @@ void Camera::Roll(float _angleDegrees)
 
 void Camera::UpdateViewMatrix()
 {
+	XMMATRIX viewM;
+	viewM = XMLoadFloat4x4(&view);
+	viewM = XMMatrixInverse(0, viewM);
+	XMStoreFloat4x4(&inverseView, viewM);
 
-	XMVECTOR lookV = GetLookXM();
-	XMVECTOR upV = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-	lookV = XMVector3Normalize(lookV);
-	upV = XMVector3Normalize(upV);
-
-	XMVECTOR rightV = XMVector3Cross(upV, lookV);
-
-	rightV = XMVector3Normalize(rightV);
-	upV = XMVector3Cross(lookV, rightV);
-	upV = XMVector3Normalize(upV);
-
-	XMFLOAT3 right;
-	XMFLOAT3 up;
-	XMFLOAT3 look;
-	XMFLOAT3 position;
-
-	XMStoreFloat3(&right, rightV);
-	XMStoreFloat3(&look, lookV);
-	XMStoreFloat3(&up, upV);
-
-	XMFLOAT4X4 camera(right.x,			right.y,			right.z, 0.0f,
-					  up.x,				up.y,				up.z, 0.0f,
-					  look.x,			look.y,				look.z, 0.0f,
-					  GetPosition().x,	GetPosition().y,	GetPosition().z, 1.0f);
-
-	view = camera;
+// 	XMVECTOR lookV = GetLookXM();
+// 	XMVECTOR upV = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+// 	lookV = XMVector3Normalize(lookV);
+// 	upV = XMVector3Normalize(upV);
+// 
+// 	XMVECTOR rightV = XMVector3Cross(upV, lookV);
+// 
+// 	rightV = XMVector3Normalize(rightV);
+// 	upV = XMVector3Cross(lookV, rightV);
+// 	upV = XMVector3Normalize(upV);
+// 
+// 	XMFLOAT3 right;
+// 	XMFLOAT3 up;
+// 	XMFLOAT3 look;
+// 	XMFLOAT3 position;
+// 
+// 	XMStoreFloat3(&right, rightV);
+// 	XMStoreFloat3(&look, lookV);
+// 	XMStoreFloat3(&up, upV);
+// 
+// 	XMFLOAT4X4 camera(right.x,			right.y,			right.z, 0.0f,
+// 					  up.x,				up.y,				up.z, 0.0f,
+// 					  look.x,			look.y,				look.z, 0.0f,
+// 					  GetPosition().x,	GetPosition().y,	GetPosition().z, 1.0f);
+// 
+// 	view = camera;
 }

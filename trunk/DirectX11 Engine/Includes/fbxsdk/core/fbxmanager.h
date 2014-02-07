@@ -21,6 +21,7 @@
 
 class FbxIOSettings;
 class FbxIOPluginRegistry;
+class FbxAnimEvaluator;
 class FbxSceneReference;
 class FbxUserNotification;
 class FbxMessageEmitter;
@@ -28,7 +29,7 @@ class FbxLocalizationManager;
 class FbxXRefManager;
 class FbxManager_internal;
 
-#ifndef FBXSDK_ENV_WINRT
+#ifndef FBXSDK_ENV_WINSTORE
 	class FbxPlugin;
 #endif
 
@@ -104,7 +105,7 @@ public:
 		  * Such as:
 		  * \code RegisterFbxClass("FbxCamera", FBX_TYPE(FbxCamera), FBX_TYPE(FbxNodeAttribute)); \endcode
 		  */
-		template <typename T1, typename T2> inline FbxClassId RegisterFbxClass(char const* pName, const T1*, const T2*, const char* pFbxFileTypeName=0, const char* pFbxFileSubTypeName=0)
+		template <typename T1, typename T2> inline FbxClassId RegisterFbxClass(const char* pName, const T1* /*T1*/, const T2* /*T2*/, const char* pFbxFileTypeName=0, const char* pFbxFileSubTypeName=0)
 		{
 			T1::ClassId = Internal_RegisterFbxClass(pName, T2::ClassId, (FbxObjectCreateProc)T1::Allocate, pFbxFileTypeName, pFbxFileSubTypeName);
 			return T1::ClassId;
@@ -119,7 +120,7 @@ public:
 		  * Such as:
 		  * \code RegisterRuntimeFbxClass( "FbxUIWidgetBoolean", FBX_TYPE(FbxUIWidgetDefinition), NULL, "FbxUIWidgetBoolean"); \endcode
 		  */
-		template <typename T> inline FbxClassId RegisterRuntimeFbxClass(char const* pName, const T*, const char* pFbxFileTypeName=0,const char* pFbxFileSubTypeName=0)
+		template <typename T> inline FbxClassId RegisterRuntimeFbxClass(const char* pName, const T* /*T*/, const char* pFbxFileTypeName=0,const char* pFbxFileSubTypeName=0)
 		{
 			return Internal_RegisterFbxClass(pName, T::ClassId, (FbxObjectCreateProc)T::Allocate, pFbxFileTypeName, pFbxFileSubTypeName);
 		}
@@ -127,7 +128,7 @@ public:
 		/** Runtime class unregistration.
 		  * \param pName The class name.
 		  */
-		inline void UnregisterRuntimeFbxClass(char const* pName)
+		inline void UnregisterRuntimeFbxClass(const char* pName)
 		{
 			FbxClassId lClassId = FindClass(pName);
 			if( !(lClassId == FbxClassId()) )
@@ -157,7 +158,7 @@ public:
 		  * \remark				This function will return NULL if the ClassId used is invalid. New ClassId can be registered using
 		  *						the function RegisterFbxClass().
 		  */
-		FbxObject* CreateNewObjectFromClassId(FbxClassId pClassId, char const* pName, FbxObject* pContainer=NULL, const FbxObject* pCloneFrom=NULL);
+		FbxObject* CreateNewObjectFromClassId(FbxClassId pClassId, const char* pName, FbxObject* pContainer=NULL, const FbxObject* pCloneFrom=NULL);
 
 		/** Find class by the specified name.
 		  * \param pClassName Class Name to find.
@@ -322,7 +323,7 @@ public:
 	  * \name Fbx Generic Plugins Management
 	  */
 	//@{
-	#ifndef FBXSDK_ENV_WINRT
+	#ifndef FBXSDK_ENV_WINSTORE
 		/** Load plug-ins directory
 		  * \param pFilename The directory path.
 		  * \param pExtensions The plug in extension.
@@ -359,7 +360,7 @@ public:
 		  * \return The plugin, \c null if not found.
 		  */
 		FbxPlugin* FindPlugin(const char* pName, const char* pVersion) const;
-	#endif /* !FBXSDK_ENV_WINRT */
+	#endif /* !FBXSDK_ENV_WINSTORE */
 	//@}
 
 
@@ -461,6 +462,18 @@ public:
 		bool ClearReference(FbxSceneReference* pReference);
 	//@}
 
+	/** \name Animation Evaluation */
+	//@{
+		/** Set the animation evaluator that should be used by the entire FBX SDK animation evaluation engine.
+		* \param pEvaluator The animation evaluator to use. */
+		void SetAnimationEvaluator(FbxAnimEvaluator* pEvaluator);
+
+		/** Get the current animation evaluator used by the entire FBX SDK animation evaluation engine.
+		* \return The current animation evaluator.
+		* \remark If none were currently set, the FBX SDK will create a default evaluator so this function should always return an evaluator. */
+		FbxAnimEvaluator* GetAnimationEvaluator();
+	//@}
+
     /** Add a prefix to a name.
       * \param pPrefix The prefix to be added to the \c pName. This
       * string must contain the "::" characters in order to be considered
@@ -470,7 +483,7 @@ public:
       * \remarks If a prefix already exists, it is removed before
       * adding \c pPrefix.
       */
-    static FbxString PrefixName(char const* pPrefix, char const* pName);
+    static FbxString PrefixName(const char* pPrefix, const char* pName);
 
 	/** Get the count of document available in this manager
 	  * \return The count of document owned by this manager.
@@ -513,7 +526,7 @@ private:
 	void		Add_Common_RW_Import_IOSettings(FbxIOSettings& pIOS);
 	void		Add_Common_RW_Export_IOSettings(FbxIOSettings& pIOS);
 
-	FbxClassId	Internal_RegisterFbxClass(const char* pClassName, FbxClassId pParentClassId, FbxObjectCreateProc=0, char const* pFbxFileTypeName=0, char const* pFbxFileSubTypeName=0);
+	FbxClassId	Internal_RegisterFbxClass(const char* pClassName, FbxClassId pParentClassId, FbxObjectCreateProc=0, const char* pFbxFileTypeName=0, const char* pFbxFileSubTypeName=0);
 	bool		Internal_RegisterFbxClass(FbxClassId pClassId);
 	FbxClassId	Internal_OverrideFbxClass(FbxClassId pClassId, FbxObjectCreateProc=0);
 	void		Internal_UnregisterFbxClass(FbxClassId pClassId);
@@ -529,6 +542,7 @@ private:
 	FbxMessageEmitter*					mMessageEmitter;
 	FbxArray<FbxLocalizationManager*>	mLocalizationManagerArray;
 	FbxArray<FbxSceneReference*>		mSceneReferenceArray;
+	FbxAnimEvaluator*					mEvaluator;
 
 	FbxArray<FbxObject*>				mDestroyingObjects;
 	FbxArray<FbxDocument*>				mDestroyingDocuments;

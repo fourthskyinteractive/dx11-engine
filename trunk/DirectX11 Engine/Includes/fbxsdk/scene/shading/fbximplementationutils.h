@@ -27,7 +27,7 @@
   * \param pImplementationTarget    Name of the implementation property to get.
   * \return FbxImplementation      Pointer to FbxImplementation.
   */
-FBXSDK_DLL FbxImplementation const* GetImplementation( FbxObject const* pObject, char const* pImplementationTarget );
+FBXSDK_DLL const FbxImplementation* GetImplementation( const FbxObject* pObject, const char* pImplementationTarget );
 
 /** Get bound property value from FbxBindingTable.
   * \param pBindingTable            FbxBindingTable to get bound property value.
@@ -37,21 +37,21 @@ FBXSDK_DLL FbxImplementation const* GetImplementation( FbxObject const* pObject,
   * \param pValue                   Pointer to bound property value from FbxBindingTable.
   * \return Whether get bound property value success or not.
   */
-template <typename T> bool GetBoundPropertyValue(FbxBindingTable const* pBindingTable,
-                                                 char const* pEntryName, 
-                                                 FbxImplementation const* pImplementation,
-                                                 FbxObject const* pBoundObject,
+template <typename T> bool GetBoundPropertyValue(const FbxBindingTable* pBindingTable,
+                                                 const char* pEntryName, 
+                                                 const FbxImplementation* pImplementation,
+                                                 const FbxObject* pBoundObject,
                                                  T& pValue)
 {
     if ((NULL != pImplementation) && (NULL != pBindingTable) && (NULL != pBoundObject) && (NULL != pEntryName))
     {
-        FbxBindingTableEntry const* lEntry = pBindingTable->GetEntryForDestination(pEntryName);
+        const FbxBindingTableEntry* lEntry = pBindingTable->GetEntryForDestination(pEntryName);
 
         if (NULL != lEntry)
         {
             if (strcmp(lEntry->GetEntryType(true), FbxPropertyEntryView::sEntryType) == 0)
             {
-                char const* lPropName = lEntry->GetSource();
+                const char* lPropName = lEntry->GetSource();
                 FbxProperty lProp = pBoundObject->FindPropertyHierarchical(lPropName);
                 if (lProp.IsValid())
                 {
@@ -61,8 +61,8 @@ template <typename T> bool GetBoundPropertyValue(FbxBindingTable const* pBinding
             }
             else if (strcmp(lEntry->GetEntryType(true), FbxOperatorEntryView::sEntryType) == 0)
             {
-                char const* lOperatorName = lEntry->GetSource();
-                FbxBindingOperator const* lOp = pImplementation->GetOperatorByTargetName(lOperatorName);
+                const char* lOperatorName = lEntry->GetSource();
+                const FbxBindingOperator* lOp = pImplementation->GetOperatorByTargetName(lOperatorName);
                 if (lOp)
                 {
                     return lOp->Evaluate(pBoundObject, &pValue);
