@@ -28,6 +28,7 @@ public:
  	const FbxArray<FbxNode*>& GetCameraArray()const {return cameraArray;}
  	const FbxArray<FbxString*>& GetAnimStackNameArray() const {return animStackNameArray;}
  	const FbxArray<FbxPose*>& GetPoseArray() const {return poseArray;}
+	vector<int> GetTextureIndices(){return textureIndices;}
 
 	bool SetCurrentAnimStack(int _index);
 	bool SetCurrentPoseIndex(int _poseIndex);

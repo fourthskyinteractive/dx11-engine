@@ -36,7 +36,7 @@ using std::cin;
 using std::stringstream;
 #endif
 
-#define NEAR_PLANE 0.1f
+#define NEAR_PLANE 0.10f
 #define FAR_PLANE 1000.0f
 
 BaseObject*						Game::baseObject;
@@ -93,15 +93,17 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, 50.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -50.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), NEAR_PLANE, FAR_PLANE);
 	camera->UpdateViewMatrix();
 
-	frustumExtentsXY.y = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * 1000.0f);
+	frustumExtentsXY.y = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * FAR_PLANE);
 	frustumExtentsXY.x = (frustumExtentsXY.y * ((float)_screenWidth / (float)_screenHeight));
+	frustumExtentsXY.w = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * NEAR_PLANE);
+	frustumExtentsXY.z = (frustumExtentsXY.w * ((float)_screenWidth / (float)_screenHeight));
 
-	frustumExtentsXY.y /= 1000.0f;
-	frustumExtentsXY.x /= 1000.0f;
+	//frustumExtentsXY.y /= 1000.0f;
+	//frustumExtentsXY.x /= 1000.0f;
 
 	timer.Init();
 
@@ -340,22 +342,35 @@ void Game::LoadCompiledShaders()
 
 void Game::InitializeObjects()
 {
-	FBXModel* tempModel = new FBXModel("Res/Models/Nunu_Bot.fbx");
-	XMFLOAT4 positions[3];
-	XMFLOAT3 normals[3];
-	XMFLOAT2 UVs[3];
+	FBXModel* tempModel = new FBXModel("Res/Models/BlueMinion.fbx");
+	XMFLOAT4 positions[4];
+	XMFLOAT3 normals[4];
+	XMFLOAT2 UVs[4];
+	unsigned long indices[6];
 
-	positions[0] = XMFLOAT4(0.0f, 50.0f, 0.0f, 0.0f);
-	positions[1] = XMFLOAT4(-50.0f, -50.0f, 0.0f, 0.0f);
-	positions[2] = XMFLOAT4(50.0f, -50.0f, 0.0f, 0.0f);
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
 
-	normals[0] = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	normals[1] = XMFLOAT3(0.0f, 0.0f, -1.0f); 
-	normals[2] = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	positions[0] = XMFLOAT4(-200.0f, -50.0f,  200.0f, 0.0f);
+	positions[1] = XMFLOAT4( 200.0f, -50.0f,  200.0f, 0.0f);
+	positions[2] = XMFLOAT4( 200.0f, -50.0f, -200.0f, 0.0f);
+	positions[3] = XMFLOAT4(-200.0f, -50.0f, -200.0f, 0.0f);
 
-	UVs[0] = XMFLOAT2(0.5f, 0.0f);
-	UVs[1] = XMFLOAT2(1.0f, 1.0f);
-	UVs[2] = XMFLOAT2(0.0f, 1.0f);
+	normals[0] = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	normals[1] = XMFLOAT3(0.0f, 1.0f, 0.0f); 
+	normals[2] = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	normals[3] = XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+	UVs[0] = XMFLOAT2(0.0f, 0.0f);
+	UVs[1] = XMFLOAT2(0.0f, 1.0f);
+	UVs[2] = XMFLOAT2(1.0f, 1.0f);
+	UVs[3] = XMFLOAT2(1.0f, 0.0f);
+
+
 
 	XMMATRIX worldIdentityM;
 	XMFLOAT4X4 worldIdentity;
@@ -365,19 +380,24 @@ void Game::InitializeObjects()
 	baseObject = new WorldObject();
 	DX11RenderDataMembers* renderDataMembers = baseObject->GetRenderDataMembers();
 	baseObject->LoadModel("Res/Models/Nunu_Bot.fbx", modelData);
-	baseObject->AddTexture(L"Res/Textures/BlueMinion.dds");
+	//baseObject->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[0]));
+	baseObject->AddTexture(L"Res/Textures/GrassDiffuse.dds");
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
 	baseObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	baseObject->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
 	baseObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
-	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &tempModel->meshData->positions[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * tempModel->meshData->positions.size());
-	baseObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &tempModel->meshData->normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * tempModel->meshData->normals.size());
-	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &tempModel->meshData->UVs[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * tempModel->meshData->UVs.size());
-	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
+	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &positions, sizeof(XMFLOAT4), sizeof(XMFLOAT4) * 4);
+	baseObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &normals, sizeof(XMFLOAT3), sizeof(XMFLOAT3) * 4);
+	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &UVs, sizeof(XMFLOAT2), sizeof(XMFLOAT2) * 4);
+	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &indices, sizeof(unsigned long), sizeof(unsigned long) * 6);
+// 	baseObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &tempModel->meshData->positions[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * tempModel->meshData->positions.size());
+// 	baseObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &tempModel->meshData->normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * tempModel->meshData->normals.size());
+// 	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &tempModel->meshData->UVs[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * tempModel->meshData->UVs.size());
+// 	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
 	((WorldObject*)baseObject)->SetWorldMatrix(worldIdentity);
 	void* memAddr = camera->GetProjectionMatrixP();
 	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4), ((WorldObject*)baseObject)->GetWorldMatrixP());
-	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), camera->GetViewMatrixP());
+	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), camera->GetInvViewMatrixP());
 	baseObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4), camera->GetProjectionMatrixP());
 	baseObject->SetShaders(0, -1, 0, -1);
 	baseObject->FinalizeObject();
@@ -442,10 +462,13 @@ void* Game::InitializeLights()
 	//{
 		//for(int j = -100; j <= 100; j += 20)
 		//{
-			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(100.0f, 0.0f, 0.0f),1000, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-100.0f, 0.0f, 0.0f), 1000, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 100.0f), 1000, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(100.0f, 0.0f, -100.0f), 1000, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 0.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 50.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, -50.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(50.0f, -45.0f, 0.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-50.0f, -45.0f, 0.0f), 80, true);
+			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 100.0f),1000, true);
+			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -100.0f),1000, true);
 // 		}
 // 	}
 	

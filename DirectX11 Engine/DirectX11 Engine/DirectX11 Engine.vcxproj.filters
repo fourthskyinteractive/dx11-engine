@@ -415,7 +415,7 @@
       <Filter>Game Objects\Component System\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\FBXModel.h">
-      <Filter>Game Objects\Source Files</Filter>
+      <Filter>Game Objects\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

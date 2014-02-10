@@ -1,5 +1,7 @@
-#define horizontalTiles 64
-#define verticalTiles 64
+#pragma pack_matrix(row_major)
+
+#define horizontalTiles 32
+#define verticalTiles 32
 
 //PlaneOrder{PLANE_LEFT, PLANE_RIGHT, PLANE_TOP, PLANE_BOTTOM, PLANE_NEAR, PLANE_FAR}
 //PLANES ARE WRAPPED FROM THE INSIDE
@@ -107,7 +109,6 @@ float3 CalculateLighting(in float3 _normal,
 						 in float3 _lightDirection);
 
 void GetGBufferAttributes(in float3 _textureLocation,
-						  in float4 _lightColor,
 						  out float3 _normal,
 						  out float3 _position,
 						  out float3 _diffuseAlbedo, 
@@ -115,7 +116,7 @@ void GetGBufferAttributes(in float3 _textureLocation,
 						  out float3 _depth,
 						  out float _specularPower);
 
-[numthreads(16, 12, 1)]
+[numthreads(32, 24, 1)]
 void CS(ComputeIn _input)
 {
 	//FIGURE OUT WHAT LIGHTS HIT THIS TILE!
@@ -165,27 +166,35 @@ void LightTile(ComputeIn _input)
 
 void LightPixel(float3 _textureLocation)
 {
+//  	if(tileData[0] == -1)
+//  	{
+//  		outputTexture[_textureLocation.xy] = float4(1.0f, 0.0f, 0.0f, 1.0f);
+//  		return;
+// 	}
+
 	float3 normal;
 	float3 position;
 	float3 diffuseAlbedo;
 	float3 specularAlbedo;
 	float3 depth;
 	float specularPower;
+
+	GetGBufferAttributes(_textureLocation, normal, position, diffuseAlbedo, specularAlbedo, depth, specularPower);
+
 	float3 totalLight = float3(0.0f, 0.0f, 0.0f);
 	for(int i = 0; i < 1024; ++i)
 	{
 		if(tileData[i] == -1)
 			break;
-
-		GetGBufferAttributes(_textureLocation, pointLights[tileData[i]].color, normal, position, diffuseAlbedo, specularAlbedo, depth, specularPower);
+		
 		totalLight += CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(1.0f, 0.0f, 0.0f, 0.0f),
 										pointLights[tileData[i]].position, pointLights[tileData[i]].color, pointLights[tileData[i]].radius, float3(0.0f, 0.0f, 0.0f));
 	}
 
- 	totalLight += CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
- 										float3(0.0f, 0.0f, 0.0f), float4(0.05f, 0.05f, 0.05f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
+ 	totalLight += float4(.15f, .15f, .15f, 1.0f);//CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
+ 										//float3(0.0f, 0.0f, 0.0f), float4(0.05f, 0.05f, 0.05f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
 
-	outputTexture[_textureLocation.xy] = float4(totalLight * diffuseAlbedo, 1.0f);
+	outputTexture[_textureLocation.xy] = float4(diffuseAlbedo * totalLight, 1.0f);
 }
 
 void FindFurthestAndNearest(ComputeIn input, out float3 zNear, out float3 zFar)
@@ -231,85 +240,100 @@ void FindFurthestAndNearest(ComputeIn input, out float3 zNear, out float3 zFar)
 
 void CreateFrustum(out FrustumData _frustum, ComputeIn _input)
 {
-	float3 zNear;
-	float3 zFar;
-	FindFurthestAndNearest(_input, zNear, zFar);
+	int column = _input.groupID.x;
+	int row = _input.groupID.y;
 
 	float3 cameraPosition = float3(cameraView._41, cameraView._42, cameraView._43);
 	float3 cameraLook = normalize(float3(cameraView._31, cameraView._32, cameraView._33));
 	float3 cameraRight = normalize(float3(cameraView._11, cameraView._12, cameraView._13));
 	float3 cameraUp = normalize(float3(cameraView._21, cameraView._22, cameraView._23));
 
+	float farX = frustumExtentsXY.x;// * screenWidthHeightNearFar.w;
+	float farY = frustumExtentsXY.y;// * screenWidthHeightNearFar.w;
+	float nearX = frustumExtentsXY.z;// * screenWidthHeightNearFar.z;
+	float nearY = frustumExtentsXY.w;// * screenWidthHeightNearFar.z;
 
-	float distanceToNear = FindDistance(cameraPosition, zNear, cameraLook);
-	float distanceToFar = FindDistance(cameraPosition, zFar, cameraLook);
+	float pixelsPerRowNear = nearY / verticalTiles;
+	float pixelsPerRowFar = farY / verticalTiles;
+	float pixelsPerColumnNear = nearX / horizontalTiles;
+	float pixelsPerColumnFar = farX / horizontalTiles;
 
-// 	if(distanceToNear < screenWidthHeightNearFar.z)
-// 		distanceToNear = screenWidthHeightNearFar.z;
-// 	if(distanceToFar > screenWidthHeightNearFar.w)
-// 		distanceToFar = screenWidthHeightNearFar.w;
-
-	float farX = frustumExtentsXY.x * distanceToFar;
-	float farY = frustumExtentsXY.y * distanceToFar;
-	float nearX = frustumExtentsXY.x * distanceToNear;
-	float nearY = frustumExtentsXY.y * distanceToNear;
-
-	float3 farMiddle = cameraPosition + (cameraLook * distanceToFar);
-	float3 nearMiddle = cameraPosition + (cameraLook * distanceToNear);
+	float3 farMiddle = cameraPosition + (cameraLook * screenWidthHeightNearFar.w);
+	float3 nearMiddle = cameraPosition + (cameraLook * screenWidthHeightNearFar.z);
 
 	float3 xVector;
 	float3 yVector;
 
+	float3 fullNTL = (nearMiddle - (cameraRight * (nearX / 2.0f))) + (cameraUp * (nearY / 2.0f));
+	float3 fullNTR = (nearMiddle + (cameraRight * (nearX / 2.0f))) + (cameraUp * (nearY / 2.0f));
+	float3 fullNBL = (nearMiddle - (cameraRight * (nearX / 2.0f))) - (cameraUp * (nearY / 2.0f));
+	float3 fullNBR = (nearMiddle + (cameraRight * (nearX / 2.0f))) - (cameraUp * (nearY / 2.0f));
+
+	float3 fullFTL = (farMiddle - (cameraRight * (farX / 2.0f))) + (cameraUp * (farY / 2.0f));
+	float3 fullFTR = (farMiddle + (cameraRight * (farX / 2.0f))) + (cameraUp * (farY / 2.0f));
+	float3 fullFBL = (farMiddle - (cameraRight * (farX / 2.0f))) - (cameraUp * (farY / 2.0f));
+	float3 fullFBR = (farMiddle + (cameraRight * (farX / 2.0f))) - (cameraUp * (farY / 2.0f));
+
+	float3 tiledNTL = fullNTL + ((column * pixelsPerColumnNear) * cameraRight) - ((row * pixelsPerRowNear) * cameraUp);
+	float3 tiledNTR = tiledNTL + (pixelsPerColumnNear * cameraRight);
+	float3 tiledNBL = tiledNTL - (pixelsPerRowNear * cameraUp);
+	float3 tiledNBR = tiledNBL + (pixelsPerColumnNear * cameraRight);
+  			   
+	float3 tiledFTL = fullFTL + ((column * pixelsPerColumnFar) * cameraRight) - ((row * pixelsPerRowFar) * cameraUp);
+	float3 tiledFTR = tiledFTL + (pixelsPerColumnFar * cameraRight);
+	float3 tiledFBL = tiledFTL - (pixelsPerRowFar * cameraUp);
+	float3 tiledFBR = tiledFBL + (pixelsPerColumnFar * cameraRight);
+
 	//LEFT
-	_frustum.planes[0].TL = (nearMiddle - (cameraRight * nearX)) + (cameraUp * nearY);//NTL
-	_frustum.planes[0].TR = (farMiddle - (cameraRight * farX)) + (cameraUp * farY);//FTL
-	_frustum.planes[0].BL = (nearMiddle - (cameraRight * nearX)) - (cameraUp * nearY);//NBL
-	_frustum.planes[0].BR = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
+	_frustum.planes[0].TL = tiledNTL;//NTL
+	_frustum.planes[0].TR = tiledFTL;//FTL
+	_frustum.planes[0].BL = tiledNBL;//NBL
+	_frustum.planes[0].BR = tiledFBL;//FBL
 	xVector = _frustum.planes[0].TR - _frustum.planes[0].TL;
 	yVector = _frustum.planes[0].BL - _frustum.planes[0].TL;
 	_frustum.planes[0].normal = normalize(cross(xVector, yVector));
 
 	//RIGHT
-	_frustum.planes[1].TL = (farMiddle + (cameraRight * farX)) + (cameraUp * farY);//FTR
-	_frustum.planes[1].TR = (nearMiddle + (cameraRight * nearX)) + (cameraUp * nearY);//NTR
-	_frustum.planes[1].BL = (farMiddle + (cameraRight * farX)) - (cameraUp * farY);//FBR
-	_frustum.planes[1].BR = (nearMiddle + (cameraRight * nearX)) - (cameraUp * nearY);//NBR
+	_frustum.planes[1].TL = tiledFTR;//FTR
+	_frustum.planes[1].TR = tiledNTR;//NTR
+	_frustum.planes[1].BL = tiledFBR;//FBR
+	_frustum.planes[1].BR = tiledNBR;//NBR
 	xVector = _frustum.planes[1].TR - _frustum.planes[1].TL;
 	yVector = _frustum.planes[1].BL - _frustum.planes[1].TL;
 	_frustum.planes[1].normal = normalize(cross(xVector, yVector));
 
 	//TOP
-	_frustum.planes[2].TL = (nearMiddle - (cameraRight * nearX)) + (cameraUp * nearY);//NTL
-	_frustum.planes[2].TR = (nearMiddle + (cameraRight * nearX)) + (cameraUp * nearY);//NTR
-	_frustum.planes[2].BL = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
-	_frustum.planes[2].BR = (farMiddle + (cameraRight * farX)) + (cameraUp * farY);//FTR
+	_frustum.planes[2].TL = tiledNTL;//NTL
+	_frustum.planes[2].TR = tiledNTR;//NTR
+	_frustum.planes[2].BL = tiledFTL;//FTL
+	_frustum.planes[2].BR = tiledFTR;//FTR
 	xVector = _frustum.planes[2].TR - _frustum.planes[2].TL;
 	yVector = _frustum.planes[2].BL - _frustum.planes[2].TL;
 	_frustum.planes[2].normal = normalize(cross(xVector, yVector));
 
 	//BOTTOM
-	_frustum.planes[3].TL = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
-	_frustum.planes[3].TR = (farMiddle + (cameraRight * farX)) - (cameraUp * farY);//FBR
-	_frustum.planes[3].BL = (nearMiddle - (cameraRight * nearX)) - (cameraUp * nearY);//NBL
-	_frustum.planes[3].BR = (nearMiddle + (cameraRight * nearX)) - (cameraUp * nearY);//NBR
+	_frustum.planes[3].TL = tiledFBL;//FBL
+	_frustum.planes[3].TR = tiledFBR;//FBR
+	_frustum.planes[3].BL = tiledNBL;//NBL
+	_frustum.planes[3].BR = tiledNBR;//NBR
 	xVector = _frustum.planes[3].TR - _frustum.planes[3].TL;
 	yVector = _frustum.planes[3].BL - _frustum.planes[3].TL;
 	_frustum.planes[3].normal = normalize(cross(xVector, yVector));
 
 	//NEAR
-	_frustum.planes[4].TL = (nearMiddle + (cameraRight * nearX)) + (cameraUp * nearY);//NTR
-	_frustum.planes[4].TR = (nearMiddle - (cameraRight * nearX)) + (cameraUp * nearY);//NTL
-	_frustum.planes[4].BL = (nearMiddle + (cameraRight * nearX)) - (cameraUp * nearY);//NBR
-	_frustum.planes[4].BR = (nearMiddle - (cameraRight * nearX)) - (cameraUp * nearY);//NBL
+	_frustum.planes[4].TL = tiledNTR;//NTR
+	_frustum.planes[4].TR = tiledNTL;//NTL
+	_frustum.planes[4].BL = tiledNBR;//NBR
+	_frustum.planes[4].BR = tiledNBL;//NBL
 	xVector = _frustum.planes[4].TR - _frustum.planes[4].TL;
 	yVector = _frustum.planes[4].BL - _frustum.planes[4].TL;
 	_frustum.planes[4].normal = normalize(cross(xVector, yVector));
 
 	//FAR
-	_frustum.planes[5].TL = (farMiddle - (cameraRight * farX)) + (cameraUp * farY);//FTL
-	_frustum.planes[5].TR = (farMiddle + (cameraRight * farX)) + (cameraUp * farY);//FTR
-	_frustum.planes[5].BL = (farMiddle - (cameraRight * farX)) - (cameraUp * farY);//FBL
-	_frustum.planes[5].BR = (farMiddle + (cameraRight * farX)) - (cameraUp * farY);//FBR
+	_frustum.planes[5].TL = tiledFTL;//FTL
+	_frustum.planes[5].TR = tiledFTR;//FTR
+	_frustum.planes[5].BL = tiledFBL;//FBL
+	_frustum.planes[5].BR = tiledFBR;//FBR
 	xVector = _frustum.planes[5].TR - _frustum.planes[5].TL;
 	yVector = _frustum.planes[5].BL - _frustum.planes[5].TL;
 	_frustum.planes[5].normal = normalize(cross(xVector, yVector));
@@ -324,25 +348,20 @@ float FindDistance(float3 _startPos, float3 _endPos, float3 _direction)
 
 bool SphereFrustumCollision(FrustumData _frustum, SphereData _sphere)
 {
-	float offset;
 	float distance;
 	for(int i = 0; i < 6; ++i)
 	{
-		offset = dot(_frustum.planes[i].normal, _frustum.planes[i].TL);
-		distance = dot(_sphere.position, _frustum.planes[i].normal);
-		distance -= offset;
-		
-		if(distance < -_sphere.radius)
+		distance = dot(_sphere.position - _frustum.planes[i].TL, _frustum.planes[i].normal);
+		if(distance <= -_sphere.radius)
 		{
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
 void GetGBufferAttributes(in float3 _textureLocation,
-						  in float4 _lightColor,
 						  out float3 _normal,
 						  out float3 _position,
 						  out float3 _diffuseAlbedo, 
