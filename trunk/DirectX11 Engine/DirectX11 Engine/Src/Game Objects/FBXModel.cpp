@@ -565,7 +565,7 @@ bool MeshData::Initialize(const FbxMesh* _mesh)
 					_mesh->GetPolygonVertexUV(polygonIndex, verticeIndex, uvName, currentUV, unmappedUV);
 					XMFLOAT2 uv;
 					uv.x = static_cast<float>(currentUV[0]);
-					uv.y = static_cast<float>(currentUV[1]);
+					uv.y = 1.0f - static_cast<float>(currentUV[1]);
 					UVs[vertexCount] = uv;
 				}
 			}

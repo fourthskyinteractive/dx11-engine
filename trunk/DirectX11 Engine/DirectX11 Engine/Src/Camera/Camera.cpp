@@ -249,6 +249,11 @@ XMFLOAT4X4 Camera::GetViewProjectionMatrixF() const
 
 void* Camera::GetViewMatrixP()
 {
+	return reinterpret_cast<void*>(&view);
+}
+
+void* Camera::GetInvViewMatrixP()
+{
 	XMMATRIX viewM;
 	viewM = XMLoadFloat4x4(&view);
 	viewM = XMMatrixInverse(0, viewM);
