@@ -55,6 +55,7 @@ public:
 	static HWND hwnd;
 
 	static BaseObject* baseObject;
+	static BaseObject* secondObject;
 	static XMFLOAT4 widthHeightNearFar;
 	static XMFLOAT4 frustumExtentsXY;
 

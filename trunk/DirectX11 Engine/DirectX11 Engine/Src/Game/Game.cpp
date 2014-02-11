@@ -40,6 +40,7 @@ using std::stringstream;
 #define FAR_PLANE 1000.0f
 
 BaseObject*						Game::baseObject;
+BaseObject*						Game::secondObject;
 BaseObject*						Game::computeObject;
 
 XMFLOAT3						Game::lightPos;
@@ -93,7 +94,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	camera = new Camera(XMFLOAT3(0.0f, 0.0f, -50.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f));
+	camera = new Camera(XMFLOAT3(0.0f, 100.0f, 200.0f), XMFLOAT3(0.0f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f));
 	camera->SetLens(XMConvertToRadians(50), ((float)_screenWidth / (float)_screenHeight), NEAR_PLANE, FAR_PLANE);
 	camera->UpdateViewMatrix();
 
@@ -139,7 +140,7 @@ void Game::Render()
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(NULL, 0, 0xffffffff);
 
 	baseObject->Render();
-
+	secondObject->Render();
 	//D3D11Renderer::d3dImmediateContext->OMSetBlendState(D3D11Renderer::blendState, 0, 0xffffffff);
 	//lightPass->Render();
 	computeObject->Render();
@@ -378,8 +379,7 @@ void Game::InitializeObjects()
 	XMStoreFloat4x4(&worldIdentity, worldIdentityM);
 	ModelData modelData;
 	baseObject = new WorldObject();
-	DX11RenderDataMembers* renderDataMembers = baseObject->GetRenderDataMembers();
-	baseObject->LoadModel("Res/Models/Nunu_Bot.fbx", modelData);
+	//baseObject->LoadModel("Res/Models/Nunu_Bot.fbx", modelData);
 	//baseObject->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[0]));
 	baseObject->AddTexture(L"Res/Textures/GrassDiffuse.dds");
 	baseObject->AddBaseComponent(RENDER_COMPONENT);
@@ -395,12 +395,30 @@ void Game::InitializeObjects()
 // 	baseObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &tempModel->meshData->UVs[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * tempModel->meshData->UVs.size());
 // 	baseObject->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
 	((WorldObject*)baseObject)->SetWorldMatrix(worldIdentity);
-	void* memAddr = camera->GetProjectionMatrixP();
 	baseObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4), ((WorldObject*)baseObject)->GetWorldMatrixP());
 	baseObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), camera->GetInvViewMatrixP());
 	baseObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4), camera->GetProjectionMatrixP());
 	baseObject->SetShaders(0, -1, 0, -1);
 	baseObject->FinalizeObject();
+
+
+	secondObject = new WorldObject();
+	secondObject->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[0]));
+	secondObject->AddBaseComponent(RENDER_COMPONENT);
+	secondObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
+	secondObject->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
+	secondObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
+ 	secondObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &tempModel->meshData->positions[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * tempModel->meshData->positions.size());
+ 	secondObject->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &tempModel->meshData->normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * tempModel->meshData->normals.size());
+ 	secondObject->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &tempModel->meshData->UVs[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * tempModel->meshData->UVs.size());
+ 	secondObject->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
+	worldIdentity._42 = -50.0f;
+	((WorldObject*)secondObject)->SetWorldMatrix(worldIdentity);
+	secondObject->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, &worldIdentity, sizeof(XMFLOAT4X4), ((WorldObject*)secondObject)->GetWorldMatrixP());
+	secondObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, &camera->GetViewMatrixF(), sizeof(XMFLOAT4X4), camera->GetInvViewMatrixP());
+	secondObject->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, &camera->GetProjectionMatrixF(), sizeof(XMFLOAT4X4), camera->GetProjectionMatrixP());
+	secondObject->SetShaders(0, -1, 0, -1);
+	secondObject->FinalizeObject();
 
 
 	XMFLOAT4 pos = XMFLOAT4(0.0f, 0.0f, 5.0f, 1.0f);
