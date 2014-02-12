@@ -66,6 +66,9 @@
     <FxCompile>
       <EntryPointName>VS</EntryPointName>
     </FxCompile>
+    <PostBuildEvent>
+      <Command>copy "$(ProjectDir)..\Libraries\libfbxsdk.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
