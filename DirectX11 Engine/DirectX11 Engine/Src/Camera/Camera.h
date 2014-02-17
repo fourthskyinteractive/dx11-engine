@@ -1,22 +1,24 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <string>
+using namespace std;
 #include <d3d11.h>
 #include <DirectXMath.h>
 using namespace DirectX;
 
+enum CAMERA_TYPE{CAMERA_DEFAULT_VIEW, CAMERA_FIRST_PERSON, CAMERA_THIRD_PERSON, CAMERA_FREE_ROAM};
 
 class Camera
 {
 public:
-	Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right);
+	Camera();
+	Camera(CAMERA_TYPE _cameraType, XMFLOAT4X4 _viewMatrix);
 	~Camera();
 
 
-	/////////////////////////////////////////// NEW CAMERA CODE USING A SINGLE MATRIX/////////////////////////////////////////
-
- 	//Camera(const XMFLOAT4X4& camMatrix);
-// 
+	/////////////////////////////////////////// NEW CAMERA CODE USING A SINGLE MATRIX///////////////////////////////////////// 	
+//  Camera(const XMFLOAT4X4& camMatrix);
 // 	XMMATRIX GetPositionMatrixXM() const;
 // 	XMMATRIX SetPosition(const XMMATRIX& _m);
 // 	
@@ -27,6 +29,7 @@ public:
 // 	void LookAtMatrix(XMMATRIX _CameraPos, XMMATRIX _targetPos);
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	CAMERA_TYPE GetCameraType(){return cameraType;}
 	XMVECTOR GetPositionXM() const;
 	XMFLOAT3 GetPosition() const;
 
@@ -50,13 +53,13 @@ public:
 	float GetFovX() const;
 
 	//Get the near and far plane dimensions in-view space coordinates
-	float GetNearWindowWidth() const;
-	float GetNearWindowHeight() const;
-	float GetFarWindowWidth() const;
-	float GetFarWindowHeight() const;
+	float GetNearPlaneWidth() const;
+	float GetNearPlaneHeight() const;
+	float GetFarPlaneWidth() const;
+	float GetFarPlaneHeight() const;
 
 	//Set the frustum
-	void SetLens(float _fovY, float _aspectRatio, float _zNear, float _zFar);
+	void SetLens(float _fovY, float _screenWidth, float _screenHeight, float _zNear, float _zFar);
 
 	//Define the camera space via the LookAt parameters
 	void LookAt(FXMVECTOR _cameraPos, FXMVECTOR _targetPos, FXMVECTOR _worldUp);
@@ -74,6 +77,9 @@ public:
 	void* GetInvViewMatrixP();
 	void* GetProjectionMatrixP();
 
+	void* GetWidthHeightNearFarP();
+	void* GetFrustumExtentsP();
+
 	//Strafe/Walk the camera a distance _d
 	void Strafe(float _d);
 	void Walk(float _d);
@@ -90,20 +96,18 @@ public:
 
 private:
 	
-	//Camera coordinate system with coordinates relative to world space
-	//XMFLOAT3 position;
-	//XMFLOAT3 right;
-	//XMFLOAT3 up;
-	//XMFLOAT3 look;
-	//XMFLOAT4X4 view;
-
+	CAMERA_TYPE cameraType;
 	//Frustum Properties
 	float nearZ;
 	float farZ;
 	float aspectRatio;
 	float fovY;
-	float nearWindowHeight;
-	float farWindowHeight;
+	float nearPlaneHeight;
+	float nearPlaneWidth;
+	float farPlaneHeight;
+	float farPlaneWidth;
+	XMFLOAT4 widthHeightNearFar;
+	XMFLOAT4 frustumExtents;
 
 	//View/Projection Matrices
 	XMFLOAT4X4 view;
