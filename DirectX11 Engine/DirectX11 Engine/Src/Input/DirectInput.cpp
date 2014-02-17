@@ -1,6 +1,19 @@
 #include "DirectInput.h"
 #include "../Game/Definitions.h"
 
+
+
+
+
+DirectInput* DirectInput::GetInstance( void )
+{
+	static DirectInput instance;
+
+	return &instance;
+}
+
+
+
 DirectInput::DirectInput()
 {
 	directInput = NULL;

@@ -23,6 +23,12 @@
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/WorldObject.h"
 
+#include "../Sound/SoundManager.h"
+
+// Game State
+#include "../States/IGameState.h"
+#include "../States/MainMenuState.h"
+
 struct vertStruct
 {
 	XMFLOAT4 position;
@@ -59,6 +65,10 @@ public:
 	static XMFLOAT4 widthHeightNearFar;
 	static XMFLOAT4 frustumExtentsXY;
 
+
+	static void ChangeState(IGameState* _pNewState);
+
+
 private:
 	static BaseObject* computeObject;
 
@@ -87,7 +97,11 @@ private:
 	static bool backFaceSwap;
 
 	static Terrain* terrain;
+
+
+    static IGameState*  currState;
+	static SoundManager* soundManager;
+
+
 };
-
-
 #endif

@@ -121,6 +121,9 @@
     <ClCompile Include="Src\Renderer\Shader Classes\TerrainShader.cpp" />
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
+    <ClCompile Include="Src\Sound\SoundManager.cpp" />
+    <ClCompile Include="Src\States\GamePlayState.cpp" />
+    <ClCompile Include="Src\States\MainMenuState.cpp" />
     <ClCompile Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Src\Utility\Geometry Makers\GeometryMaker.cpp" />
     <ClCompile Include="Src\Utility\Math\MathHelper.cpp" />
@@ -131,6 +134,9 @@
     <ClCompile Include="Src\Utility\Model Loaders\ObjLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GamePlayState.h" />
+    <ClInclude Include="IGameState.h" />
+    <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraManager.h" />
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
@@ -169,6 +175,7 @@
     <ClInclude Include="Src\Renderer\Shader Classes\TerrainShader.h" />
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
+    <ClInclude Include="Src\Sound\SoundManager.h" />
     <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h" />
     <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />

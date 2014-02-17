@@ -164,6 +164,24 @@
     <Filter Include="Shaders\Compute Shaders">
       <UniqueIdentifier>{9d325630-4bda-4dbc-8981-7a9011a33e11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game States">
+      <UniqueIdentifier>{8110b994-cfff-4768-a2a5-dffd4c2e369e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game States\Header Files">
+      <UniqueIdentifier>{b2cbadbd-3447-441f-8839-ebcc3cdb1550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game States\Source Files">
+      <UniqueIdentifier>{05130d68-324c-4e07-aacc-fe4d7888cab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound Manager">
+      <UniqueIdentifier>{8bac4094-bc03-42dc-81a1-be686a5786dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound Manager\Header Files">
+      <UniqueIdentifier>{9729f870-dc7d-459a-868f-ac3a30022dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound Manager\Source Files">
+      <UniqueIdentifier>{3546f85d-b96c-4796-9a63-7d76a82e4a22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Game\Definitions.cpp">
@@ -283,7 +301,16 @@
     <ClCompile Include="Src\Game Objects\FBXModel.cpp">
       <Filter>Game Objects\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Sound\SoundManager.cpp">
     <ClCompile Include="Src\Camera\CameraManager.cpp">
+      <Filter>Sound Manager\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\States\GamePlayState.cpp">
+      <Filter>Game States\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\States\MainMenuState.cpp">
+      <Filter>Game States\Source Files</Filter>
+    </ClCompile>
       <Filter>Camera\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game Objects\ObjectManager.cpp">
@@ -428,6 +455,18 @@
     </ClInclude>
     <ClInclude Include="Src\Camera\CameraManager.h">
       <Filter>Camera\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameState.h">
+      <Filter>Game States\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Game States\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayState.h">
+      <Filter>Game States\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Sound\SoundManager.h">
+      <Filter>Sound Manager\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
