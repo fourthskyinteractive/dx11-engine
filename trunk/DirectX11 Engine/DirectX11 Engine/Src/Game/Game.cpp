@@ -15,6 +15,8 @@
 #include "../Game Objects/ObjectManager.h"
 #include "../Camera/CameraManager.h"
 
+
+
 //Shaders
 #include "../../GBufferVertexShader.csh"
 #include "../../GBufferPixelShader.csh"
@@ -80,6 +82,12 @@ XMFLOAT2						Game::cameraRotation;
 XMFLOAT4						Game::widthHeightNearFar;
 XMFLOAT4						Game::frustumExtentsXY;
 
+
+IGameState *					Game::currState;
+SoundManager*					Game::soundManager;
+
+
+
 bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight)
 {
 	hwnd = _hWnd;
@@ -114,6 +122,14 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	//frustumExtentsXY.y /= 1000.0f;
 	//frustumExtentsXY.x /= 1000.0f;
 
+
+	// Current State
+	currState = nullptr;
+
+
+	// Sound Manager
+	soundManager = 0;
+
 	timer.Init();
 
 	lightPos = XMFLOAT3(0.0f, 10.0f, 0.0f);
@@ -134,6 +150,22 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 		isRunning = false;
 	}
 
+	ChangeState( MainMenuState::GetInstance());
+
+	soundManager = new SoundManager();
+
+	if(!soundManager)
+	{
+		return false;
+	}
+
+	soundManager->Initialize(hwnd);
+	//if(!soundResult)
+	{
+		//MessageBoxA(hwnd, L"Could not init Direct Sound", L"ERROR", MB_OK);
+	}
+
+	
 	return true;
 }
 
@@ -168,6 +200,8 @@ void Game::Update()
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
+
+	
 }
 
 void Game::Input(float _deltaTime)
@@ -311,6 +345,17 @@ void Game::Exit()
 	}
 
 	LightManager::Shutdown();
+
+	ChangeState( nullptr);
+
+	if(soundManager)
+	{
+		soundManager->ShutDown();
+		delete soundManager;
+		soundManager = 0;
+	}
+
+
 }
 
 void Game::CalculateFrameStats()
@@ -412,4 +457,21 @@ void* Game::InitializeLights()
 
 	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 	return NULL;
+}
+
+void Game::ChangeState(IGameState* _pNewState)
+{
+	
+	if(currState != nullptr)
+	{
+		currState->ExitState();
+	}
+
+	currState = _pNewState;
+
+	if(currState != nullptr)
+	{
+		currState->EnterState();
+	}
+
 }

@@ -9,6 +9,9 @@
 class DirectInput
 {
 public:
+
+	static DirectInput* GetInstance( void );
+
 	DirectInput();
 	DirectInput(const DirectInput& _dInput);
 	~DirectInput();
