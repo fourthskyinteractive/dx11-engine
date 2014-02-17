@@ -33,9 +33,9 @@ struct vertStruct
 class Game
 {
 public:
-	Game();
-	~Game();
-	Game(Game& game);
+	Game(){}
+	~Game(){}
+	Game(Game& game){}
 
 	static bool isRunning;
 	static bool Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _bVsync, int _screenWidth, int _screenHeight);

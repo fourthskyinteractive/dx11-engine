@@ -283,6 +283,12 @@
     <ClCompile Include="Src\Game Objects\FBXModel.cpp">
       <Filter>Game Objects\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Camera\CameraManager.cpp">
+      <Filter>Camera\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\ObjectManager.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game\Definitions.h">
@@ -416,6 +422,12 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\FBXModel.h">
       <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\ObjectManager.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\CameraManager.h">
+      <Filter>Camera\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

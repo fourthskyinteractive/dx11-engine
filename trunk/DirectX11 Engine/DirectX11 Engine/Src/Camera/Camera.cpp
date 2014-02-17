@@ -1,27 +1,29 @@
 #include "Camera.h"
 
 
-Camera::Camera(const XMFLOAT3& _position, const XMFLOAT3& _look, const XMFLOAT3& _up, const XMFLOAT3& _right)
+Camera::Camera()
 {
-	view._11 = _right.x;
-	view._12 = _right.y;
-	view._13 = _right.z;
-	view._14 = 0.0f;
+	cameraType = CAMERA_DEFAULT_VIEW;
+	//Frustum Properties
+	nearZ = 0.0f;
+	farZ = 0.0f;
+	aspectRatio = 0.0f;
+	fovY = 0.0f;
+	nearPlaneHeight = 0.0f;
+	nearPlaneWidth = 0.0f;
+	farPlaneHeight = 0.0f;
+	farPlaneWidth = 0.0f;
 
-	view._21 = _up.x;
-	view._22 = _up.y;
-	view._23 = _up.z;
-	view._24 = 0.0f;
+	//View/Projection Matrices
+	XMStoreFloat4x4(&view, XMMatrixIdentity());
+	XMStoreFloat4x4(&inverseView, XMMatrixIdentity());
+	XMStoreFloat4x4(&projection, XMMatrixIdentity());
+}
 
-	view._31 = _look.x;
-	view._32 = _look.y;
-	view._33 = _look.z;
-	view._34 = 0.0f;
-
-	view._41 = _position.x;
-	view._42 = _position.y;
-	view._43 = _position.z;
-	view._44 = 1.0f;
+Camera::Camera(CAMERA_TYPE _cameraType, XMFLOAT4X4 _viewMatrix)
+{
+	cameraType = _cameraType;
+	view = _viewMatrix;
 }
 
 Camera::~Camera()
@@ -163,40 +165,52 @@ float Camera::GetFovY() const
 
 float Camera::GetFovX() const
 {
-	float halfWidth = 0.5f * GetNearWindowWidth();
+	float halfWidth = 0.5f * GetNearPlaneWidth();
 	return 2.0f * atan(halfWidth / nearZ);
 }
 
-float Camera::GetNearWindowWidth() const
+float Camera::GetNearPlaneWidth() const
 {
-	return aspectRatio * nearWindowHeight;
+	return nearPlaneWidth;
 }
 
-float Camera::GetNearWindowHeight() const
+float Camera::GetNearPlaneHeight() const
 {
-	return nearWindowHeight;
+	return nearPlaneHeight;
 }
 
-float Camera::GetFarWindowWidth() const
+float Camera::GetFarPlaneWidth() const
 {
-	return aspectRatio * farWindowHeight;
+	return farPlaneWidth;
 }
 
-float Camera::GetFarWindowHeight() const
+float Camera::GetFarPlaneHeight() const
 {
-	return farWindowHeight;
+	return farPlaneHeight;
 }
 
-void Camera::SetLens(float _fovY, float _aspectRatio, float _zNear, float _zFar)
+void Camera::SetLens(float _fovY, float _screenWidth, float _screenHeight, float _zNear, float _zFar)
 {
 	fovY = _fovY;
-	aspectRatio = _aspectRatio;
+	aspectRatio = _screenWidth / _screenHeight;
 	nearZ = _zNear;
 	farZ = _zFar;
+	farPlaneHeight = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * farZ);
+	farPlaneWidth = (farPlaneHeight * ((float)_screenWidth / (float)_screenHeight));
+	nearPlaneHeight = ((2.0f * tan(XMConvertToRadians(50)) / 2.0f) * nearZ);
+	nearPlaneWidth = (nearPlaneHeight * ((float)_screenWidth / (float)_screenHeight));
 
+	frustumExtents.x = farPlaneWidth;
+	frustumExtents.y = farPlaneHeight;
+	frustumExtents.z = nearPlaneWidth;
+	frustumExtents.w = nearPlaneHeight;
+	widthHeightNearFar.x = _screenWidth;
+	widthHeightNearFar.y = _screenHeight;
+	widthHeightNearFar.z = _zNear;
+	widthHeightNearFar.w = _zFar;
 	XMMATRIX proj;
 
-	proj = XMMatrixPerspectiveFovLH(_fovY, _aspectRatio, _zNear, _zFar);
+	proj = XMMatrixPerspectiveFovLH(_fovY, aspectRatio, _zNear, _zFar);
 	XMStoreFloat4x4(&projection, proj);
 }
 
@@ -264,6 +278,16 @@ void* Camera::GetInvViewMatrixP()
 void* Camera::GetProjectionMatrixP()
 {
 	return reinterpret_cast<void*>(&projection);
+}
+
+void* Camera::GetWidthHeightNearFarP()
+{
+	return reinterpret_cast<void*>(&widthHeightNearFar);
+}
+
+void* Camera::GetFrustumExtentsP()
+{
+	return reinterpret_cast<void*>(&frustumExtents);
 }
 
 void Camera::Strafe(float _d)

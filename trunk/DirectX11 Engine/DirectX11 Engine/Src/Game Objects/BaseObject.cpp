@@ -182,6 +182,7 @@ void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componen
 	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _memoryAddress);
 }
 
+//TODO:SHADER BUFFERS MAPPABLE - MAKE SHADER BUFFERS MAPPABLE IF THEY CHANGE!
 void BaseObject::AddComputeShaderBuffer(void* _data, unsigned int _stride, unsigned int _totalSize, COMPUTEBUFFERTYPE _bufferType)
 {
 	HRESULT hr;
