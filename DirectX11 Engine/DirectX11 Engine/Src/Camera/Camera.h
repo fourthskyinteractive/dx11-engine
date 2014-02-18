@@ -32,6 +32,7 @@ public:
 	CAMERA_TYPE GetCameraType(){return cameraType;}
 	XMVECTOR GetPositionXM() const;
 	XMFLOAT3 GetPosition() const;
+	XMFLOAT3 GetInversePosition() const;
 
 	void SetPosition(float _x, float _y, float _z);
 	void SetPosition(const XMFLOAT3& _v);
