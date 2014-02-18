@@ -5,7 +5,6 @@
 #include <d3d11shader.h>
 
 #include "Definitions.h"
-#include "../EventSystem/Event.h"
 #include "../Utility/Misc/Timer.h"
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Camera/Camera.h"
