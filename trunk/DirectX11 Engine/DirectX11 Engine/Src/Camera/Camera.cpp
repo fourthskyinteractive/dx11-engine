@@ -44,13 +44,12 @@ XMVECTOR Camera::GetPositionXM() const
 
 XMFLOAT3 Camera::GetPosition() const
 {
-	XMFLOAT3 pos;
+	return XMFLOAT3(view._41, view._42, view._43);
+}
 
-	pos.x = view._41;
-	pos.y = view._42;
-	pos.z = view._43;
-
-	return pos;
+XMFLOAT3 Camera::GetInversePosition() const
+{
+	return XMFLOAT3(-view._41, -view._42, -view._43);
 }
 
 void Camera::SetPosition(float _x, float _y, float _z)
