@@ -6,9 +6,7 @@
 #include "../Renderer/ShaderManager.h"
 #include "../Utility/Model Loaders/ObjLoader.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
-#include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/Lights/LightManager.h"
-#include "../Renderer/Shader Classes/BaseShader.h"
 #include "../Utility/Misc/TerrainGenerator.h"
 #include "../Game Objects/Component System/ConstantBufferUpdateFunctions.h"
 #include "../Game Objects/FBXModel.h"
@@ -48,15 +46,12 @@ BaseObject*						Game::secondObject;
 BaseObject*						Game::computeObject;
 
 XMFLOAT3						Game::lightPos;
-ParentMeshObject*				Game::pointLight;
 vector<XMFLOAT3>				Game::pointLightPos;
 bool							Game::isRunning;
 Timer							Game::timer;
 
-ParentMeshObject*				Game::mesh = NULL;
 ScreenSpaceObject*				Game::lightPass = NULL;
 ScreenSpaceObject*				Game::skyBox = NULL;
-Terrain*						Game::terrain = NULL;
 
 ID3D11Buffer*					Game::boxVB;
 ID3D11Buffer*					Game::boxIB;
@@ -321,17 +316,6 @@ void Game::Input(float _deltaTime)
 void Game::Exit()
 {
 	D3D11Renderer::Shutdown();
-	if(mesh)
-	{
-		delete mesh;
-		mesh = 0;
-	}
-
-	if(terrain)
-	{
-		delete terrain;
-		terrain = 0;
-	}
 
 	ReleaseCOM(boxVB);
 	ReleaseCOM(boxIB);
@@ -453,9 +437,6 @@ void* Game::InitializeLights()
 // 		}
 // 	}
 	
-	
-
-	LightObjects::Initialize(D3D11Renderer::renderTargetView[7], D3D11Renderer::shaderResourceView[5]);
 	return NULL;
 }
 

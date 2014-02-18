@@ -10,15 +10,8 @@
 #include "../Renderer/Effects/d3dx11effect.h"
 #include "../Camera/Camera.h"
 #include "../Input/DirectInput.h"
-#include "../Renderer/Shader Classes/BaseShader.h"
 #include "../Game Objects/BaseObject.h"
-#include "../Game Objects/CubeObjectColor.h"
-#include "../Game Objects/Mesh.h"
-#include "../Game Objects/ParentMeshObject.h"
 #include "../Game Objects/ScreenSpaceObject.h"
-#include "../Game Objects/LightObjects.h"
-#include "../Game Objects/Terrain.h"
-#include "../Game Objects/DynamicObject.h"
 
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/WorldObject.h"
@@ -73,9 +66,7 @@ private:
 	static BaseObject* computeObject;
 
 	static XMFLOAT3 lightPos;
-	static ParentMeshObject* pointLight;
 	static vector<XMFLOAT3> pointLightPos;
-	static ParentMeshObject* mesh;
 	static ScreenSpaceObject* lightPass;
 	static ScreenSpaceObject* skyBox;
 
@@ -95,9 +86,6 @@ private:
 
 	static bool backfaceCulling;
 	static bool backFaceSwap;
-
-	static Terrain* terrain;
-
 
     static IGameState*  currState;
 	static SoundManager* soundManager;
