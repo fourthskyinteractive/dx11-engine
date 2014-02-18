@@ -3,6 +3,7 @@
 #include "../Game/Game.h"
 #include "../Utility/Model Loaders/FBXLoader.h"
 #include "../Renderer/TextureManager.h"
+#include "../Renderer/ShaderManager.h"
 
 BaseObject::BaseObject()
 {
@@ -349,7 +350,7 @@ ConstantBufferComponent* BaseObject::GetConstantBufferComponent()
 }
 void BaseObject::LoadModel(char* _filePath, ModelData& _modelData)
 {
-	FBXLoader::LoadFBX(_filePath, _modelData);
+	//FBXLoader::LoadFBX(_filePath, _modelData);
 }
 
 void BaseObject::UpdateShaderConstantBuffers()
