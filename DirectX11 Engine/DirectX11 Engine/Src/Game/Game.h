@@ -15,7 +15,9 @@
 #include "../Game Objects/BaseObject.h"
 #include "../Game Objects/WorldObject.h"
 
+//SOUND MANAGERS
 #include "../Sound/SoundManager.h"
+#include "../../SoundManager3D.h"
 
 // Game State
 #include "../States/IGameState.h"
@@ -88,6 +90,7 @@ private:
 
     static IGameState*  currState;
 	static SoundManager* soundManager;
+	static SoundManager3D* soundManager3D;
 
 
 };
