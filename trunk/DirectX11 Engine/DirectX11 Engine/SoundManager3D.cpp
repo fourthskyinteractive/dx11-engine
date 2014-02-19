@@ -1,41 +1,44 @@
-#include "SoundManager.h"
+#include "SoundManager3D.h"
 
 
-SoundManager::SoundManager()
+
+SoundManager3D::SoundManager3D()
 {
-	m_DirectSound     = 0;
-	m_primaryBuffer   = 0;
-	m_secondaryBuffer = 0;
+	m_DirectSound = 0;
+	m_primaryBuffer = 0;
+
+
+	m_listener = 0;
+	m_secondaryBuffer1 = 0;
+
+	// Sound Position
+	 m_fPositionX = CameraManager::GetCurrentCamera()->GetInversePosition().x;
+	 m_fPositionY = CameraManager::GetCurrentCamera()->GetInversePosition().y;
+	 m_fPositionZ = CameraManager::GetCurrentCamera()->GetInversePosition().z;
+
+	 
+	
+	m_secondary3DBuffer1 = 0;
+
 	m_fVolume = DSBVOLUME_MAX;
-	//m_fVolume = -2000;
 }
-
-
-SoundManager::~SoundManager()
+SoundManager3D::SoundManager3D(const SoundManager3D& other)
 {
 
-
 }
-
-SoundManager::SoundManager(const SoundManager& _rhs)
+SoundManager3D::~SoundManager3D()
 {
-	
-
 
 }
 
 
-
-float SoundManager::ChangeVolume(float _volume)
+float SoundManager3D::ChangeVolume(float _volume)
 {
-	
 	m_fVolume += _volume;
-
-
 
 	return m_fVolume;
 }
-bool SoundManager::LoadVolume(std::string _fileName)
+bool SoundManager3D::LoadVolume(std::string _fileName)
 {
 	std::fstream fin;
 	
@@ -47,67 +50,68 @@ bool SoundManager::LoadVolume(std::string _fileName)
 
 	}
 
+	return true;
+}
+
+float SoundManager3D::SetSoundPosition(float _x, float _y, float _z)
+{
+
+	m_fPositionX += _x;
+	m_fPositionY += _y;
+	m_fPositionZ += _z;
 
 	return true;
 }
 
-bool SoundManager::Initialize(HWND _hwnd)
+
+bool SoundManager3D::Initialize(HWND _hwnd)
 {
+
 	bool result;
 
 
-	// Init the Direct Sound and the buffers
 	result = InitializeDirectSound(_hwnd);
 	if(result == false)
 	{
 		return false;
 	}
 
-	//Loads the audio file into the secondary buffer.
-	result = LoadWaveFile("sound01.wav", &m_secondaryBuffer);
+	result = LoadWaveFile("sound02.wav", &m_secondaryBuffer1, &m_secondary3DBuffer1);
 	if(result == false)
 	{
 		return false;
 	}
 
-	// Play the wave file now that it has been loaded.
 	result = PlayWaveFile();
-	if(!result)
+	if(result == false)
 	{
 		return false;
 	}
 
-
 	return true;
 }
 
-
-void SoundManager::ShutDown()
+void SoundManager3D::Shutdown()
 {
-	//Release the secondary Buffer
-	ShutdownWaveFile(&m_secondaryBuffer);
+	ShutdownWaveFile(&m_secondaryBuffer1, &m_secondary3DBuffer1);
 
-	//Shutdown Direct Sound API
 	ShutdownDirectSound();
 
-
 	return;
-
 }
 
-bool SoundManager::InitializeDirectSound(HWND _hwnd)
+bool SoundManager3D::InitializeDirectSound(HWND _hwnd)
 {
 	HRESULT result;
 	DSBUFFERDESC bufferDesc;
 	WAVEFORMATEX waveFormat;
 
-	//Initalize the direct sound interface pointer for the defalult sound device.
+		// Initialize the direct sound interface pointer for the default sound device.
 	result = DirectSoundCreate8(NULL, &m_DirectSound, NULL);
 	if(FAILED(result))
 	{
-		return false;		
+		return false;
 	}
-
 
 	// Set the cooperative level to priority so the format of the primary sound buffer can be modified.
 	result = m_DirectSound->SetCooperativeLevel(_hwnd, DSSCL_PRIORITY);
@@ -116,10 +120,9 @@ bool SoundManager::InitializeDirectSound(HWND _hwnd)
 		return false;
 	}
 
-
 	// Setup the primary buffer description.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-	bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME;
+	bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
 	bufferDesc.dwBufferBytes = 0;
 	bufferDesc.dwReserved = 0;
 	bufferDesc.lpwfxFormat = NULL;
@@ -131,7 +134,6 @@ bool SoundManager::InitializeDirectSound(HWND _hwnd)
 	{
 		return false;
 	}
-
 
 	// Setup the format of the primary sound bufffer.
 	// In this case it is a .WAV file recorded at 44,100 samples per second in 16-bit stereo (cd audio format).
@@ -150,20 +152,51 @@ bool SoundManager::InitializeDirectSound(HWND _hwnd)
 		return false;
 	}
 
+	// Obtain a listener interface.
+	result = m_primaryBuffer->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&m_listener);
+	if(FAILED(result))
+	{
+		return false;
+	}
+	
+	// Set the initial position of the listener to be in the middle of the scene.
+	//m_listener->SetPosition(cam->GetCurrentCamera()->GetPosition().x,cam->GetCurrentCamera()->GetPosition().y,cam->GetCurrentCamera()->GetPosition().z, DS3D_IMMEDIATE);
+	m_listener->SetPosition( CameraManager::GetCurrentCamera()->GetInversePosition().x,
+							 CameraManager::GetCurrentCamera()->GetInversePosition().y,  
+							 CameraManager::GetCurrentCamera()->GetInversePosition().z, 
+							 DS3D_IMMEDIATE);
+
+	//m_listener->GetPosition();
 	return true;
+}
+
+void SoundManager3D::UpdateListener()
+{
+	m_listener->SetPosition( CameraManager::GetCurrentCamera()->GetInversePosition().x,
+							 CameraManager::GetCurrentCamera()->GetInversePosition().y,  
+							 CameraManager::GetCurrentCamera()->GetInversePosition().z, 
+							 DS3D_IMMEDIATE);
 
 }
 
-void SoundManager::ShutdownDirectSound()
+void SoundManager3D::ShutdownDirectSound()
 {
-	// Release the primary buffer pointer
+
+	// Release the listener interface.
+	if(m_listener)
+	{
+		m_listener->Release();
+		m_listener = 0;
+	}
+
+	// Release the primary sound buffer pointer.
 	if(m_primaryBuffer)
 	{
 		m_primaryBuffer->Release();
 		m_primaryBuffer = 0;
 	}
 
-	//Release the direct sound interface pointer
+	// Release the direct sound interface pointer.
 	if(m_DirectSound)
 	{
 		m_DirectSound->Release();
@@ -174,7 +207,7 @@ void SoundManager::ShutdownDirectSound()
 }
 
 
-bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBuffer)
+bool SoundManager3D::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _buffer, IDirectSound3DBuffer8** _buffer3D)
 {
 	int error;
 	FILE* filePtr;
@@ -185,40 +218,38 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 	HRESULT result;
 	IDirectSoundBuffer* tempBuffer;
 	unsigned char* waveData;
-	unsigned char *bufferPtr;
+	unsigned char* bufferPtr;
 	unsigned long bufferSize;
 
-	// Open the wave file in binary.
 	error = fopen_s(&filePtr, _fileName, "rb");
 	if(error != 0)
-	{
+	{ 
 		return false;
 	}
 
-	// Read in the wave file header.
 	count = fread(&waveFileHeader, sizeof(waveFileHeader), 1, filePtr);
 	if(count != 1)
 	{
 		return false;
 	}
 
-	// Check that the chunk ID is the RIFF format.
+		// Check that the chunk ID is the RIFF format.
 	if((waveFileHeader.chunkId[0] != 'R') || (waveFileHeader.chunkId[1] != 'I') || 
-		(waveFileHeader.chunkId[2] != 'F') || (waveFileHeader.chunkId[3] != 'F'))
+	   (waveFileHeader.chunkId[2] != 'F') || (waveFileHeader.chunkId[3] != 'F'))
 	{
 		return false;
 	}
 
 	// Check that the file format is the WAVE format.
 	if((waveFileHeader.format[0] != 'W') || (waveFileHeader.format[1] != 'A') ||
-		(waveFileHeader.format[2] != 'V') || (waveFileHeader.format[3] != 'E'))
+	   (waveFileHeader.format[2] != 'V') || (waveFileHeader.format[3] != 'E'))
 	{
 		return false;
 	}
 
 	// Check that the sub chunk ID is the fmt format.
 	if((waveFileHeader.subChunkId[0] != 'f') || (waveFileHeader.subChunkId[1] != 'm') ||
-		(waveFileHeader.subChunkId[2] != 't') || (waveFileHeader.subChunkId[3] != ' '))
+	   (waveFileHeader.subChunkId[2] != 't') || (waveFileHeader.subChunkId[3] != ' '))
 	{
 		return false;
 	}
@@ -229,8 +260,8 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 		return false;
 	}
 
-	// Check that the wave file was recorded in stereo format.
-	if(waveFileHeader.numChannels != 2)
+	// Check that the wave file was recorded in mono format.
+	if(waveFileHeader.numChannels != 1)
 	{
 		return false;
 	}
@@ -249,7 +280,7 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 
 	// Check for the data chunk header.
 	if((waveFileHeader.dataChunkId[0] != 'd') || (waveFileHeader.dataChunkId[1] != 'a') ||
-		(waveFileHeader.dataChunkId[2] != 't') || (waveFileHeader.dataChunkId[3] != 'a'))
+	   (waveFileHeader.dataChunkId[2] != 't') || (waveFileHeader.dataChunkId[3] != 'a'))
 	{
 		return false;
 	}
@@ -258,14 +289,14 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 	waveFormat.wFormatTag = WAVE_FORMAT_PCM;
 	waveFormat.nSamplesPerSec = 44100;
 	waveFormat.wBitsPerSample = 16;
-	waveFormat.nChannels = 2;
+	waveFormat.nChannels = 1;
 	waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
 	waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
 	waveFormat.cbSize = 0;
 
 	// Set the buffer description of the secondary sound buffer that the wave file will be loaded onto.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
 	bufferDesc.dwBufferBytes = waveFileHeader.dataSize;
 	bufferDesc.dwReserved = 0;
 	bufferDesc.lpwfxFormat = &waveFormat;
@@ -279,7 +310,7 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 	}
 
 	// Test the buffer format against the direct sound 8 interface and create the secondary buffer.
-	result = tempBuffer->QueryInterface(IID_IDirectSoundBuffer8, (void**)&*_directBuffer);
+	result = tempBuffer->QueryInterface(IID_IDirectSoundBuffer8, (void**)&*_buffer);
 	if(FAILED(result))
 	{
 		return false;
@@ -314,7 +345,7 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 	}
 
 	// Lock the secondary buffer to write wave data into it.
-	result = (m_secondaryBuffer)->Lock(0, waveFileHeader.dataSize, (void**)&bufferPtr, (DWORD*)&bufferSize, NULL, 0, 0);
+	result = (*_buffer)->Lock(0, waveFileHeader.dataSize, (void**)&bufferPtr, (DWORD*)&bufferSize, NULL, 0, 0);
 	if(FAILED(result))
 	{
 		return false;
@@ -324,49 +355,68 @@ bool SoundManager::LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBu
 	memcpy(bufferPtr, waveData, waveFileHeader.dataSize);
 
 	// Unlock the secondary buffer after the data has been written to it.
-	result = (m_secondaryBuffer)->Unlock((void*)bufferPtr, bufferSize, NULL, 0);
+	result = (*_buffer)->Unlock((void*)bufferPtr, bufferSize, NULL, 0);
+	if(FAILED(result))
+	{
+		return false;
+	}
+	
+	// Release the wave data since it was copied into the secondary buffer.
+	delete [] waveData;
+	waveData = 0;
+
+	// Get the 3D interface to the secondary sound buffer.
+	result = (*_buffer)->QueryInterface(IID_IDirectSound3DBuffer8, (void**)&*_buffer3D);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// Release the wave data since it was copied into the secondary buffer.
-	delete [] waveData;
-	waveData = 0;
-
 	return true;
+
 }
 
-void SoundManager::ShutdownWaveFile(IDirectSoundBuffer8** _directBuffer)
+void SoundManager3D::ShutdownWaveFile(IDirectSoundBuffer8** _buffer, IDirectSound3DBuffer8** _buffer3D)
 {
-	// Release the secondary sound buffer
-	if(*_directBuffer)
+	if(*_buffer3D)
 	{
-		(*_directBuffer)->Release();
-		*_directBuffer = 0;
+		(*_buffer3D)->Release();
+		*_buffer3D = 0;
+	}
+	if(*_buffer)
+	{
+		(*_buffer)->Release();
+		*_buffer = 0;
 	}
 
 	return;
 }
 
-bool SoundManager::PlayWaveFile()
+bool SoundManager3D::PlayWaveFile()
 {
 	HRESULT result;
+	float xPos, yPos, zPos;
 
-	//Set position at the beginning of the sound buffer;.
-	result = m_secondaryBuffer->SetCurrentPosition(0);
+	//xPos = -2.0f;
+	//yPos = 0.0f;
+	//zPos = 0.0f;
+
+
+	result = m_secondaryBuffer1->SetCurrentPosition(0);
 	if(FAILED(result))
 	{
 		return false;
 	}
-	// Set the volume
-	result = m_secondaryBuffer->SetVolume(m_fVolume);
+
+	result = m_secondaryBuffer1->SetVolume(m_fVolume);
 	if(FAILED(result))
 	{
 		return false;
 	}
-	// Play the contents of the secondary sound buffer.
-	result = m_secondaryBuffer->Play(0, 0, 0);
+
+	m_secondary3DBuffer1->SetPosition(m_fPositionX,m_fPositionY,m_fPositionZ, DS3D_IMMEDIATE);
+
+	result = m_secondaryBuffer1->Play(0,0,0);
 	if(FAILED(result))
 	{
 		return false;

@@ -12,6 +12,13 @@
 #include <dsound.h>
 #include <stdio.h>
 
+#include <iostream>
+#include <fstream>
+
+
+
+
+
 
 class SoundManager
 {
@@ -41,7 +48,7 @@ private:
 
 	bool LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBuffer);
 	void ShutdownWaveFile(IDirectSoundBuffer8** _directBuffer);
-	bool PlayWaveFile();
+	
 	bool InitializeDirectSound(HWND _hwnd);
 	void ShutdownDirectSound();
 // Data members
@@ -49,20 +56,22 @@ private:
 	IDirectSoundBuffer * m_primaryBuffer;
 	IDirectSoundBuffer8* m_secondaryBuffer;
 
+	
 
 public:
 
 	SoundManager();
 	~SoundManager();
 	SoundManager(const SoundManager&);
-
 	bool Initialize(HWND _hwnd);
 	void ShutDown();
 
+	float ChangeVolume(float _volume);
+	bool LoadVolume(std::string _fileName);
 
+	float	m_fVolume;
 
-
-
+	bool PlayWaveFile();
 
 };
 
