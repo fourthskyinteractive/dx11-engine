@@ -360,7 +360,7 @@ bool SoundManager::PlayWaveFile()
 		return false;
 	}
 	// Set the volume
-	result = m_secondaryBuffer->SetVolume(m_fVolume);
+	result = m_secondaryBuffer->SetVolume((long)m_fVolume);
 	if(FAILED(result))
 	{
 		return false;

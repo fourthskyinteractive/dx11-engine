@@ -118,6 +118,9 @@
     <ClCompile Include="Src\Renderer\TextureManager.cpp">
       <Filter>Renderer\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Sound\SoundManager3D.cpp">
+      <Filter>Sound\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h">
@@ -169,9 +172,6 @@
       <Filter>Game Objects\Component System\Render Components\Header</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\BaseObject.h">
-      <Filter>Game Objects\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game Objects\FBXModel.h">
       <Filter>Game Objects\Header</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game Objects\ObjectManager.h">
@@ -230,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="Src\Renderer\ShaderManager.h">
       <Filter>Renderer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Sound\SoundManager3D.h">
+      <Filter>Sound\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\FBXModel.h">
+      <Filter>Game Objects\Component System\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,9 @@
 #ifndef SOUNDMANAGER_H_
 #define SOUNDMANAGER_H_
 
-
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "winmm.lib" )
-
 
 #include <Windows.h>
 #include <mmsystem.h>
@@ -14,11 +12,6 @@
 
 #include <iostream>
 #include <fstream>
-
-
-
-
-
 
 class SoundManager
 {
@@ -41,9 +34,6 @@ private:
 		unsigned long dataSize;
 	};
 
-
-
-
 // Functions
 
 	bool LoadWaveFile(char* _fileName, IDirectSoundBuffer8** _directBuffer);
@@ -54,9 +44,7 @@ private:
 // Data members
 	IDirectSound8*		   m_DirectSound;
 	IDirectSoundBuffer * m_primaryBuffer;
-	IDirectSoundBuffer8* m_secondaryBuffer;
-
-	
+	IDirectSoundBuffer8* m_secondaryBuffer;	
 
 public:
 

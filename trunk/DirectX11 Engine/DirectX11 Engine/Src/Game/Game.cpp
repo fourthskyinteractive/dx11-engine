@@ -474,8 +474,8 @@ void Game::InitializeObjects()
 	XMMATRIX worldMatM = XMMatrixTranslation(0.0f, -50.0f, 0.0f);
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
-	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/BlueMinion.fbx", worldMat);
+	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
 
 // 	//terrain = new Terrain();

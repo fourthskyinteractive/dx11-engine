@@ -110,6 +110,7 @@
     <ClCompile Include="Src\Renderer\ShaderManager.cpp" />
     <ClCompile Include="Src\Renderer\TextureManager.cpp" />
     <ClCompile Include="Src\Sound\SoundManager.cpp" />
+    <ClCompile Include="Src\Sound\SoundManager3D.cpp" />
     <ClCompile Include="Src\States\GamePlayState.cpp" />
     <ClCompile Include="Src\States\MainMenuState.cpp" />
     <ClCompile Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Src\Renderer\ShaderManager.h" />
     <ClInclude Include="Src\Renderer\TextureManager.h" />
     <ClInclude Include="Src\Sound\SoundManager.h" />
+    <ClInclude Include="Src\Sound\SoundManager3D.h" />
     <ClInclude Include="Src\Utility\DDS Texture Loader\DDSTextureLoader.h" />
     <ClInclude Include="Src\Utility\Geometry Makers\GeometryMaker.h" />
     <ClInclude Include="Src\Utility\Math\MathHelper.h" />
