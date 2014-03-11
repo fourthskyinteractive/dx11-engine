@@ -13,6 +13,14 @@ struct GameObject
 	GameObject() : object(NULL), renderOn(true){};
 };
 
+struct BlendingInformation
+{
+	XMFLOAT2 joint1;
+	XMFLOAT2 joint2;
+	XMFLOAT2 joint3;
+	XMFLOAT2 joint4;
+};
+
 class ObjectManager
 {
 public:

@@ -17,7 +17,7 @@
 
 //SOUND MANAGERS
 #include "../Sound/SoundManager.h"
-#include "../../SoundManager3D.h"
+#include "../Sound/SoundManager3D.h"
 
 // Game State
 #include "../States/IGameState.h"

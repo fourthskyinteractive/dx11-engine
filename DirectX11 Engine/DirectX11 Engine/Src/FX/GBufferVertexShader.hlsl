@@ -17,9 +17,11 @@ cbuffer projectionMatrixCBuffer : register(cb2)
 
 struct VertexIn
 {
-	float4 pos		: POSITION;
-	float3 normal	: NORMAL;
-	float2 texCoord	: TEXCOORD;
+	float4 pos				: POSITION;
+	float3 normal			: NORMAL;
+	float2 texCoord			: TEXCOORD;
+	float4 jointIndex		: TEXCOORD1;
+	float4 jointWeight		: TEXCOORD2;
 };
 
 struct VertexOut
