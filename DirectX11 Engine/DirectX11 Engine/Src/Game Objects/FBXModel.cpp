@@ -324,7 +324,7 @@ void MaterialData::SetDefaultMaterial()
 }
 
 
-MeshData::MeshData() : hasNormal(false), hasUV(false), saveByControlPoint(true), isAnimated(true)
+MeshData::MeshData() : hasNormal(false), hasUV(false), saveByControlPoint(true), isAnimated(true), currentFrame(0), currentFrameMemPointer(NULL), numBones(0), animationLength(0)
 {
 	for(int i = 0; i < VBO_COUNT; ++i)
 	{
@@ -753,6 +753,7 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 		}
 
 		unsigned int numOfClusters = currentSkin->GetClusterCount();
+		numBones = numOfClusters;
 		for(unsigned int clusterIndex = 0; clusterIndex < numOfClusters; ++ clusterIndex)
 		{
 			FbxCluster* currCluster = currentSkin->GetCluster(clusterIndex);
@@ -788,19 +789,19 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 			FbxTakeInfo* takeInfo = scene->GetTakeInfo(animStackName);
 			FbxTime start = takeInfo->mLocalTimeSpan.GetStart();
 			FbxTime end = takeInfo->mLocalTimeSpan.GetStop();
-			animationLength = end.GetFrameCount(FbxTime::eFrames24) - start.GetFrameCount(FbxTime::eFrames24) + 1;
-			Keyframe** currAnim = &skeleton.joints[currJointIndex].animation;
-
+			animationLength = (unsigned int)end.GetFrameCount(FbxTime::eFrames24) - (unsigned int)start.GetFrameCount(FbxTime::eFrames24) + 1;
+			skeleton.joints[currJointIndex].animation.reserve((int)start.GetFrameCount(FbxTime::eFrames24));
 			for(FbxLongLong i = start.GetFrameCount(FbxTime::eFrames24); i <= end.GetFrameCount(FbxTime::eFrames24); ++i)
 			{
 				FbxTime currTime;
 				currTime.SetFrame(i, FbxTime::eFrames24);
-				*currAnim = new Keyframe();
-				(*currAnim)->frameNumber = i;
+				Keyframe currentFrame;
+				currentFrame.frameNumber = i;
 				FbxAMatrix currentTransformOffset = _inNode->EvaluateGlobalTransform(currTime) * geometryTransform;
-				(*currAnim)->globalTransform = currentTransformOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime);
-				currAnim = &((*currAnim)->next);
+				currentFrame.globalTransform = currentTransformOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime);
+				skeleton.joints[currJointIndex].animation.push_back(currentFrame);
 			}
+
 		}
 	}
 
@@ -814,4 +815,79 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 			controlPoints[i]->blendingInfo.push_back(currBlendingIndexWeightPair);
 		}
 	}
+
+	CompressAnimationData();
+}
+
+void MeshData::CompressAnimationData()
+{
+	animationData.animationFrames = new FlattenedBoneHeirarchy[animationLength];
+
+	for(unsigned int frameIndex = 0; frameIndex < animationLength; ++frameIndex)
+	{
+		animationData.animationFrames[frameIndex].bones = new XMFLOAT4X4[numBones];
+		for(unsigned int jointIndex = 0; jointIndex < numBones; ++jointIndex)
+		{
+			int parentIndex = jointIndex;
+
+			FbxAMatrix currentMatrix;
+			currentMatrix.SetIdentity();
+			while(parentIndex != -1)
+			{
+				currentMatrix = currentMatrix * skeleton.joints[parentIndex].animation[frameIndex].globalTransform;
+				parentIndex = skeleton.joints[parentIndex].parentIndex;
+			}
+
+			XMFLOAT4X4 tempMatrix;
+			tempMatrix._11 = (float)currentMatrix.mData[0][0];
+			tempMatrix._12 = (float)currentMatrix.mData[0][1];
+			tempMatrix._13 = (float)currentMatrix.mData[0][2];
+			tempMatrix._14 = (float)currentMatrix.mData[0][3];
+			tempMatrix._21 = (float)currentMatrix.mData[1][0];
+			tempMatrix._22 = (float)currentMatrix.mData[1][1];
+			tempMatrix._23 = (float)currentMatrix.mData[1][2];
+			tempMatrix._24 = (float)currentMatrix.mData[1][3];
+			tempMatrix._31 = (float)currentMatrix.mData[2][0];
+			tempMatrix._32 = (float)currentMatrix.mData[2][1];
+			tempMatrix._33 = (float)currentMatrix.mData[2][2];
+			tempMatrix._34 = (float)currentMatrix.mData[2][3];
+			tempMatrix._41 = (float)currentMatrix.mData[3][0];
+			tempMatrix._42 = (float)currentMatrix.mData[3][1];
+			tempMatrix._43 = (float)currentMatrix.mData[3][2];
+			tempMatrix._44 = (float)currentMatrix.mData[3][3];
+			memcpy(&animationData.animationFrames[frameIndex].bones[jointIndex], &tempMatrix, sizeof(XMFLOAT4X4));
+ 		}
+	}
+
+	animationData.inverseBindPose = new XMFLOAT4X4[numBones];
+	for(unsigned int i = 0; i < numBones; ++i)
+	{
+		XMFLOAT4X4 tempMatrix;
+		tempMatrix._11 = (float)skeleton.joints[i].globalBindposeInverseMatrix[0][0];
+		tempMatrix._12 = (float)skeleton.joints[i].globalBindposeInverseMatrix[0][1];
+		tempMatrix._13 = (float)skeleton.joints[i].globalBindposeInverseMatrix[0][2];
+		tempMatrix._14 = (float)skeleton.joints[i].globalBindposeInverseMatrix[0][3];
+		tempMatrix._21 = (float)skeleton.joints[i].globalBindposeInverseMatrix[1][0];
+		tempMatrix._22 = (float)skeleton.joints[i].globalBindposeInverseMatrix[1][1];
+		tempMatrix._23 = (float)skeleton.joints[i].globalBindposeInverseMatrix[1][2];
+		tempMatrix._24 = (float)skeleton.joints[i].globalBindposeInverseMatrix[1][3];
+		tempMatrix._31 = (float)skeleton.joints[i].globalBindposeInverseMatrix[2][0];
+		tempMatrix._32 = (float)skeleton.joints[i].globalBindposeInverseMatrix[2][1];
+		tempMatrix._33 = (float)skeleton.joints[i].globalBindposeInverseMatrix[2][2];
+		tempMatrix._34 = (float)skeleton.joints[i].globalBindposeInverseMatrix[2][3];
+		tempMatrix._41 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][0];
+		tempMatrix._42 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][1];
+		tempMatrix._43 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][2];
+		tempMatrix._44 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][3];
+
+		memcpy(&animationData.inverseBindPose[i], &tempMatrix, sizeof(XMFLOAT4X4));
+	}
+
+	ChangeAnimationFrame(0);
+}
+
+void MeshData::ChangeAnimationFrame(unsigned int _frame)
+{
+	currentFrame = _frame;
+	currentFrameMemPointer = animationData.animationFrames[_frame].bones;
 }

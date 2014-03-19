@@ -103,6 +103,8 @@ public:
 	void AssociateMaterialToMesh(FbxNode* _inNode);
 	void ReadUV(FbxMesh* _inMesh, int _inCtrlPointIndex, int _inTextureUVIndex, int _inUVLayer, XMFLOAT2& _outUV);
 	void ReadNormal(FbxMesh* _inMesh, int _inCtrlPointIndex, int _inVertexCounter, XMFLOAT3& _outNormal);
+	void CompressAnimationData();
+	void ChangeAnimationFrame(unsigned int _frame);
 
 //private:
 	enum
@@ -112,6 +114,21 @@ public:
 		UV_VBO,
 		INDEX_VBO,
 		VBO_COUNT,
+	};
+
+	struct FlattenedBoneHeirarchy
+	{
+		XMFLOAT4X4* bones;
+
+		FlattenedBoneHeirarchy() : bones(NULL){}
+	};
+
+	struct AnimationDataForConstantBuffer
+	{
+		FlattenedBoneHeirarchy* animationFrames;
+		XMFLOAT4X4* inverseBindPose;
+
+		AnimationDataForConstantBuffer() : animationFrames(NULL){}
 	};
 
 	struct BlendingIndexWeightPair
@@ -137,9 +154,6 @@ public:
 	{
 		long long frameNumber;
 		FbxAMatrix globalTransform;
-		Keyframe* next;
-
-		Keyframe() : next(nullptr){}
 	};
 
 	struct Joint
@@ -148,9 +162,9 @@ public:
 		int parentIndex;
 		FbxAMatrix globalBindposeInverseMatrix;
 		FbxNode* node;
-		Keyframe* animation;
+		vector<Keyframe> animation;
 
-		Joint() : node(nullptr), animation(nullptr)
+		Joint() : node(nullptr)
 		{
 			globalBindposeInverseMatrix.SetIdentity();
 			parentIndex = -1;
@@ -158,12 +172,7 @@ public:
 
 		~Joint()
 		{
-			while(animation)
-			{
-				Keyframe* temp = animation->next;
-				delete animation;
-				animation = temp;
-			}
+			
 		}
 	};
 
@@ -272,8 +281,12 @@ public:
 	vector<Triangle> triangles;
 	Skeleton skeleton;
 	std::vector<PNTIWVertex> vertices;
+	AnimationDataForConstantBuffer animationData;
 
-	FbxLongLong animationLength;
+	unsigned int currentFrame;
+	void* currentFrameMemPointer;
+	unsigned int animationLength;
+	unsigned int numBones;
 	std::string animationName;
 
 	//vector<XMFLOAT3> tangents;

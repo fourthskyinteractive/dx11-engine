@@ -39,11 +39,11 @@ void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONE
 	ZeroMemory(&cData, sizeof(D3D11_SUBRESOURCE_DATA));
 	cData.pSysMem = _data;
 
-	HRESULT hr = D3D11Renderer::d3dDevice->CreateBuffer(&cBufferDesc, NULL, &newConstantComponent->buffer);
+	HRESULT hr = D3D11Renderer::d3dDevice->CreateBuffer(&cBufferDesc, &cData, &newConstantComponent->buffer);
 
 	if(hr != S_OK)
 	{
-		MessageBox(NULL, "Constant Buffer Creation Failed : ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)", "Constant Buffer Component Error", 0);
+		//MessageBox(NULL, "Constant Buffer Creation Failed : ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)", "Constant Buffer Component Error", 0);
 	}
 
 	constantBufferComponents.push_back(newConstantComponent);
