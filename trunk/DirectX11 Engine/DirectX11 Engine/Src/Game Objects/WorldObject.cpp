@@ -33,29 +33,32 @@ void WorldObject::UpdateShaderConstantBuffers()
 		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
 		//Gets the Constant Buffer
 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
-
-		//Map and copy over the data
-		hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
-
-		if(hr == S_OK)
+		if(cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress)
 		{
-			memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress, cBufferComponent->GetConstantBufferComponents()[i]->size);
-			
-			//if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
-			//{
-			//	memcpy(mappedSubresource.pData, &GetWorldMatrixF(), cBufferComponent->GetConstantBufferComponents()[i]->size);
-			//}
-			//else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
-			//{
-			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
-			//}
-			//else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
-			//{
-			//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
-			//}
+			//Map and copy over the data
+			hr = D3D11Renderer::d3dImmediateContext->Map(cBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+
+			if(hr == S_OK)
+			{
+				memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress, cBufferComponent->GetConstantBufferComponents()[i]->size);
+
+				//if(bufferTypeAndSlot == WORLD_MATRIX_COMPONENT)
+				//{
+				//	memcpy(mappedSubresource.pData, &GetWorldMatrixF(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+				//}
+				//else if(bufferTypeAndSlot == VIEW_MATRIX_COMPONENT)
+				//{
+				//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+				//}
+				//else// if(bufferTypeAndSlot == PROJECTION_MATRIX_COMPONENT)
+				//{
+				//	memcpy(mappedSubresource.pData, cBufferComponent->GetConstantBufferComponents()[i]->updateFunctionPointer(), cBufferComponent->GetConstantBufferComponents()[i]->size);
+				//}
+			}
+
+			D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
 		}
 
-		D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
 
 		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(i, 1, &cBuffer.p);
 	}
