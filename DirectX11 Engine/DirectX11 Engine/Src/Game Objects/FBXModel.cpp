@@ -813,10 +813,10 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 				FbxVector4 translation = currentFrame.globalTransform.GetT();
 				FbxVector4 rotation = currentFrame.globalTransform.GetR();
 
-//  				translation.Set(translation.mData[0], translation.mData[1], -translation.mData[2]);
-//  				rotation.Set(-rotation.mData[0], -rotation.mData[1], rotation.mData[2]);
-//  				currentFrame.globalTransform.SetT(translation);
-//  				currentFrame.globalTransform.SetR(rotation);
+ 				translation.Set(translation.mData[0], translation.mData[1], -translation.mData[2]);
+ 				rotation.Set(-rotation.mData[0], -rotation.mData[1], rotation.mData[2]);
+ 				currentFrame.globalTransform.SetT(translation);
+ 				currentFrame.globalTransform.SetR(rotation);
 
 				skeleton.joints[currJointIndex].animation.push_back(currentFrame);
 			}
