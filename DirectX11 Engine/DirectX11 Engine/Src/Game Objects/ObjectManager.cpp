@@ -56,6 +56,8 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 		object->object->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[i]));
 	}
 
+	//object->object->AddTexture(L"Res/Textures/GrassDiffuse.dds");
+
 	object->object->AddBaseComponent(RENDER_COMPONENT);
 	object->object->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	object->object->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
@@ -90,22 +92,19 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 
 	if(tempModel->meshData->isAnimated)
 	{			
-		unsigned int currentVertIndex = 0;
-		for(unsigned int i = 0; i < numVerts; i += 4)
+		for(unsigned int i = 0; i < numVerts; i++)
 		{
-			jointIndex[i].x = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[0].blendingIndex;
-			weights[i].x = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[0].blendingWeight;
+			jointIndex[i].x = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[0].blendingIndex;
+			weights[i].x = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[0].blendingWeight;
 
-			jointIndex[i].y = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[1].blendingIndex;
-			weights[i].y = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[1].blendingWeight;
+			jointIndex[i].y = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[1].blendingIndex;
+			weights[i].y = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[1].blendingWeight;
 
-			jointIndex[i].z = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[2].blendingIndex;
-			weights[i].z = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[2].blendingWeight;
+			jointIndex[i].z = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[2].blendingIndex;
+			weights[i].z = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[2].blendingWeight;
 
-			jointIndex[i].w = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[3].blendingIndex;
-			weights[i].w = (float)tempModel->meshData->vertices[currentVertIndex].vertexBlendingInfo[3].blendingWeight;
-
-			currentVertIndex += 1;
+			jointIndex[i].w = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[3].blendingIndex;
+			weights[i].w = (float)tempModel->meshData->vertices[i].vertexBlendingInfo[3].blendingWeight;
 		}
 	}
 
@@ -123,8 +122,8 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 	object->object->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetInvViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetInvViewMatrixP());
 	object->object->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetProjectionMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetProjectionMatrixP());
 	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &animationInformation, sizeof(XMFLOAT4), NULL);
-	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, tempModel->meshData->animationData.inverseBindPose, sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, NULL);
 	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, tempModel->meshData->currentFrameMemPointer, sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, NULL);
+	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, tempModel->meshData->animationData.inverseBindPose, sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, NULL);
 
 	object->object->SetShaders(0, -1, 0, -1);
 	object->object->FinalizeObject();
