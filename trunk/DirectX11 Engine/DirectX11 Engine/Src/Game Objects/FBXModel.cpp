@@ -768,6 +768,14 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 			currCluster->GetTransformLinkMatrix(transformLinkMatrix);
 			globalBindPoseInverseMatrix = transformLinkMatrix.Inverse() * transformMatrix * geometryTransform;
 
+			FbxVector4 translation = globalBindPoseInverseMatrix.GetT();
+			FbxVector4 rotation = globalBindPoseInverseMatrix.GetR();
+
+			translation.Set(translation.mData[0], translation.mData[1], -translation.mData[2]);
+			rotation.Set(-rotation.mData[0], -rotation.mData[1], rotation.mData[2]);
+			globalBindPoseInverseMatrix.SetT(translation);
+			globalBindPoseInverseMatrix.SetR(rotation);
+
 			skeleton.joints[currJointIndex].globalBindposeInverseMatrix = globalBindPoseInverseMatrix;
 			skeleton.joints[currJointIndex].node = currCluster->GetLink();
 
@@ -797,11 +805,21 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 				currTime.SetFrame(i, FbxTime::eFrames24);
 				Keyframe currentFrame;
 				currentFrame.frameNumber = i;
+				FbxAMatrix e = _inNode->EvaluateLocalTransform(currTime);
 				FbxAMatrix currentTransformOffset = _inNode->EvaluateGlobalTransform(currTime) * geometryTransform;
+				FbxAMatrix a = currentTransformOffset.Inverse();
+				FbxAMatrix b = currCluster->GetLink()->EvaluateGlobalTransform(currTime);
 				currentFrame.globalTransform = currentTransformOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime);
+				FbxVector4 translation = currentFrame.globalTransform.GetT();
+				FbxVector4 rotation = currentFrame.globalTransform.GetR();
+
+//  				translation.Set(translation.mData[0], translation.mData[1], -translation.mData[2]);
+//  				rotation.Set(-rotation.mData[0], -rotation.mData[1], rotation.mData[2]);
+//  				currentFrame.globalTransform.SetT(translation);
+//  				currentFrame.globalTransform.SetR(rotation);
+
 				skeleton.joints[currJointIndex].animation.push_back(currentFrame);
 			}
-
 		}
 	}
 
@@ -828,15 +846,17 @@ void MeshData::CompressAnimationData()
 		animationData.animationFrames[frameIndex].bones = new XMFLOAT4X4[numBones];
 		for(unsigned int jointIndex = 0; jointIndex < numBones; ++jointIndex)
 		{
-			int parentIndex = jointIndex;
+// 			int parentIndex = jointIndex;
+// 
+// 			FbxAMatrix currentMatrix;
+// 			currentMatrix.SetIdentity();
+// 			while(parentIndex != -1)
+// 			{
+// 				currentMatrix = currentMatrix * skeleton.joints[parentIndex].animation[frameIndex].globalTransform;
+// 				parentIndex = skeleton.joints[parentIndex].parentIndex;
+// 			}
 
-			FbxAMatrix currentMatrix;
-			currentMatrix.SetIdentity();
-			while(parentIndex != -1)
-			{
-				currentMatrix = currentMatrix * skeleton.joints[parentIndex].animation[frameIndex].globalTransform;
-				parentIndex = skeleton.joints[parentIndex].parentIndex;
-			}
+			FbxAMatrix currentMatrix = skeleton.joints[jointIndex].animation[frameIndex].globalTransform;
 
 			XMFLOAT4X4 tempMatrix;
 			tempMatrix._11 = (float)currentMatrix.mData[0][0];
