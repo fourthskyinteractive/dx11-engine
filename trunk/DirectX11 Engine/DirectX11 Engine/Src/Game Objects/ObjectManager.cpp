@@ -56,7 +56,7 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 		object->object->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[i]));
 	}
 
-	//object->object->AddTexture(L"Res/Textures/GrassDiffuse.dds");
+	//object->object->AddTexture(L"Res/Textures/skybreaker_diff.dds");
 
 	object->object->AddBaseComponent(RENDER_COMPONENT);
 	object->object->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
