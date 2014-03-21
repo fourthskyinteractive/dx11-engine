@@ -100,7 +100,7 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	cameraRotation.x = 0;
 	cameraRotation.y = 0;
 
-	XMMATRIX cameraMat = XMMatrixRotationY(XMConvertToRadians(180)) * XMMatrixRotationX(XMConvertToRadians(-45)) * XMMatrixTranslation(0.0f, 100.0f, 200.0f);// * XMMatrixRotationY(XMConvertToRadians(180));// * XMMatrixRotationX(XMConvertToRadians((-45)));
+	XMMATRIX cameraMat = XMMatrixRotationX(XMConvertToRadians(45)) * XMMatrixTranslation(0.0f, 100.0f, -200.0f);// * XMMatrixRotationY(XMConvertToRadians(180));// * XMMatrixRotationX(XMConvertToRadians((-45)));
 	XMFLOAT4X4 viewMat;
 	XMStoreFloat4x4(&viewMat, cameraMat);
 
@@ -475,7 +475,7 @@ void Game::InitializeObjects()
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
 	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/BlueMinion.fbx", worldMat);
-	//ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
+	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
 
 // 	//terrain = new Terrain();
@@ -511,17 +511,17 @@ void* Game::InitializeLights()
 
 
 	LightManager::SetAmbientLight("Ambient Light", XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), true);
-	//LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
+	LightManager::AddDirectionalLight("Directional Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), true);
 
 	//for(int i = -100; i < 100; i += 20)
 	//{
 		//for(int j = -100; j <= 100; j += 20)
 		//{
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 0.0f), 80, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 50.0f), 80, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, -50.0f), 80, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(50.0f, -45.0f, 0.0f), 80, true);
-			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-50.0f, -45.0f, 0.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 0.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, 50.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, -45.0f, -50.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT3(50.0f, -45.0f, 0.0f), 80, true);
+			LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT3(-50.0f, -45.0f, 0.0f), 80, true);
 			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 100.0f),1000, true);
 			//LightManager::AddPointLight("Point Light", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -100.0f),1000, true);
 // 		}

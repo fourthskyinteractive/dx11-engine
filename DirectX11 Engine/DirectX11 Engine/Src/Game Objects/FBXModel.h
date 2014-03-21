@@ -105,6 +105,8 @@ public:
 	void ReadNormal(FbxMesh* _inMesh, int _inCtrlPointIndex, int _inVertexCounter, XMFLOAT3& _outNormal);
 	void CompressAnimationData();
 	void ChangeAnimationFrame(unsigned int _frame);
+	//void WriteAnimationToStream(std::ostream& inStream);
+	//void WriteMatrix(std::ostream& inStream, FbxMatrix& inMatrix, bool inIsRoot);
 
 //private:
 	enum
@@ -220,17 +222,18 @@ public:
 		{
 			for(unsigned int i = 0; i < vertexBlendingInfo.size() - 1; ++i)
 			{
-				if(i > 1000000)
+				if(i > 100000)
 				{
+					//TEMP FIX FOR SOME WEIRD BEHAVIOR
 					break;
 				}
-				for(unsigned int j = 0; j < vertexBlendingInfo.size(); ++j)
+				for(unsigned int j = 1; j < vertexBlendingInfo.size(); ++j)
 				{
 					if(vertexBlendingInfo[j].blendingWeight < vertexBlendingInfo[i].blendingWeight)
 					{
-						float tempWeight = vertexBlendingInfo[i].blendingWeight;
-						vertexBlendingInfo[i].blendingWeight = vertexBlendingInfo[j].blendingWeight;
-						vertexBlendingInfo[j].blendingWeight = tempWeight;
+						VertexBlendingInfo tempInfo = vertexBlendingInfo[i];
+						vertexBlendingInfo[i] = vertexBlendingInfo[j];
+						vertexBlendingInfo[j] = tempInfo;
 					}
 				}
 			}
