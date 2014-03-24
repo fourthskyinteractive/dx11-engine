@@ -21,9 +21,11 @@ public:
 	XMFLOAT4X4 GetWorldMatrixF(){return worldMatrix;}
 	void* GetWorldMatrixP(){return &worldMatrix;}
 
+	void AddAnimation(AnimationInformation* _animationInformation);
+
 private:
 	XMFLOAT4X4 worldMatrix;
-
+	
 };
 
 #endif

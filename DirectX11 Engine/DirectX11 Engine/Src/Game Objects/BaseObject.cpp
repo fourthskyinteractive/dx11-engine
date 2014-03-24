@@ -43,10 +43,20 @@ void BaseObject::AddBaseComponent(BASE_COMPONENTS _componentType)
 	switch (_componentType)
 	{
 	case RENDER_COMPONENT:
-		componentToAdd = new RenderComponent();
-		baseComponent->AddBaseComponent(RENDER_COMPONENT, componentToAdd);
-		renderComponent = (RenderComponent*)componentToAdd;
-		break;
+		{
+			componentToAdd = new RenderComponent();
+			baseComponent->AddBaseComponent(RENDER_COMPONENT, componentToAdd);
+			renderComponent = (RenderComponent*)componentToAdd;
+			break;
+		}
+	case GAMEOBJECT_COMPONENT:
+		{
+			componentToAdd = new GameObjectComponent();
+			baseComponent->AddBaseComponent(GAMEOBJECT_COMPONENT, componentToAdd);
+			gameObjectComponent = (GameObjectComponent*)componentToAdd;
+			break;
+		}
+
 	default:
 		break;
 	}
@@ -271,6 +281,31 @@ void BaseObject::AddComputeShaderBuffer(CComPtr<ID3D11Buffer> _buffer, unsigned 
 // 
 // }
 
+void BaseObject::AddGameObjectComponent(GAMEOBJECT_COMPONENTS _componentType)
+{
+	GameObjectComponent* componentToAdd;
+	GameObjectComponent* gameObjectComponent;
+
+	if(!(baseComponent->GetBaseComponentFlag() & (1 << GAMEOBJECT_COMPONENT)))
+	{
+		MessageBox(NULL, "There is not a Game Object Component in this object! : AddGameObjectComponent(GAMEOBJECT_COMPONENTS _componentType)", "Component System Error", 0);
+		return;
+	}
+
+	gameObjectComponent = GetGameObjectComponent();
+
+	switch (_componentType)
+	{
+	case ANINMATION_GAMEOBJECT_COMPONENT:
+		componentToAdd = new AnimationComponent();
+		gameObjectComponent->AddGameObjectComponent(_componentType, componentToAdd);
+		animationComponent = (AnimationComponent*)componentToAdd;
+		break;
+	default:
+		break;
+	}
+}
+
 void BaseObject::AddTexture(WCHAR* _filePath)
 {
 	textureIndices.push_back(TextureManager::AddTexture(_filePath));
@@ -348,6 +383,39 @@ ConstantBufferComponent* BaseObject::GetConstantBufferComponent()
 		return NULL;
 	}
 }
+
+GameObjectComponent* BaseObject::GetGameObjectComponent()
+{
+	if(gameObjectComponent)
+	{
+		return gameObjectComponent;
+	}
+	else
+	{
+		MessageBox(NULL, "There is not a Game Object Component in this object! : BaseObject::GetGameObjectComponent()", "Component System Error", 0);
+		return NULL;
+	}
+}
+
+AnimationComponent* BaseObject::GetAnimationComponent()
+{
+	if(gameObjectComponent)
+	{
+		if(animationComponent)
+			return animationComponent;
+		else
+		{
+			MessageBox(NULL, "There is not a Animation Component in this object! : BaseObject::GetAnimationComponent()", "Component System Error", 0);
+			return NULL;
+		}
+	}
+	else
+	{
+		MessageBox(NULL, "There is not a Game Object Component in this object! : BaseObject::GetAnimationComponent()", "Component System Error", 0);
+		return NULL;
+	}
+}
+
 void BaseObject::LoadModel(char* _filePath, ModelData& _modelData)
 {
 	//FBXLoader::LoadFBX(_filePath, _modelData);

@@ -91,9 +91,11 @@
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Camera\CameraManager.cpp" />
     <ClCompile Include="Src\Game Objects\BaseObject.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\AnimationComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\BaseComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\Component.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\ConstantBufferComponent.cpp" />
+    <ClCompile Include="Src\Game Objects\Component System\GameObjectComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\IndexBufferComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\RenderComponent.cpp" />
     <ClCompile Include="Src\Game Objects\Component System\VertexBufferComponent.cpp" />
@@ -128,11 +130,13 @@
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraManager.h" />
     <ClInclude Include="Src\Game Objects\BaseObject.h" />
+    <ClInclude Include="Src\Game Objects\Component System\AnimationComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\BaseComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\Component.h" />
     <ClInclude Include="Src\Game Objects\Component System\ComponentSystemDefinitions.h" />
     <ClInclude Include="Src\Game Objects\Component System\ConstantBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\ConstantBufferUpdateFunctions.h" />
+    <ClInclude Include="Src\Game Objects\Component System\GameObjectComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\IndexBufferComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\RenderComponent.h" />
     <ClInclude Include="Src\Game Objects\Component System\VertexBufferComponent.h" />

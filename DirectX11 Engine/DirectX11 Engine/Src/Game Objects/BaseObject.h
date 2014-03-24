@@ -7,6 +7,8 @@
 #include "../Game Objects/Component System/VertexBufferComponent.h"
 #include "../Game Objects/Component System/IndexBufferComponent.h"
 #include "../Game Objects/Component System/ConstantBufferComponent.h"
+#include "../Game Objects/Component System/GameObjectComponent.h"
+#include "../Game Objects/Component System/AnimationComponent.h"
 
 #include "../Game/Definitions.h"
 #include <atlbase.h>
@@ -38,6 +40,8 @@ public:
 // 	void AddComputeShaderBuffer(CComPtr<ID3D11ShaderResourceView> _srv, unsigned int _stride = 0, unsigned int _totalSize = 0);
 // 	void AddComputeShaderBuffer(CComPtr<ID3D11UnorderedAccessView> _uav, unsigned int _stride = 0, unsigned int _totalSize = 0);
 
+	void AddGameObjectComponent(GAMEOBJECT_COMPONENTS _componentType);
+
 	void AddTexture(WCHAR* _filePath);
 	void AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView);
 
@@ -51,6 +55,8 @@ public:
 
 	virtual void Destroy();
 
+	GameObjectComponent* GetGameObjectComponent();
+	AnimationComponent* GetAnimationComponent();
 	RenderComponent* GetRenderComponent();
 	VertexBufferComponent* GetVertexBufferComponent();
 	IndexBufferComponent* GetIndexBufferComponent();
@@ -85,6 +91,9 @@ private:
 	VertexBufferComponent* vertexComponent;
 	IndexBufferComponent* indexComponent;
 	ConstantBufferComponent* constantComponent;
+
+	GameObjectComponent* gameObjectComponent;
+	AnimationComponent* animationComponent;
 
 	bool renderable;
 	bool useComputeShader;

@@ -16,6 +16,13 @@ WorldObject::~WorldObject()
 
 }
 
+void WorldObject::AddAnimation(AnimationInformation* _animationInformation)
+{
+	AnimationComponent* animComponent = BaseObject::GetAnimationComponent();
+
+	animComponent->AddAnimation(_animationInformation);
+}
+
 void WorldObject::UpdateShaderConstantBuffers()
 {
 	BaseObject::UpdateShaderConstantBuffers();
@@ -33,6 +40,7 @@ void WorldObject::UpdateShaderConstantBuffers()
 		ZeroMemory(&mappedSubresource, sizeof(mappedSubresource));
 		//Gets the Constant Buffer
 		cBuffer = cBufferComponent->GetConstantBufferComponents()[i]->buffer;
+		void* memoryPointer = cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress;
 		if(cBufferComponent->GetConstantBufferComponents()[i]->memoryAddress)
 		{
 			//Map and copy over the data
@@ -202,6 +210,7 @@ void WorldObject::Update(float _dt)
 	if(!IsRenderable())
 		return;
 
+	GetAnimationComponent()->Update(_dt);
 }
 
 void WorldObject::Destroy()

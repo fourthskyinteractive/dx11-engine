@@ -56,8 +56,6 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 		object->object->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[i]));
 	}
 
-	//object->object->AddTexture(L"Res/Textures/skybreaker_diff.dds");
-
 	object->object->AddBaseComponent(RENDER_COMPONENT);
 	object->object->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	object->object->AddRenderComponent(INDEX_BUFFER_RENDER_COMPONENT);
@@ -110,20 +108,40 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 
 #pragma endregion
 
-	XMFLOAT4 animationInformation = XMFLOAT4((float)tempModel->meshData->isAnimated, (float)tempModel->meshData->numBones, (float)tempModel->meshData->animationLength, 0.0f);
+	if(tempModel->meshData->isAnimated)
+	{
+		object->object->AddBaseComponent(GAMEOBJECT_COMPONENT);
+		object->object->AddGameObjectComponent(ANINMATION_GAMEOBJECT_COMPONENT);
+		((WorldObject*)object->object)->AddAnimation(tempModel->meshData->animationData);
+		((WorldObject*)object->object)->GetAnimationComponent()->ChangeAnimation(ANIMATION_IDLE);
+	}
+
+	XMFLOAT4 animationData = XMFLOAT4((float)tempModel->meshData->isAnimated, (float)tempModel->meshData->numBones, (float)tempModel->meshData->animationLength, 0.0f);
 	object->object->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &positions[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * numVerts);
 	object->object->AddVertexBufferComponent(VERTEX_NORMAL_COMPONENT, &normals[0], sizeof(XMFLOAT3), sizeof(XMFLOAT3) * numVerts);
 	object->object->AddVertexBufferComponent(VERTEX_TEXCOORD_COMPONENT, &UVs[0], sizeof(XMFLOAT2), sizeof(XMFLOAT2) * numVerts);
-	object->object->AddVertexBufferComponent(VERTEX_ANIMATIONBLEND_COMPONENT, &jointIndex[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * numVerts);
-	object->object->AddVertexBufferComponent(VERTEX_ANIMATIONBLEND_COMPONENT, &weights[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * numVerts);
+	if(tempModel->meshData->isAnimated)
+	{
+		object->object->AddVertexBufferComponent(VERTEX_ANIMATIONBLEND_COMPONENT, &jointIndex[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * numVerts);
+		object->object->AddVertexBufferComponent(VERTEX_ANIMATIONBLEND_COMPONENT, &weights[0], sizeof(XMFLOAT4), sizeof(XMFLOAT4) * numVerts);
+	}	
 	object->object->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
 	((WorldObject*)object->object)->SetWorldMatrix(_worldMatrix);
 	object->object->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, ((WorldObject*)object->object)->GetWorldMatrixP(), sizeof(XMFLOAT4X4), ((WorldObject*)object->object)->GetWorldMatrixP());
 	object->object->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetInvViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetInvViewMatrixP());
 	object->object->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetProjectionMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetProjectionMatrixP());
-	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &animationInformation, sizeof(XMFLOAT4), NULL);
-	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, tempModel->meshData->currentFrameMemPointer, sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, NULL);
-	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, tempModel->meshData->animationData.inverseBindPose, sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, NULL);
+	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &animationData, sizeof(XMFLOAT4), NULL);
+
+	if(tempModel->meshData->isAnimated)
+	{
+		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer());
+		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentAnimationIBPMemoryPointer());
+	}
+	else
+	{
+		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, NULL, 0, NULL);
+		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, NULL, 0, NULL);
+	}
 
 	object->object->SetShaders(0, -1, 0, -1);
 	object->object->FinalizeObject();
@@ -136,11 +154,17 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 	{
 		dynamicObjects.push_back(object);
 	}
+
+	tempModel->Destroy();
 }
 
 void ObjectManager::UpdateObjects(float _dt)
 {
 	//CALL THE OBJECTS PHYSICAL COMPONENT TO UPDATE ITS POSITION
+	for(unsigned int i = 0; i < dynamicObjects.size(); ++i)
+	{
+		dynamicObjects[i]->object->Update(_dt);
+	}
 }
 
 void ObjectManager::RenderObjects()
