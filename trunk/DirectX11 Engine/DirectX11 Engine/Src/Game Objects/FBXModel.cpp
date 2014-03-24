@@ -8,6 +8,8 @@
 #include <queue>
 using namespace std;
 
+#define ANIMATION_FRAMERATE 24
+
 namespace
 {
 	bool LoadTextureFromFile(const FbxString& _fileName, vector<int>& _textureIndicies)
@@ -238,7 +240,13 @@ FBXModel::FBXModel(const char* _fileName)
 
 FBXModel::~FBXModel()
 {
+	Destroy();
+}
 
+void FBXModel::Destroy()
+{
+	//TODO:CLEANUP THE MEMORY HERE
+	//Any memory being used in this FBXModel object needs to be cleaned up here/Except the animation information.  That is being used elsewhere.
 }
 
 bool FBXModel::LoadFile()
@@ -807,10 +815,7 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 				currTime.SetFrame(i, FbxTime::eFrames24);
 				Keyframe currentFrame;
 				currentFrame.frameNumber = i;
-				FbxAMatrix e = _inNode->EvaluateLocalTransform(currTime);
 				FbxAMatrix currentTransformOffset = _inNode->EvaluateGlobalTransform(currTime) * geometryTransform;
-				FbxAMatrix a = currentTransformOffset.Inverse();
-				FbxAMatrix b = currCluster->GetLink()->EvaluateGlobalTransform(currTime);
 				currentFrame.globalTransform = currentTransformOffset.Inverse() * currCluster->GetLink()->EvaluateGlobalTransform(currTime);
 				FbxVector4 translation = currentFrame.globalTransform.GetT();
 				FbxVector4 rotation = currentFrame.globalTransform.GetR();
@@ -840,11 +845,17 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 
 void MeshData::CompressAnimationData()
 {
-	animationData.animationFrames = new FlattenedBoneHeirarchy[animationLength];
+	animationData = new AnimationInformation();
+	animationData->numBones = numBones;
+	animationData->numFrames = animationLength;
+	animationData->animationFrames = new FlattenedSkeleton[animationLength];
+	animationData->totalAnimationTime = ((float)animationData->numFrames) / ((float)ANIMATION_FRAMERATE);
+	animationData->currentAnimationTime = 0.0f;
+	animationData->timePerFrame = animationData->totalAnimationTime / animationData->numFrames;
 
 	for(unsigned int frameIndex = 0; frameIndex < animationLength; ++frameIndex)
 	{
-		animationData.animationFrames[frameIndex].bones = new XMFLOAT4X4[numBones];
+		animationData->animationFrames[frameIndex].bones = new XMFLOAT4X4[numBones];
 		for(unsigned int jointIndex = 0; jointIndex < numBones; ++jointIndex)
 		{
 // 			int parentIndex = jointIndex;
@@ -877,11 +888,11 @@ void MeshData::CompressAnimationData()
 			tempMatrix._43 = (float)currentMatrix.mData[3][2];
 			tempMatrix._44 = (float)currentMatrix.mData[3][3];
 
-			memcpy(&animationData.animationFrames[frameIndex].bones[jointIndex], &tempMatrix, sizeof(XMFLOAT4X4));
+			memcpy(&animationData->animationFrames[frameIndex].bones[jointIndex], &tempMatrix, sizeof(XMFLOAT4X4));
  		}
 	}
 
-	animationData.inverseBindPose = new XMFLOAT4X4[numBones];
+	animationData->inverseBindPose = new XMFLOAT4X4[numBones];
 	for(unsigned int i = 0; i < numBones; ++i)
 	{
 		XMFLOAT4X4 tempMatrix;
@@ -902,8 +913,12 @@ void MeshData::CompressAnimationData()
 		tempMatrix._43 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][2];
 		tempMatrix._44 = (float)skeleton.joints[i].globalBindposeInverseMatrix[3][3];
 
-		memcpy(&animationData.inverseBindPose[i], &tempMatrix, sizeof(XMFLOAT4X4));
+		memcpy(&animationData->inverseBindPose[i], &tempMatrix, sizeof(XMFLOAT4X4));
 	}
+
+	std::string outputMeshName = "E:\\Side Projects\\DX11 Engine\\testanim.txtt";
+	std::ofstream meshOutput(outputMeshName);
+	WriteAnimationToStream(meshOutput);
 
 	ChangeAnimationFrame(0);
 }
@@ -911,71 +926,71 @@ void MeshData::CompressAnimationData()
 void MeshData::ChangeAnimationFrame(unsigned int _frame)
 {
 	currentFrame = _frame;
-	currentFrameMemPointer = animationData.animationFrames[_frame].bones;
+	currentFrameMemPointer = animationData->animationFrames[_frame].bones;
 }
 
-// void MeshData::WriteAnimationToStream(std::ostream& inStream)
-// {
-// 	inStream << "<?xml version='1.0' encoding='UTF-8' ?>" << std::endl;
-// 	inStream << "<itpanim>" << std::endl;
-// 	inStream << "\t<skeleton count='" << skeleton.joints.size() << "'>" << std::endl;
-// 	for (unsigned int i = 0; i < skeleton.joints.size(); ++i)
-// 	{
-// 		inStream << "\t\t<joint id='" << i << "' name='" << skeleton.joints[i].name << "' parent='" << skeleton.joints[i].parentIndex << "'>\n";
-// 		inStream << "\t\t\t";
-// 		FbxMatrix out = skeleton.joints[i].globalBindposeInverseMatrix;
-// 
-// 		WriteMatrix(inStream, out.Transpose(), true);
-// 		inStream << "\t\t</joint>\n";
-// 	}
-// 	inStream << "\t</skeleton>\n";
-// 	inStream << "\t<animations>\n";
-// 	inStream << "\t\t<animation name='" << animationName << "' length='" << animationLength << "'>\n";
-// 	for (unsigned int i = 0; i < skeleton.joints.size(); ++i)
-// 	{
-// 		inStream << "\t\t\t" << "<track id = '" << i << "' name='" << skeleton.joints[i].name << "'>\n";
-// 
-// 		for(unsigned int j = 0; j < skeleton.joints[i].animation.size(); ++j)
-// 		{
-// 			inStream << "\t\t\t\t" << "<frame num='" << skeleton.joints[i].animation[j].frameNumber - 1 << "'>\n";
-// 			inStream << "\t\t\t\t\t";
-// 			FbxMatrix out = skeleton.joints[i].animation[j].globalTransform;
-// 			WriteMatrix(inStream, out.Transpose(), true);
-// 			inStream << "\t\t\t\t" << "</frame>\n";
-// 		}
-// 		inStream << "\t\t\t" << "</track>\n";
-// 	}
-// 	inStream << "\t\t</animation>\n";
-// 	inStream << "</animations>\n";
-// 	inStream << "</itpanim>";
-// 
-// 	inStream << "\n";
-// 
-// 	for(unsigned int i = 0; i < vertices.size(); ++i)
-// 	{
-// 		inStream << vertices[i].vertexBlendingInfo[0].blendingIndex;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[0].blendingWeight;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[1].blendingIndex;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[1].blendingWeight;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[2].blendingIndex;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[2].blendingWeight;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[3].blendingIndex;
-// 		inStream << "\n";
-// 		inStream << vertices[i].vertexBlendingInfo[3].blendingWeight;
-// 		inStream << "\n";
-// 	}
-// }
+void MeshData::WriteAnimationToStream(std::ostream& inStream)
+{
+	inStream << "<?xml version='1.0' encoding='UTF-8' ?>" << std::endl;
+	inStream << "<itpanim>" << std::endl;
+	inStream << "\t<skeleton count='" << skeleton.joints.size() << "'>" << std::endl;
+	for (unsigned int i = 0; i < skeleton.joints.size(); ++i)
+	{
+		inStream << "\t\t<joint id='" << i << "' name='" << skeleton.joints[i].name << "' parent='" << skeleton.joints[i].parentIndex << "'>\n";
+		inStream << "\t\t\t";
+		FbxMatrix out = skeleton.joints[i].globalBindposeInverseMatrix;
 
-// void MeshData::WriteMatrix(std::ostream& inStream, FbxMatrix& inMatrix, bool inIsRoot)
-// {
-// 	inStream << "<mat>" << static_cast<float>(inMatrix.Get(0, 0)) << "," << static_cast<float>(inMatrix.Get(0, 1)) << "," << static_cast<float>(inMatrix.Get(0, 2)) << "," << static_cast<float>(inMatrix.Get(0, 3)) << ","
-//		<< static_cast<float>(inMatrix.Get(1, 0)) << "," << static_cast<float>(inMatrix.Get(1, 1)) << "," << static_cast<float>(inMatrix.Get(1, 2)) << "," << static_cast<float>(inMatrix.Get(1, 3)) << ","
-//		<< static_cast<float>(inMatrix.Get(2, 0)) << "," << static_cast<float>(inMatrix.Get(2, 1)) << "," << static_cast<float>(inMatrix.Get(2, 2)) << "," << static_cast<float>(inMatrix.Get(2, 3)) << ","
-//		<< static_cast<float>(inMatrix.Get(3, 0)) << "," << static_cast<float>(inMatrix.Get(3, 1)) << "," << static_cast<float>(inMatrix.Get(3, 2)) << "," << static_cast<float>(inMatrix.Get(3, 3)) << "</mat>\n";
-//}
+		WriteMatrix(inStream, out.Transpose(), true);
+		inStream << "\t\t</joint>\n";
+	}
+	inStream << "\t</skeleton>\n";
+	inStream << "\t<animations>\n";
+	inStream << "\t\t<animation name='" << animationName << "' length='" << animationLength << "'>\n";
+	for (unsigned int i = 0; i < skeleton.joints.size(); ++i)
+	{
+		inStream << "\t\t\t" << "<track id = '" << i << "' name='" << skeleton.joints[i].name << "'>\n";
+
+		for(unsigned int j = 0; j < skeleton.joints[i].animation.size(); ++j)
+		{
+			inStream << "\t\t\t\t" << "<frame num='" << skeleton.joints[i].animation[j].frameNumber - 1 << "'>\n";
+			inStream << "\t\t\t\t\t";
+			FbxMatrix out = skeleton.joints[i].animation[j].globalTransform;
+			WriteMatrix(inStream, out.Transpose(), true);
+			inStream << "\t\t\t\t" << "</frame>\n";
+		}
+		inStream << "\t\t\t" << "</track>\n";
+	}
+	inStream << "\t\t</animation>\n";
+	inStream << "</animations>\n";
+	inStream << "</itpanim>";
+
+	inStream << "\n";
+
+	for(unsigned int i = 0; i < vertices.size(); ++i)
+	{
+		inStream << vertices[i].vertexBlendingInfo[0].blendingIndex;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[0].blendingWeight;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[1].blendingIndex;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[1].blendingWeight;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[2].blendingIndex;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[2].blendingWeight;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[3].blendingIndex;
+		inStream << "\n";
+		inStream << vertices[i].vertexBlendingInfo[3].blendingWeight;
+		inStream << "\n";
+	}
+}
+
+void MeshData::WriteMatrix(std::ostream& inStream, FbxMatrix& inMatrix, bool inIsRoot)
+{
+	inStream << "<mat>" << static_cast<float>(inMatrix.Get(0, 0)) << "," << static_cast<float>(inMatrix.Get(0, 1)) << "," << static_cast<float>(inMatrix.Get(0, 2)) << "," << static_cast<float>(inMatrix.Get(0, 3)) << ","
+		<< static_cast<float>(inMatrix.Get(1, 0)) << "," << static_cast<float>(inMatrix.Get(1, 1)) << "," << static_cast<float>(inMatrix.Get(1, 2)) << "," << static_cast<float>(inMatrix.Get(1, 3)) << ","
+		<< static_cast<float>(inMatrix.Get(2, 0)) << "," << static_cast<float>(inMatrix.Get(2, 1)) << "," << static_cast<float>(inMatrix.Get(2, 2)) << "," << static_cast<float>(inMatrix.Get(2, 3)) << ","
+		<< static_cast<float>(inMatrix.Get(3, 0)) << "," << static_cast<float>(inMatrix.Get(3, 1)) << "," << static_cast<float>(inMatrix.Get(3, 2)) << "," << static_cast<float>(inMatrix.Get(3, 3)) << "</mat>\n";
+}

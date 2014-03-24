@@ -7,7 +7,7 @@
 #include <vector>
 using namespace std;
 
-enum BASE_COMPONENTS{RENDER_COMPONENT};
+enum BASE_COMPONENTS{RENDER_COMPONENT, GAMEOBJECT_COMPONENT};
 
 class BaseComponent : public Component
 {

@@ -121,6 +121,12 @@
     <ClCompile Include="Src\Sound\SoundManager3D.cpp">
       <Filter>Sound\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\GameObjectComponent.cpp">
+      <Filter>Game Objects\Component System\GameObjectComponents\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game Objects\Component System\AnimationComponent.cpp">
+      <Filter>Game Objects\Component System\GameObjectComponents\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Game Objects\Lights\AmbientLight.h">
@@ -236,6 +242,12 @@
     </ClInclude>
     <ClInclude Include="Src\Game Objects\FBXModel.h">
       <Filter>Game Objects\Component System\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\GameObjectComponent.h">
+      <Filter>Game Objects\Component System\GameObjectComponents\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game Objects\Component System\AnimationComponent.h">
+      <Filter>Game Objects\Component System\GameObjectComponents\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -379,6 +391,15 @@
     </Filter>
     <Filter Include="Renderer\Source">
       <UniqueIdentifier>{85a98b45-a36a-4aa5-95a8-770f3b06493a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Component System\GameObjectComponents">
+      <UniqueIdentifier>{540de98f-66c3-4e84-81a2-55942b2fc135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Component System\GameObjectComponents\Header">
+      <UniqueIdentifier>{69270ede-1698-43f5-8e6d-64ff2835c12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Component System\GameObjectComponents\Source">
+      <UniqueIdentifier>{e355184b-e09f-451d-a70a-03c781e73272}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

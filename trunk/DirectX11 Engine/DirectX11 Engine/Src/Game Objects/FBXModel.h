@@ -11,6 +11,8 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
+#include "../Game Objects/Component System/AnimationComponent.h"
+
 class MeshData;
 class MaterialData;
 
@@ -25,6 +27,7 @@ public:
 	Status GetStatus() const {return status;}
 	const FbxScene* GetScene(){return scene;}
 	bool LoadFile();
+	void Destroy();
 
  	const FbxTime GetFrameTime() const {return frameTime;}
  
@@ -105,8 +108,8 @@ public:
 	void ReadNormal(FbxMesh* _inMesh, int _inCtrlPointIndex, int _inVertexCounter, XMFLOAT3& _outNormal);
 	void CompressAnimationData();
 	void ChangeAnimationFrame(unsigned int _frame);
-	//void WriteAnimationToStream(std::ostream& inStream);
-	//void WriteMatrix(std::ostream& inStream, FbxMatrix& inMatrix, bool inIsRoot);
+	void WriteAnimationToStream(std::ostream& inStream);
+	void WriteMatrix(std::ostream& inStream, FbxMatrix& inMatrix, bool inIsRoot);
 
 //private:
 	enum
@@ -116,21 +119,6 @@ public:
 		UV_VBO,
 		INDEX_VBO,
 		VBO_COUNT,
-	};
-
-	struct FlattenedBoneHeirarchy
-	{
-		XMFLOAT4X4* bones;
-
-		FlattenedBoneHeirarchy() : bones(NULL){}
-	};
-
-	struct AnimationDataForConstantBuffer
-	{
-		FlattenedBoneHeirarchy* animationFrames;
-		XMFLOAT4X4* inverseBindPose;
-
-		AnimationDataForConstantBuffer() : animationFrames(NULL){}
 	};
 
 	struct BlendingIndexWeightPair
@@ -284,7 +272,7 @@ public:
 	vector<Triangle> triangles;
 	Skeleton skeleton;
 	std::vector<PNTIWVertex> vertices;
-	AnimationDataForConstantBuffer animationData;
+	AnimationInformation* animationData;
 
 	unsigned int currentFrame;
 	void* currentFrameMemPointer;

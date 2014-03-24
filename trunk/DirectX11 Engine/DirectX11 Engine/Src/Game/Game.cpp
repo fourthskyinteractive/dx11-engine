@@ -198,6 +198,7 @@ void Game::Update()
 {
 	timer.TimeStep();
 	float deltaTime = (timer.GetDeltaTimeFloat() / 1000.0f);
+	ObjectManager::UpdateObjects(deltaTime);
 
 	//Get Input
 	Input(deltaTime);
@@ -475,7 +476,7 @@ void Game::InitializeObjects()
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
 	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/BlueMinion.fbx", worldMat);
-	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
+	ObjectManager::AddObject(STATIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
 
 // 	//terrain = new Terrain();

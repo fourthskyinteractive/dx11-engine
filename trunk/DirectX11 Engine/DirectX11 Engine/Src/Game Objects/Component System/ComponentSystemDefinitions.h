@@ -6,6 +6,7 @@ class BaseComponent;
 class Component;
 enum BASE_COMPONENTS;
 enum RENDER_COMPONENTS;
+enum GAMEOBJECT_COMPONENTS;
 
 struct BaseComponentStruct
 {
@@ -16,6 +17,12 @@ struct BaseComponentStruct
 struct RenderComponentStruct
 {
 	RENDER_COMPONENTS componentType;
+	Component* component;
+};
+
+struct GameObjectComponentStruct
+{
+	GAMEOBJECT_COMPONENTS componentType;
 	Component* component;
 };
 
