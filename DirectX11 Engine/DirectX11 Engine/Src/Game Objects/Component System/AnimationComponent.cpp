@@ -19,9 +19,12 @@ void AnimationInformation::Update(float _dt, void* _currentFrameMemoryPointer)
 {
 	currentAnimationTime += _dt;
 
-	if(currentAnimationTime > 2.0f)
+	if(currentAnimationTime > .05f)
 	{
 		currentFrame++;
+		if(currentFrame >= numFrames)
+			currentFrame = 0;
+
 		currentAnimationTime = 0.0f;
 		memcpy(_currentFrameMemoryPointer, animationFrames[currentFrame].bones, sizeof(XMFLOAT4X4) * numBones);
 	}
