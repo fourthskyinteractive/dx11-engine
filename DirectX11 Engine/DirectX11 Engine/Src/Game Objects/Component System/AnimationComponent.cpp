@@ -19,21 +19,21 @@ void AnimationInformation::Update(float _dt, void* _currentFrameMemoryPointer)
 {
 	currentAnimationTime += _dt;
 
-	if(currentAnimationTime > .05f)
+	if(currentAnimationTime >= totalAnimationTime)
 	{
-		currentFrame++;
-		if(currentFrame >= numFrames)
-			currentFrame = 0;
-
-		currentAnimationTime = 0.0f;
-		memcpy(_currentFrameMemoryPointer, animationFrames[currentFrame].bones, sizeof(XMFLOAT4X4) * numBones);
+		currentAnimationTime = 0.0f + (currentAnimationTime - totalAnimationTime);
 	}
 
 	//Find what frames I am between
-	//unsigned int preFrame = (unsigned int)(currentAnimationTime / timePerFrame);
-	//unsigned int postFrame = preFrame + 1;
-	//float lerpPercentage = (currentAnimationTime - (timePerFrame * preFrame)) / timePerFrame;
-	//LerpAnimationFrames(preFrame, postFrame, lerpPercentage, _currentFrameMemoryPointer);
+	unsigned int preFrame = (unsigned int)(currentAnimationTime / timePerFrame);
+	unsigned int postFrame = preFrame + 1;
+	if(postFrame >= numFrames)
+	{
+		postFrame = 0;
+	}
+
+	float lerpPercentage = (currentAnimationTime - (timePerFrame * preFrame)) / timePerFrame;
+	LerpAnimationFrames(preFrame, postFrame, lerpPercentage, _currentFrameMemoryPointer);
 }
 
 void AnimationInformation::LerpAnimationFrames(unsigned int _preFrame, unsigned int _postFrame, float _percentageThroughFrame, void* _currentFrameMemoryPointer)
@@ -46,14 +46,18 @@ void AnimationInformation::LerpAnimationFrames(unsigned int _preFrame, unsigned 
 	XMMATRIX postFrame;
 	XMMATRIX lerpedMatrixM;
 
-	preFrame = XMLoadFloat4x4(animationFrames[_preFrame].bones);
-	postFrame = XMLoadFloat4x4(animationFrames[_postFrame].bones);
+	char* currentBoneMemory = (char*)_currentFrameMemoryPointer;
+	for(unsigned int i = 0; i < numBones; ++i)
+	{
+		preFrame = XMLoadFloat4x4(&animationFrames[_preFrame].bones[i]);
+		postFrame = XMLoadFloat4x4(&animationFrames[_postFrame].bones[i]);
+		lerpedMatrixM = (preFrame + ((postFrame - preFrame) * _percentageThroughFrame));
 
-	lerpedMatrixM = (preFrame + ((postFrame - preFrame) * _percentageThroughFrame));
-
-	XMFLOAT4X4 lerpedMatrix;
-	XMStoreFloat4x4(&lerpedMatrix, lerpedMatrixM);
-	memcpy(_currentFrameMemoryPointer, &lerpedMatrix, sizeof(XMFLOAT4X4));
+		XMFLOAT4X4 lerpedMatrix;
+		XMStoreFloat4x4(&lerpedMatrix, lerpedMatrixM);
+		memcpy(currentBoneMemory, &lerpedMatrix, sizeof(XMFLOAT4X4));
+		currentBoneMemory += sizeof(XMFLOAT4X4);
+	}
 }
 
 AnimationComponent::AnimationComponent()
