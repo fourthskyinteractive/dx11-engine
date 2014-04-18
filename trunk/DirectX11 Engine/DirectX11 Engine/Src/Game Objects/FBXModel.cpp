@@ -856,19 +856,21 @@ void MeshData::CompressAnimationData()
 	for(unsigned int frameIndex = 0; frameIndex < animationLength; ++frameIndex)
 	{
 		animationData->animationFrames[frameIndex].bones = new XMFLOAT4X4[numBones];
+		animationData->animationFrames[frameIndex].positions = new XMVECTOR[numBones];
+		animationData->animationFrames[frameIndex].rotationQuaternions = new XMVECTOR[numBones];
+
 		for(unsigned int jointIndex = 0; jointIndex < numBones; ++jointIndex)
 		{
-// 			int parentIndex = jointIndex;
-// 
-// 			FbxAMatrix currentMatrix;
-// 			currentMatrix.SetIdentity();
-// 			while(parentIndex != -1)
-// 			{
-// 				currentMatrix = currentMatrix * skeleton.joints[parentIndex].animation[frameIndex].globalTransform;
-// 				parentIndex = skeleton.joints[parentIndex].parentIndex;
-// 			}
+			FbxAMatrix currentMatrix;
 
-			FbxAMatrix currentMatrix = skeleton.joints[jointIndex].animation[frameIndex].globalTransform;
+			if(skeleton.joints[jointIndex].animation.size() == 0)
+			{
+				currentMatrix.SetIdentity();
+			}
+			else
+			{
+				currentMatrix = skeleton.joints[jointIndex].animation[frameIndex].globalTransform;
+			}
 
 			XMFLOAT4X4 tempMatrix;
 			tempMatrix._11 = (float)currentMatrix.mData[0][0];
@@ -888,7 +890,14 @@ void MeshData::CompressAnimationData()
 			tempMatrix._43 = (float)currentMatrix.mData[3][2];
 			tempMatrix._44 = (float)currentMatrix.mData[3][3];
 
-			memcpy(&animationData->animationFrames[frameIndex].bones[jointIndex], &tempMatrix, sizeof(XMFLOAT4X4));
+			XMMATRIX boneMatrix;
+			boneMatrix = XMLoadFloat4x4(&tempMatrix);
+
+			XMVECTOR rotationQuaternion = XMQuaternionRotationMatrix(boneMatrix);
+			XMVECTOR position = XMVectorSet(tempMatrix._41, tempMatrix._42, tempMatrix._43, tempMatrix._44);
+
+			memcpy(&animationData->animationFrames[frameIndex].positions[jointIndex], &position, sizeof(XMVECTOR));
+			memcpy(&animationData->animationFrames[frameIndex].rotationQuaternions[jointIndex], &rotationQuaternion, sizeof(XMVECTOR));
  		}
 	}
 

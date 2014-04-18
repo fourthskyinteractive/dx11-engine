@@ -19,7 +19,7 @@ void AnimationInformation::Update(float _dt, void* _currentFrameMemoryPointer)
 {
 	currentAnimationTime += _dt;
 
-	if(currentAnimationTime >= totalAnimationTime)
+	while(currentAnimationTime >= totalAnimationTime)
 	{
 		currentAnimationTime = 0.0f + (currentAnimationTime - totalAnimationTime);
 	}
@@ -34,28 +34,47 @@ void AnimationInformation::Update(float _dt, void* _currentFrameMemoryPointer)
 
 	float lerpPercentage = (currentAnimationTime - (timePerFrame * preFrame)) / timePerFrame;
 	LerpAnimationFrames(preFrame, postFrame, lerpPercentage, _currentFrameMemoryPointer);
+
+// 	char* currentBoneMemory = (char*)_currentFrameMemoryPointer;
+// 	for(unsigned int i = 0; i < numBones; ++i)
+// 	{
+// 		memcpy(currentBoneMemory, &animationFrames[preFrame].bones[i], sizeof(XMFLOAT4X4));
+// 		currentBoneMemory += sizeof(XMFLOAT4X4);
+// 	}
 }
 
 void AnimationInformation::LerpAnimationFrames(unsigned int _preFrame, unsigned int _postFrame, float _percentageThroughFrame, void* _currentFrameMemoryPointer)
 {
-	if( _preFrame < 0 || _preFrame > (numBones - 1) ||
-		_postFrame < 0 || _postFrame > (numBones - 1))
+	if( _preFrame < 0 || _preFrame > (numFrames - 1) ||
+		_postFrame < 0 || _postFrame > (numFrames - 1))
 		return;
 
-	XMMATRIX preFrame;
-	XMMATRIX postFrame;
-	XMMATRIX lerpedMatrixM;
+	XMVECTOR preFrameRotation;
+	XMVECTOR postFrameRotation;
+	XMVECTOR lerpedQuaternionRotation;
+
+	XMVECTOR prePosition;
+	XMVECTOR postPosition;
 
 	char* currentBoneMemory = (char*)_currentFrameMemoryPointer;
 	for(unsigned int i = 0; i < numBones; ++i)
 	{
-		preFrame = XMLoadFloat4x4(&animationFrames[_preFrame].bones[i]);
-		postFrame = XMLoadFloat4x4(&animationFrames[_postFrame].bones[i]);
-		lerpedMatrixM = (preFrame + ((postFrame - preFrame) * _percentageThroughFrame));
+		preFrameRotation = animationFrames[_preFrame].rotationQuaternions[i];
+		postFrameRotation = animationFrames[_postFrame].rotationQuaternions[i];
+		lerpedQuaternionRotation = XMQuaternionSlerp(preFrameRotation, postFrameRotation, _percentageThroughFrame);
 
-		XMFLOAT4X4 lerpedMatrix;
-		XMStoreFloat4x4(&lerpedMatrix, lerpedMatrixM);
-		memcpy(currentBoneMemory, &lerpedMatrix, sizeof(XMFLOAT4X4));
+		prePosition = animationFrames[_preFrame].positions[i];
+		postPosition = animationFrames[_postFrame].positions[i];
+		XMVectorLerp(prePosition, postPosition, _percentageThroughFrame);
+		XMFLOAT4 lerpedPositionF;
+		XMStoreFloat4(&lerpedPositionF, XMVectorLerp(prePosition, postPosition, _percentageThroughFrame));
+		lerpedPositionF.w = 1.0f;
+
+		XMMATRIX finalMatrixM = XMMatrixRotationQuaternion(lerpedQuaternionRotation);
+		XMFLOAT4X4 finalMatrixF;
+		XMStoreFloat4x4(&finalMatrixF, finalMatrixM);
+		memcpy(&finalMatrixF._41, &lerpedPositionF, sizeof(XMFLOAT4));
+		memcpy(currentBoneMemory, &finalMatrixF, sizeof(XMFLOAT4X4));
 		currentBoneMemory += sizeof(XMFLOAT4X4);
 	}
 }

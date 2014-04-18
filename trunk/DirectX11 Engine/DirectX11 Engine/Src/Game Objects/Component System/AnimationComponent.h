@@ -11,6 +11,8 @@ enum ANIMATION_TYPE{ANIMATION_IDLE = 0, ANIMATION_WALK};
 
 struct FlattenedSkeleton
 {
+	XMVECTOR* rotationQuaternions;
+	XMVECTOR* positions;
 	XMFLOAT4X4* bones;
 
 	FlattenedSkeleton() : bones(NULL){}

@@ -160,14 +160,14 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 	//soundManager->Initialize(hwnd);
 
 
-	soundManager3D = new SoundManager3D();
+	//soundManager3D = new SoundManager3D();
 
-	if(!soundManager3D)
-	{
-		return false;
-	}
+	//if(!soundManager3D)
+	//{
+		//return false;
+	//}
 
-	soundManager3D->Initialize(hwnd);
+	//soundManager3D->Initialize(hwnd);
 
 	
 	return true;
@@ -205,8 +205,7 @@ void Game::Update()
 
 	CalculateFrameStats();
 	camera->UpdateViewMatrix();
-	soundManager3D->UpdateListener();
-	
+	//soundManager3D->UpdateListener();
 }
 
 void Game::Input(float _deltaTime)
@@ -324,73 +323,73 @@ void Game::Input(float _deltaTime)
 	
 
 	// Sound Manager input Changing volume
-	if(directInput->IsKeyPressed(DIK_UPARROW))
-	{
-		if(soundManager->m_fVolume < 0)
-		{
-			soundManager->ChangeVolume(50);
-		}
-		else 
-		{
-			// 0 is the MAX volume 
-			soundManager->m_fVolume = 0;
-		}
-	}
-	if(directInput->IsKeyPressed(DIK_DOWNARROW))
-	{
-		if(soundManager->m_fVolume > -10000)
-		{
-			soundManager->ChangeVolume(-50);
-		}
-		else 
-		{
-			// -10000 is the MIN volume 
-			soundManager->m_fVolume = -10000;
-		}
-	}
-	if(directInput->IsKeyPressed(DIK_RIGHT))
-	{
-		soundManager3D->PlayWaveFile();
-
-	}
-
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD2))
-	{
-		soundManager3D->SetSoundPosition(0.0f,0.0f,-1.0f);
-
-	}
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD8))
-	{
-		soundManager3D->SetSoundPosition(0.0f,0.0f,1.0f);
-
-	}
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD4))
-	{
-		soundManager3D->SetSoundPosition(-1.0f,0.0f,0.0f);
-
-	}
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD6))
-	{
-		soundManager3D->SetSoundPosition(1.0f,0.0f,0.0f);
-
-	}
-
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD5))
-	{
-		soundManager3D->SetSoundPosition(0.0f, 1.0f,0.0f);
-
-	}
-
-	if(directInput->IsKeyPressed(DIK_NUMPAD0))
-	{
-		soundManager3D->SetSoundPosition(0.0f,-1.0f,0.0f);
-
-	}
+// 	if(directInput->IsKeyPressed(DIK_UPARROW))
+// 	{
+// 		if(soundManager->m_fVolume < 0)
+// 		{
+// 			soundManager->ChangeVolume(50);
+// 		}
+// 		else 
+// 		{
+// 			// 0 is the MAX volume 
+// 			soundManager->m_fVolume = 0;
+// 		}
+// 	}
+// 	if(directInput->IsKeyPressed(DIK_DOWNARROW))
+// 	{
+// 		if(soundManager->m_fVolume > -10000)
+// 		{
+// 			soundManager->ChangeVolume(-50);
+// 		}
+// 		else 
+// 		{
+// 			// -10000 is the MIN volume 
+// 			soundManager->m_fVolume = -10000;
+// 		}
+// 	}
+// 	if(directInput->IsKeyPressed(DIK_RIGHT))
+// 	{
+// 		soundManager3D->PlayWaveFile();
+// 
+// 	}
+// 
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD2))
+// 	{
+// 		soundManager3D->SetSoundPosition(0.0f,0.0f,-1.0f);
+// 
+// 	}
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD8))
+// 	{
+// 		soundManager3D->SetSoundPosition(0.0f,0.0f,1.0f);
+// 
+// 	}
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD4))
+// 	{
+// 		soundManager3D->SetSoundPosition(-1.0f,0.0f,0.0f);
+// 
+// 	}
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD6))
+// 	{
+// 		soundManager3D->SetSoundPosition(1.0f,0.0f,0.0f);
+// 
+// 	}
+// 
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD5))
+// 	{
+// 		soundManager3D->SetSoundPosition(0.0f, 1.0f,0.0f);
+// 
+// 	}
+// 
+// 	if(directInput->IsKeyPressed(DIK_NUMPAD0))
+// 	{
+// 		soundManager3D->SetSoundPosition(0.0f,-1.0f,0.0f);
+// 
+// 	}
 
 	camera->UpdateViewMatrix();
 }
@@ -414,19 +413,19 @@ void Game::Exit()
 
 	ChangeState( nullptr);
 
-	if(soundManager)
-	{
-		soundManager->ShutDown();
-		delete soundManager;
-		soundManager = 0;
-	}
-
-	if(soundManager3D)
-	{
-		soundManager3D->Shutdown();
-		delete soundManager3D;
-		soundManager3D = 0;
-	}
+// 	if(soundManager)
+// 	{
+// 		soundManager->ShutDown();
+// 		delete soundManager;
+// 		soundManager = 0;
+// 	}
+// 
+// 	if(soundManager3D)
+// 	{
+// 		soundManager3D->Shutdown();
+// 		delete soundManager3D;
+// 		soundManager3D = 0;
+// 	}
 
 
 
