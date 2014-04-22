@@ -829,6 +829,18 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 		}
 	}
 
+	for(unsigned int i = 0; i < skeleton.joints.size(); ++i)
+	{
+		while(skeleton.joints[i].animation.size() < animationLength)
+		{
+			Keyframe tempFrame;
+			tempFrame.frameNumber = (long long)skeleton.joints[i].animation.size();
+			tempFrame.globalTransform.SetIdentity();
+			skeleton.joints[i].animation.push_back(tempFrame);
+		}
+	}
+
+
 	BlendingIndexWeightPair currBlendingIndexWeightPair;
 	currBlendingIndexWeightPair.blendingIndex = 0;
 	currBlendingIndexWeightPair.blendingWeight = 0;
@@ -863,14 +875,7 @@ void MeshData::CompressAnimationData()
 		{
 			FbxAMatrix currentMatrix;
 
-			if(skeleton.joints[jointIndex].animation.size() == 0)
-			{
-				currentMatrix.SetIdentity();
-			}
-			else
-			{
-				currentMatrix = skeleton.joints[jointIndex].animation[frameIndex].globalTransform;
-			}
+			currentMatrix = skeleton.joints[jointIndex].animation[frameIndex].globalTransform;
 
 			XMFLOAT4X4 tempMatrix;
 			tempMatrix._11 = (float)currentMatrix.mData[0][0];
