@@ -86,7 +86,11 @@ VertexOut VS(VertexIn vIn)
 	vOut.texCoord = vIn.texCoord;
 
 	//Calculate the normal vector against the world matrix only
-	vOut.normalWS = normalize(mul(vIn.normal, (float3x3)worldMatrix));
+	vOut.normalWS = vIn.jointWeight.x * mul(vIn.normal, (float3x3)bonesFlattened[vIn.jointIndex.x]);
+	vOut.normalWS += vIn.jointWeight.y * mul(vIn.normal, (float3x3)bonesFlattened[vIn.jointIndex.y]);
+	vOut.normalWS += vIn.jointWeight.z * mul(vIn.normal, (float3x3)bonesFlattened[vIn.jointIndex.z]);
+	vOut.normalWS += vIn.jointWeight.w * mul(vIn.normal, (float3x3)bonesFlattened[vIn.jointIndex.w]);
+	vOut.normalWS = normalize(mul(vOut.normalWS, (float3x3)worldMatrix));
 	//vOut.normalWS = normalize(vOut.normalWS);
 
 	return vOut;
