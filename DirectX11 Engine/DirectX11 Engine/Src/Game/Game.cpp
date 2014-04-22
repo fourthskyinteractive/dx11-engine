@@ -181,7 +181,7 @@ void Game::Run()
 
 void Game::Render()
 {
-	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f)));
+	D3D11Renderer::ClearScene(reinterpret_cast<const float*>(&XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)));
 	D3D11Renderer::d3dImmediateContext->OMSetBlendState(NULL, 0, 0xffffffff);
 
 	//baseObject->Render();
@@ -474,7 +474,7 @@ void Game::InitializeObjects()
 	XMMATRIX worldMatM = XMMatrixTranslation(0.0f, -50.0f, 0.0f);
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
-	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/BlueMinion.fbx", worldMat);
+	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Nunu_Bot.fbx", worldMat);
 	ObjectManager::AddObject(STATIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
 
