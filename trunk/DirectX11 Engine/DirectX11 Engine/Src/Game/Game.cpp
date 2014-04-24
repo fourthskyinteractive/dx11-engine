@@ -477,7 +477,6 @@ void Game::InitializeObjects()
 	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Nunu_Bot.fbx", worldMat);
 	ObjectManager::AddObject(STATIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
-
 // 	//terrain = new Terrain();
 // 	//
 // 	//TerrainDescription terrainDescription;
