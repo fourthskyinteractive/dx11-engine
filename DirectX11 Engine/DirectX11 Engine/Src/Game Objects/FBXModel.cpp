@@ -763,7 +763,7 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 		}
 
 		unsigned int numOfClusters = currentSkin->GetClusterCount();
-		numBones = numOfClusters;
+		numBones = skeleton.joints.size();
 		for(unsigned int clusterIndex = 0; clusterIndex < numOfClusters; ++ clusterIndex)
 		{
 			FbxCluster* currCluster = currentSkin->GetCluster(clusterIndex);
@@ -794,6 +794,10 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 			for(unsigned int i =  0; i < numOfIndicies; ++i)
 			{
 				BlendingIndexWeightPair currBlendingIndexWeightPair;
+				if(currJointIndex > numBones)
+				{
+					bool something = true;
+				}
 				currBlendingIndexWeightPair.blendingIndex = currJointIndex;
 				currBlendingIndexWeightPair.blendingWeight = static_cast<float>(currCluster->GetControlPointWeights()[i]);
 				controlPoints[currCluster->GetControlPointIndices()[i]]->blendingInfo.push_back(currBlendingIndexWeightPair);
@@ -834,12 +838,11 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 		while(skeleton.joints[i].animation.size() < animationLength)
 		{
 			Keyframe tempFrame;
-			tempFrame.frameNumber = (long long)skeleton.joints[i].animation.size();
+			tempFrame.frameNumber = (long long)skeleton.joints[i].animation.size() + 1;
 			tempFrame.globalTransform.SetIdentity();
 			skeleton.joints[i].animation.push_back(tempFrame);
 		}
 	}
-
 
 	BlendingIndexWeightPair currBlendingIndexWeightPair;
 	currBlendingIndexWeightPair.blendingIndex = 0;
@@ -858,7 +861,7 @@ void MeshData::ProcessJointsAndAnimations(FbxNode* _inNode)
 void MeshData::CompressAnimationData()
 {
 	animationData = new AnimationInformation();
-	animationData->numBones = numBones;
+	animationData->numBones = skeleton.joints.size();
 	animationData->numFrames = animationLength;
 	animationData->animationFrames = new FlattenedSkeleton[animationLength];
 	animationData->totalAnimationTime = ((float)animationData->numFrames) / ((float)ANIMATION_FRAMERATE);
