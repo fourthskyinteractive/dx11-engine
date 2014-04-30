@@ -1,0 +1,2 @@
+Volumetric Light Scattering as a Post-Process: http://http.developer.nvidia.com/GPUGems3/gpugems3_ch13.html
+Accurate Atmospheric Scattering: http://http.developer.nvidia.com/GPUGems2/gpugems2_chapter16.html
