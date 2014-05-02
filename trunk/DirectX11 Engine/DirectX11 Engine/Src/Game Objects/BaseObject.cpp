@@ -163,7 +163,7 @@ void BaseObject::AddIndexBufferComponent(INDEX_BUFFER_COMPONENTS _componentType,
 	indexBufferComponent->AddIndexBufferComponent(_componentType, _data, _totalSize);
 }
 
-void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* _memoryAddress)
+void BaseObject::AddConstantBufferComponent(SHADER_TYPE _associatedShader, CONSTANT_BUFFER_COMPONENTS _componentType, void* _data, unsigned int _totalSize, void* _memoryAddress)
 {
 	unsigned int constantBufferComponentIndex;
 
@@ -190,7 +190,7 @@ void BaseObject::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _componen
 
 	ConstantBufferComponent* constantBufferComponent = ((ConstantBufferComponent*)renderComponent->GetRenderComponents()[constantBufferComponentIndex].component);
 
-	constantBufferComponent->AddConstantBufferComponent(_componentType, _data, _totalSize, _memoryAddress);
+	constantBufferComponent->AddConstantBufferComponent(_associatedShader, _componentType, _data, _totalSize, _memoryAddress);
 }
 
 //TODO:SHADER BUFFERS MAPPABLE - MAKE SHADER BUFFERS MAPPABLE IF THEY CHANGE!
@@ -455,12 +455,6 @@ void BaseObject::BindRenderComponents()
 		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::backBufferUAV.p, NULL);
 
 		D3D11Renderer::d3dImmediateContext->CSSetShaderResources(lastIndex, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
-
-		D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
-
-		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &nullUAV, NULL);
-
-		//D3D11Renderer::d3dImmediateContext->VSSetShaderResources(0, renderDataMembers->computeShaderBuffers.computeSRVs.size(), &renderDataMembers->computeShaderBuffers.computeSRVs[0].p);
 	}
 }
 

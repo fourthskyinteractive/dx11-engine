@@ -474,7 +474,7 @@ void Game::InitializeObjects()
 	XMMATRIX worldMatM = XMMatrixTranslation(0.0f, -50.0f, 0.0f);
 	XMFLOAT4X4 worldMat;
 	XMStoreFloat4x4(&worldMat, worldMatM);
-	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/Nunu_Bot.fbx", worldMat);
+	ObjectManager::AddObject(DYNAMIC_OBJECT, "Res/Models/BlueMinion.fbx", worldMat);
 	ObjectManager::AddObject(STATIC_OBJECT, "Res/Models/Ground.fbx", worldMat);
 
 // 	//terrain = new Terrain();
@@ -494,8 +494,6 @@ void Game::InitializeObjects()
 // 	//skyBox = new ScreenSpaceObject();
 // 	//skyBox->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, SKYBOX_PIXEL_SHADER, SKYBOX_GEOMETRY_SHADER);
 // 
-// 	//lightPass = new ScreenSpaceObject();
-// 	//lightPass->Initialize(D3D11Renderer::renderTargetView[RENDER_BACKBUFFER], D3D11Renderer::shaderResourceView[1], DEFERRED_COMBINE_VERTEX_SHADER, DEFERRED_COMBINE_PIXEL_SHADER, DEFERRED_COMBINE_GEOMETRY_SHADER);
  }
 
 void* Game::InitializeLights()

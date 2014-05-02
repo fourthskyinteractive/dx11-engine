@@ -31,14 +31,16 @@ void ObjectManager::Initialize()
 	{
 		finalPassObject->AddTexture(D3D11Renderer::shaderResourceView[i]);
 	}
+
 	finalPassObject->AddBaseComponent(RENDER_COMPONENT);
 	finalPassObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	finalPassObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
 	finalPassObject->AddRenderComponent(CONSTANT_BUFFER_RENDER_COMPONENT);
-	finalPassObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &LightManager::numLights, sizeof(XMFLOAT4), LightManager::GetNumberOfLightsMemory());
-	finalPassObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, (*CameraManager::currentCamera)->GetWidthHeightNearFarP(), sizeof(XMFLOAT4), (*CameraManager::currentCamera)->GetWidthHeightNearFarP());
-	finalPassObject->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetViewMatrixP());
-	finalPassObject->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, (*CameraManager::currentCamera)->GetFrustumExtentsP(), sizeof(XMFLOAT4), (*CameraManager::currentCamera)->GetFrustumExtentsP());
+	finalPassObject->AddConstantBufferComponent(GEOMETRY_SHADER, INVERSE_VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetInvViewProjMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetInvViewProjMatrixP());
+	finalPassObject->AddConstantBufferComponent(COMPUTE_SHADER, MISCELLANEOUS_COMPONENT, &LightManager::numLights, sizeof(XMFLOAT4), LightManager::GetNumberOfLightsMemory());
+	finalPassObject->AddConstantBufferComponent(COMPUTE_SHADER, MISCELLANEOUS_COMPONENT, (*CameraManager::currentCamera)->GetWidthHeightNearFarP(), sizeof(XMFLOAT4), (*CameraManager::currentCamera)->GetWidthHeightNearFarP());
+	finalPassObject->AddConstantBufferComponent(COMPUTE_SHADER, VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetViewMatrixP());
+	finalPassObject->AddConstantBufferComponent(COMPUTE_SHADER, MISCELLANEOUS_COMPONENT, (*CameraManager::currentCamera)->GetFrustumExtentsP(), sizeof(XMFLOAT4), (*CameraManager::currentCamera)->GetFrustumExtentsP());
 	finalPassObject->AddComputeShaderBuffer(LightManager::GetPointLightsMemory(), sizeof(PointLightCompressed), sizeof(PointLightCompressed) * LightManager::GetNumberPointLights());
 	finalPassObject->SetShaders(1, 0, 1, 0);
 	finalPassObject->FinalizeObject();
@@ -127,20 +129,20 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 	}	
 	object->object->AddIndexBufferComponent(INDICIES_COMPONENT, &tempModel->meshData->indices[0], sizeof(unsigned long), sizeof(unsigned long) * tempModel->meshData->indices.size());
 	((WorldObject*)object->object)->SetWorldMatrix(_worldMatrix);
-	object->object->AddConstantBufferComponent(WORLD_MATRIX_COMPONENT, ((WorldObject*)object->object)->GetWorldMatrixP(), sizeof(XMFLOAT4X4), ((WorldObject*)object->object)->GetWorldMatrixP());
-	object->object->AddConstantBufferComponent(VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetInvViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetInvViewMatrixP());
-	object->object->AddConstantBufferComponent(PROJECTION_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetProjectionMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetProjectionMatrixP());
-	object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, &animationData, sizeof(XMFLOAT4), NULL);
+	object->object->AddConstantBufferComponent(VERTEX_SHADER, WORLD_MATRIX_COMPONENT, ((WorldObject*)object->object)->GetWorldMatrixP(), sizeof(XMFLOAT4X4), ((WorldObject*)object->object)->GetWorldMatrixP());
+	object->object->AddConstantBufferComponent(VERTEX_SHADER, VIEW_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetInvViewMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetInvViewMatrixP());
+	object->object->AddConstantBufferComponent(VERTEX_SHADER, PROJECTION_MATRIX_COMPONENT, (*CameraManager::currentCamera)->GetProjectionMatrixP(), sizeof(XMFLOAT4X4), (*CameraManager::currentCamera)->GetProjectionMatrixP());
+	object->object->AddConstantBufferComponent(VERTEX_SHADER, MISCELLANEOUS_COMPONENT, &animationData, sizeof(XMFLOAT4), NULL);
 
 	if(tempModel->meshData->isAnimated)
 	{
-		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer());
-		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentAnimationIBPMemoryPointer());
+		object->object->AddConstantBufferComponent(VERTEX_SHADER, MISCELLANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer());
+		object->object->AddConstantBufferComponent(VERTEX_SHADER, MISCELLANEOUS_COMPONENT, object->object->GetAnimationComponent()->GetCurrentFrameMemoryPointer(), sizeof(XMFLOAT4X4) * tempModel->meshData->numBones, object->object->GetAnimationComponent()->GetCurrentAnimationIBPMemoryPointer());
 	}
 	else
 	{
-		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, NULL, 0, NULL);
-		object->object->AddConstantBufferComponent(MISCELANEOUS_COMPONENT, NULL, 0, NULL);
+		object->object->AddConstantBufferComponent(VERTEX_SHADER, MISCELLANEOUS_COMPONENT, NULL, 0, NULL);
+		object->object->AddConstantBufferComponent(VERTEX_SHADER, MISCELLANEOUS_COMPONENT, NULL, 0, NULL);
 	}
 
 	object->object->SetShaders(0, -1, 0, -1);

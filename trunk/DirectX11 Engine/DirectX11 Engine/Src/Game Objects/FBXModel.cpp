@@ -933,9 +933,9 @@ void MeshData::CompressAnimationData()
 		memcpy(&animationData->inverseBindPose[i], &tempMatrix, sizeof(XMFLOAT4X4));
 	}
 
-	std::string outputMeshName = "E:\\Side Projects\\DX11 Engine\\testanim.txtt";
-	std::ofstream meshOutput(outputMeshName);
-	WriteAnimationToStream(meshOutput);
+// 	std::string outputMeshName = "E:\\Side Projects\\DX11 Engine\\testanim.txtt";
+// 	std::ofstream meshOutput(outputMeshName);
+// 	WriteAnimationToStream(meshOutput);
 
 	ChangeAnimationFrame(0);
 }

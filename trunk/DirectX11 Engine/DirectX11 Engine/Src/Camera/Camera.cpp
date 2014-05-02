@@ -274,6 +274,19 @@ void* Camera::GetInvViewMatrixP()
 	return reinterpret_cast<void*>(&inverseView);
 }
 
+void* Camera::GetInvViewProjMatrixP()
+{
+	XMMATRIX viewM;
+	XMMATRIX projM;
+	XMMATRIX viewProj;
+	viewM = XMLoadFloat4x4(&view);
+	projM = XMLoadFloat4x4(&projection);
+	viewProj = viewM * projM;
+	viewProj = XMMatrixInverse(0, viewProj);
+	XMStoreFloat4x4(&inverseViewProjection, viewProj);
+	return reinterpret_cast<void*>(&inverseViewProjection);
+}
+
 void* Camera::GetProjectionMatrixP()
 {
 	return reinterpret_cast<void*>(&projection);

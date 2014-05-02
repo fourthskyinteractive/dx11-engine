@@ -67,8 +67,24 @@ void WorldObject::UpdateShaderConstantBuffers()
 			D3D11Renderer::d3dImmediateContext->Unmap(cBuffer, 0);
 		}
 
-
-		D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(i, 1, &cBuffer.p);
+		unsigned int bufferSlot = cBufferComponent->GetConstantBufferComponents()[i]->bufferSlot;
+		switch (cBufferComponent->GetConstantBufferComponents()[i]->associatedShader)
+		{
+		case VERTEX_SHADER:
+			D3D11Renderer::d3dImmediateContext->VSSetConstantBuffers(bufferSlot, 1, &cBuffer.p);
+			break;
+		case GEOMETRY_SHADER:
+			D3D11Renderer::d3dImmediateContext->GSSetConstantBuffers(bufferSlot, 1, &cBuffer.p);
+			break;
+		case PIXEL_SHADER:
+			D3D11Renderer::d3dImmediateContext->PSSetConstantBuffers(bufferSlot, 1, &cBuffer.p);
+			break;
+		case COMPUTE_SHADER:
+			D3D11Renderer::d3dImmediateContext->CSSetConstantBuffers(bufferSlot, 1, &cBuffer.p);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
