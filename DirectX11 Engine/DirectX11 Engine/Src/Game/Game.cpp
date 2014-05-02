@@ -135,8 +135,8 @@ bool Game::Initialize(HINSTANCE _hInstance, HWND _hWnd, bool _fullscreen, bool _
 
 	LoadCompiledShaders();
 	InitializeLights();
-	InitializeObjects();
 	ObjectManager::Initialize();
+	InitializeObjects();
 
 	if(bResult)
 	{
