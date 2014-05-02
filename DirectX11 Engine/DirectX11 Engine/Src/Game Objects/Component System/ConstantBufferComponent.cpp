@@ -19,7 +19,7 @@ ConstantBufferComponent::~ConstantBufferComponent()
 	}
 }
 
-void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size, void* _memoryAddress)
+void ConstantBufferComponent::AddConstantBufferComponent(SHADER_TYPE _associatedShader, CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size, void* _memoryAddress)
 {
 	constantBufferComponentFlag |= (1 << _component);
 
@@ -27,6 +27,17 @@ void ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONE
 	newConstantComponent->componentType = _component;
 	newConstantComponent->size = _size;
 	newConstantComponent->memoryAddress = _memoryAddress;
+	newConstantComponent->associatedShader = _associatedShader;
+
+	unsigned int bufferSlot = 0;
+	for(int i = 0; i < constantBufferComponents.size(); ++i)
+	{
+		if(constantBufferComponents[i]->associatedShader == _associatedShader)
+		{
+			bufferSlot++;
+		}
+	}
+	newConstantComponent->bufferSlot = bufferSlot;
 
 	D3D11_BUFFER_DESC cBufferDesc;
 	ZeroMemory(&cBufferDesc, sizeof(D3D11_BUFFER_DESC));

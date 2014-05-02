@@ -76,6 +76,7 @@ public:
 	XMFLOAT4X4 GetViewProjectionMatrixF() const;
 	void* GetViewMatrixP();
 	void* GetInvViewMatrixP();
+	void* GetInvViewProjMatrixP();
 	void* GetProjectionMatrixP();
 
 	void* GetWidthHeightNearFarP();
@@ -113,6 +114,7 @@ private:
 	//View/Projection Matrices
 	XMFLOAT4X4 view;
 	XMFLOAT4X4 inverseView;
+	XMFLOAT4X4 inverseViewProjection;
 	XMFLOAT4X4 projection;
 };
 #endif

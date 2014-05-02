@@ -191,7 +191,7 @@ void LightPixel(float3 _textureLocation)
 										pointLights[tileData[i]].position, pointLights[tileData[i]].color, pointLights[tileData[i]].radius, float3(0.0f, 0.0f, 0.0f));
 	}
 
- 	totalLight += float4(1.0f, 1.0f, 1.0f, 1.0f);//CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
+ 	totalLight += float4(0.15f, 0.15f, 0.15f, 0.15f);//CalculateLighting(normal, position, diffuseAlbedo, specularAlbedo, specularPower, float4(0.0f, 0.0f, 0.0f, 1.0f),
  										//float3(0.0f, 0.0f, 0.0f), float4(0.05f, 0.05f, 0.05f, 1.0f), 0.0f, float3(0.0f, 0.0f, 0.0f));
 
 	outputTexture[_textureLocation.xy] = float4(diffuseAlbedo * totalLight, 1.0f);

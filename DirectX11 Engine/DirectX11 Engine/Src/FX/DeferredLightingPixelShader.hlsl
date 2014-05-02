@@ -4,6 +4,7 @@ Texture2D diffuseAlbedoTexture	: register(t1);
 Texture2D specularAlbedoTexture : register(t2);
 Texture2D positionTexture		: register(t3);
 Texture2D depthTexture			: register(t4);
+TextureCube skybox				: register(t5);
 
 //Constants
 cbuffer LightandCameraParams
@@ -22,7 +23,8 @@ cbuffer LightandCameraParams
 struct PixelIn
 {
 	float4 pos		: SV_POSITION;
-	//float2 tex	: TEXCOORD0;
+	float3 tex		: TEXCOORD0;
+	float3 skyboxTex : TEXCOORD1;
 };
 
 struct PixelOut
