@@ -166,7 +166,7 @@ PixelOut PS(PixelIn input)
 // 		pOut.color = float4(0.0, 0.0f, 1.0f, 1.0f);
 // 	}
 
-	pOut.color = float4(diffuseAlbedo, 1.0f);
+	pOut.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return pOut;
 }

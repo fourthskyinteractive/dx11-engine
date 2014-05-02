@@ -1,4 +1,5 @@
 #include "ConstantBufferComponent.h"
+#include "../../Utility/Misc/DebugOutput.h"
 
 ConstantBufferComponent::ConstantBufferComponent()
 {
@@ -30,7 +31,7 @@ void ConstantBufferComponent::AddConstantBufferComponent(SHADER_TYPE _associated
 	newConstantComponent->associatedShader = _associatedShader;
 
 	unsigned int bufferSlot = 0;
-	for(int i = 0; i < constantBufferComponents.size(); ++i)
+	for(unsigned int i = 0; i < constantBufferComponents.size(); ++i)
 	{
 		if(constantBufferComponents[i]->associatedShader == _associatedShader)
 		{
@@ -55,6 +56,7 @@ void ConstantBufferComponent::AddConstantBufferComponent(SHADER_TYPE _associated
 	if(hr != S_OK)
 	{
 		//MessageBox(NULL, "Constant Buffer Creation Failed : ConstantBufferComponent::AddConstantBufferComponent(CONSTANT_BUFFER_COMPONENTS _component, void* _data, unsigned int _size)", "Constant Buffer Component Error", 0);
+		DebugOutput::Print(DebugOutput::RENDER_MSG, DebugOutput::FAILURE_CREATE, "ConstantBuffer");
 	}
 
 	constantBufferComponents.push_back(newConstantComponent);

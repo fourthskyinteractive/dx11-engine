@@ -87,14 +87,14 @@ void ScreenSpaceObject::BindRenderComponents()
 	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
 	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
 
-	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
 	//TODO:
 	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
-	//D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
+	D3D11Renderer::d3dImmediateContext->PSSetSamplers(0, 1, &renderDataMembers->samplerState.p);
 	D3D11Renderer::d3dImmediateContext->IASetVertexBuffers(0, buffersForBinding->numBuffers, &buffersForBinding->buffers[0].p, &buffersForBinding->strides[0], &buffersForBinding->offsets[0]);
-	//D3D11Renderer::d3dImmediateContext->IASetInputLayout(renderDataMembers->inputLayout);
-	//D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	D3D11Renderer::d3dImmediateContext->IASetInputLayout(renderDataMembers->inputLayout);
+	D3D11Renderer::d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 }
 
 void ScreenSpaceObject::FinalizeObject()
@@ -179,7 +179,7 @@ void ScreenSpaceObject::Render()
 
 	D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
 
-	//D3D11Renderer::d3dImmediateContext->Draw(1, 0);
+	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }
 
 void ScreenSpaceObject::Update(float _dt)
