@@ -306,14 +306,20 @@ void BaseObject::AddGameObjectComponent(GAMEOBJECT_COMPONENTS _componentType)
 	}
 }
 
-void BaseObject::AddTexture(WCHAR* _filePath)
+void BaseObject::AddTexture(SHADER_TYPE _associatedShader, WCHAR* _filePath)
 {
-	textureIndices.push_back(TextureManager::AddTexture(_filePath));
+	ObjectTexture tempTexture;
+	tempTexture.textureIndicie = TextureManager::AddTexture(_filePath);
+	tempTexture.associatedShader = _associatedShader;
+	textures.push_back(tempTexture);
 }
 
-void BaseObject::AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView)
+void BaseObject::AddTexture(SHADER_TYPE _associatedShader, CComPtr<ID3D11ShaderResourceView> _shaderResourceView)
 {
-	textureIndices.push_back(TextureManager::AddTexture(_shaderResourceView));
+	ObjectTexture tempTexture;
+	tempTexture.textureIndicie = TextureManager::AddTexture(_shaderResourceView);
+	tempTexture.associatedShader = _associatedShader;
+	textures.push_back(tempTexture);
 }
 		
 RenderComponent* BaseObject::GetRenderComponent()
@@ -428,10 +434,30 @@ void BaseObject::UpdateShaderConstantBuffers()
 
 void BaseObject::BindRenderComponents()
 {
-	for(unsigned int i = 0; i < textureIndices.size(); ++i)
+	int lastIndex = 0;
+	for(unsigned int i = 0; i < textures.size(); ++i)
 	{
-		CComPtr<ID3D11ShaderResourceView> shaderView = TextureManager::GetTexture(textureIndices[i]);
-		D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &shaderView.p);
+		CComPtr<ID3D11ShaderResourceView> shaderView = TextureManager::GetTexture(textures[i].textureIndicie);
+
+		switch (textures[i].associatedShader)
+		{
+		case VERTEX_SHADER:
+			D3D11Renderer::d3dImmediateContext->VSSetShaderResources(i, 1, &shaderView.p);
+			break;
+		case GEOMETRY_SHADER:
+			D3D11Renderer::d3dImmediateContext->GSSetShaderResources(i, 1, &shaderView.p);
+			break;
+		case PIXEL_SHADER:
+			D3D11Renderer::d3dImmediateContext->PSSetShaderResources(i, 1, &shaderView.p);
+			break;
+		case COMPUTE_SHADER:
+			D3D11Renderer::d3dImmediateContext->CSSetShaderResources(i, 1, &shaderView.p);
+			break;
+		default:
+			break;
+		}
+
+		lastIndex++;
 	}
 
 	//TODO:: Possibly move this somewhere else
@@ -441,15 +467,6 @@ void BaseObject::BindRenderComponents()
 
 		CComPtr<ID3D11UnorderedAccessView> nullUAV = NULL;
 		//D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, NULL);
-
-		//Set the G Buffer Textures
-		int lastIndex = 0;
-		for(unsigned int i = 0; i < textureIndices.size(); ++i)
-		{
-			CComPtr<ID3D11ShaderResourceView> shaderView = TextureManager::GetTexture(textureIndices[i]);
-			D3D11Renderer::d3dImmediateContext->CSSetShaderResources(i, 1, &shaderView.p);
-			lastIndex++;
-		}
 
 		//Set the Lighting Information SRV
 		D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::backBufferUAV.p, NULL);

@@ -29,7 +29,7 @@ void ObjectManager::Initialize()
 	XMFLOAT4 pos = XMFLOAT4(0.0f, 0.0f, 5.0f, 1.0f);
 	for(int i = 1; i < 6; ++i)
 	{
-		finalPassObject->AddTexture(D3D11Renderer::shaderResourceView[i]);
+		finalPassObject->AddTexture(COMPUTE_SHADER, D3D11Renderer::shaderResourceView[i]);
 	}
 
 	finalPassObject->AddBaseComponent(RENDER_COMPONENT);
@@ -55,7 +55,7 @@ void ObjectManager::AddObject(OBJECT_TYPE _objectType, string _modelPath, XMFLOA
 
 	for(unsigned int i = 0; i < tempModel->GetTextureIndices().size(); ++i)
 	{
-		object->object->AddTexture(TextureManager::GetTexture(tempModel->GetTextureIndices()[i]));
+		object->object->AddTexture(PIXEL_SHADER, TextureManager::GetTexture(tempModel->GetTextureIndices()[i]));
 	}
 
 	object->object->AddBaseComponent(RENDER_COMPONENT);

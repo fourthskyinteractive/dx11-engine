@@ -22,6 +22,11 @@ using namespace DirectX;
 #include <vector>
 using namespace std;
 
+struct ObjectTexture
+{
+	unsigned int textureIndicie;
+	SHADER_TYPE associatedShader;
+};
 
 class BaseObject
 {
@@ -42,8 +47,8 @@ public:
 
 	void AddGameObjectComponent(GAMEOBJECT_COMPONENTS _componentType);
 
-	void AddTexture(WCHAR* _filePath);
-	void AddTexture(CComPtr<ID3D11ShaderResourceView> _shaderResourceView);
+	void AddTexture(SHADER_TYPE _associatedShader, WCHAR* _filePath);
+	void AddTexture(SHADER_TYPE _associatedShader, CComPtr<ID3D11ShaderResourceView> _shaderResourceView);
 
 	virtual void LoadModel(char* _filePath, ModelData& _modelData);
 	virtual void UpdateShaderConstantBuffers();
@@ -67,7 +72,7 @@ public:
 	CComPtr<ID3D11GeometryShader> GetGeometryShader(){return renderDataMembers->geometryShader;}
 	CComPtr<ID3D11ComputeShader> GetComputeShader(){return renderDataMembers->computeShader;}
 	DX11RenderDataMembers* GetRenderDataMembers(){return renderDataMembers;}
-	vector<unsigned int> GetTextureIndices(){return textureIndices;}
+	vector<ObjectTexture> GetTextures(){return textures;}
 	unsigned int GetNumberOfIndices(){return numIndices;}
 	BuffersForBinding* GetBuffersForBinding(){return vertexBufferInformationForBinding;}
 
@@ -100,7 +105,7 @@ private:
 	unsigned int numVertexComponents;
 	unsigned int numIndices;
 
-	vector<unsigned int> textureIndices;
+	vector<ObjectTexture> textures;
 };
 
 #endif
