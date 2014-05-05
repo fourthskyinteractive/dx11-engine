@@ -87,7 +87,7 @@ void ScreenSpaceObject::BindRenderComponents()
 	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
 	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
 
-	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
+	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
 	//TODO:
 	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
@@ -179,7 +179,7 @@ void ScreenSpaceObject::Render()
 
 	D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
 
-	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
+	//D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }
 
 void ScreenSpaceObject::Update(float _dt)

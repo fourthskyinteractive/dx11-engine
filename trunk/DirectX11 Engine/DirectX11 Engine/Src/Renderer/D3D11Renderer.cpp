@@ -11,6 +11,7 @@ CComPtr<ID3D11DeviceContext>		D3D11Renderer::d3dImmediateContext = NULL;
 CComPtr<IDXGISwapChain>				D3D11Renderer::swapChain = NULL;
 CComPtr<ID3D11RenderTargetView>		D3D11Renderer::renderTargetView[8];
 CComPtr<ID3D11ShaderResourceView>	D3D11Renderer::shaderResourceView[8];
+CComPtr<ID3D11UnorderedAccessView>	D3D11Renderer::unorderedAccessView[8];
 CComPtr<ID3D11UnorderedAccessView>	D3D11Renderer::backBufferUAV;
 
 CComPtr<ID3D11Texture2D>			D3D11Renderer::depthStencilBuffer;
@@ -327,6 +328,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	for(int i = 0; i < 7; ++i)
 	{
 		hr = d3dDevice->CreateTexture2D(&renderTextureDesc, NULL, &renderTextures[i]);
+		hr = d3dDevice->CreateUnorderedAccessView(renderTextures[i], NULL, &unorderedAccessView[i]);
 		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], &renderTargetViewDesc, &renderTargetView[i + 1]);
 		hr = d3dDevice->CreateShaderResourceView(renderTextures[i], &shaderResourceViewDesc, &shaderResourceView[i + 1]);
 
