@@ -24,7 +24,7 @@ cbuffer LightandCameraParams
 struct PixelIn
 {
 	float4 pos		: SV_POSITION;
-	float3 tex		: TEXCOORD0;
+	float2 tex		: TEXCOORD0;
 	float3 skyboxTex : TEXCOORD1;
 };
 
@@ -166,6 +166,8 @@ PixelOut PS(PixelIn input)
 // 	{
 // 		pOut.color = float4(0.0, 0.0f, 1.0f, 1.0f);
 // 	}
+
+	diffuseAlbedo = diffuseAlbedoTexture.Sample(sampleType, input.tex).rgb;
 
 	pOut.color = float4(diffuseAlbedo, 1.0f);
 
