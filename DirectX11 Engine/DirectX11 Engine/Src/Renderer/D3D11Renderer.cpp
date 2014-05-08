@@ -328,7 +328,7 @@ bool D3D11Renderer::Initialize(HWND _hwnd, bool _fullscreen, bool _vsync, int _h
 	for(int i = 0; i < 7; ++i)
 	{
 		hr = d3dDevice->CreateTexture2D(&renderTextureDesc, NULL, &renderTextures[i]);
-		hr = d3dDevice->CreateUnorderedAccessView(renderTextures[i], NULL, &unorderedAccessView[i]);
+		hr = d3dDevice->CreateUnorderedAccessView(renderTextures[i], NULL, &unorderedAccessView[i + 1]);
 		hr = d3dDevice->CreateRenderTargetView(renderTextures[i], &renderTargetViewDesc, &renderTargetView[i + 1]);
 		hr = d3dDevice->CreateShaderResourceView(renderTextures[i], &shaderResourceViewDesc, &shaderResourceView[i + 1]);
 

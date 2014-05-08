@@ -4,7 +4,8 @@ Texture2D diffuseAlbedoTexture	: register(t1);
 Texture2D specularAlbedoTexture : register(t2);
 Texture2D positionTexture		: register(t3);
 Texture2D depthTexture			: register(t4);
-TextureCube skybox				: register(t5);
+//TextureCube skybox				: register(t5);
+SamplerState sampleType : register(s0);
 
 //Constants
 cbuffer LightandCameraParams
@@ -166,7 +167,7 @@ PixelOut PS(PixelIn input)
 // 		pOut.color = float4(0.0, 0.0f, 1.0f, 1.0f);
 // 	}
 
-	pOut.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	pOut.color = float4(diffuseAlbedo, 1.0f);
 
 	return pOut;
 }

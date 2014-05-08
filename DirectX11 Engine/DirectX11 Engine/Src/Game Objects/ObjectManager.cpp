@@ -32,6 +32,7 @@ void ObjectManager::Initialize()
 		finalPassObject->AddTexture(COMPUTE_SHADER, D3D11Renderer::shaderResourceView[i]);
 	}
 
+	//finalPassObject->AddTexture(PIXEL_SHADER, D3D11Renderer::shaderResourceView[6]);
 	finalPassObject->AddBaseComponent(RENDER_COMPONENT);
 	finalPassObject->AddRenderComponent(VERTEX_BUFFER_RENDER_COMPONENT);
 	finalPassObject->AddVertexBufferComponent(VERTEX_POSITION_COMPONENT, &pos, sizeof(XMFLOAT4), sizeof(XMFLOAT4));
