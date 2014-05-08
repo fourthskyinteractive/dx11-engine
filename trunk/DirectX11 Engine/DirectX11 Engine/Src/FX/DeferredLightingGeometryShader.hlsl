@@ -16,10 +16,10 @@ void GS(
 {
 	GSOutput gsOut;
 
-	float4 verts[4] = {-1, -1, 0.5, 1,
-						1, -1, 0.5, 1,
-						-1, 1, 0.5, 1,
-						1, 1, 0.5, 1};
+	float4 verts[4] = {-1, 1, 0.5, 1,
+						1, 1, 0.5, 1,
+						-1, -1, 0.5, 1,
+						1, -1, 0.5, 1};
 
 		gsOut.pos = verts[0];
 		gsOut.tex = verts[0];

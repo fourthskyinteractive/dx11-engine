@@ -87,7 +87,7 @@ void ScreenSpaceObject::BindRenderComponents()
 	DX11RenderDataMembers* renderDataMembers = GetRenderDataMembers();
 	BuffersForBinding* buffersForBinding = GetBuffersForBinding();
 
-	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, D3D11Renderer::depthStencilView);
+	D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, NULL);
 	//TODO:
 	//FIGURE OUT A WAY TO TELL THIS OBJECT WHAT SHADER RESOURCES TO BIND!
 
@@ -179,7 +179,17 @@ void ScreenSpaceObject::Render()
 
 	D3D11Renderer::d3dImmediateContext->Dispatch(64, 64, 1);
 
-	//D3D11Renderer::d3dImmediateContext->Draw(1, 0);
+	//D3D11Renderer::ContextClearState(D3D11Renderer::d3dImmediateContext);
+
+	//D3D11Renderer::d3dImmediateContext->ClearDepthStencilView(D3D11Renderer::depthStencilView, D3D11_CLEAR_DEPTH |D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	D3D11Renderer::d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &D3D11Renderer::unorderedAccessView[0].p, NULL);
+
+	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(1, 1, &D3D11Renderer::shaderResourceView[7].p);
+
+	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, NULL);
+
+	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }
 
 void ScreenSpaceObject::Update(float _dt)
