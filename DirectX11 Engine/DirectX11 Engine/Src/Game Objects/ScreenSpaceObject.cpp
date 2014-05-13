@@ -188,6 +188,7 @@ void ScreenSpaceObject::Render()
 	D3D11Renderer::d3dImmediateContext->PSSetShaderResources(1, 1, &D3D11Renderer::shaderResourceView[7].p);
 
 	//D3D11Renderer::d3dImmediateContext->OMSetRenderTargets(1, &D3D11Renderer::renderTargetView[0].p, NULL);
+	D3D11Renderer::d3dImmediateContext->OMSetDepthStencilState(D3D11Renderer::skyboxDepthStencilState, 0);
 
 	D3D11Renderer::d3dImmediateContext->Draw(1, 0);
 }

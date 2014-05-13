@@ -44,6 +44,7 @@ public:
 	static CComPtr<ID3D11DepthStencilState> depthStencilState;
 	static CComPtr<ID3D11DepthStencilView> depthStencilView;
 	static CComPtr<ID3D11DepthStencilView> orthoDepthStencilView;
+	static CComPtr<ID3D11DepthStencilState> skyboxDepthStencilState;
 	static CComPtr<ID3D11DepthStencilState> orthoDepthStencilState;
 	static CComPtr<ID3D11RasterizerState> rasterStateNoCulling;
 	static CComPtr<ID3D11RasterizerState> rasterStateBackfaceCulling;
